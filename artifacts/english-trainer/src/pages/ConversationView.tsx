@@ -161,20 +161,20 @@ function StopSmallIcon() {
 
 function StateIndicator({ state, interfaceLang }: { state: string; interfaceLang: Parameters<typeof t>[0] }) {
   const colors: Record<string, string> = {
-    idle: "bg-white/10 border-white/15 text-white/50",
-    listening: "bg-emerald-500/20 border-emerald-500/30 text-emerald-300",
-    processing: "bg-indigo-500/20 border-indigo-500/30 text-indigo-300",
-    speaking: "bg-teal-500/20 border-teal-500/30 text-teal-300",
+    idle: "bg-sand border-line text-clay",
+    listening: "bg-forest-soft border-forest/30 text-forest",
+    processing: "bg-coral-soft border-coral/30 text-coral",
+    speaking: "bg-forest-soft border-forest/30 text-forest",
   };
   const labels: Record<string, TranslationKey> = {
     idle: "ready", listening: "listening", processing: "processing", speaking: "aiSpeaking",
   };
   return (
     <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${colors[state] ?? colors.idle}`}>
-      {state === "listening" && <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />}
-      {state === "processing" && <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-spin border border-indigo-300 border-t-transparent" />}
-      {state === "speaking" && <span className="w-1.5 h-1.5 rounded-full bg-teal-400 animate-pulse" />}
-      {state === "idle" && <span className="w-1.5 h-1.5 rounded-full bg-white/30" />}
+      {state === "listening" && <span className="w-1.5 h-1.5 rounded-full bg-forest animate-ping" />}
+      {state === "processing" && <span className="w-1.5 h-1.5 rounded-full bg-coral animate-spin border border-coral/40 border-t-transparent" />}
+      {state === "speaking" && <span className="w-1.5 h-1.5 rounded-full bg-forest animate-pulse" />}
+      {state === "idle" && <span className="w-1.5 h-1.5 rounded-full bg-clay" />}
       {t(interfaceLang, labels[state] ?? "ready")}
     </div>
   );
@@ -646,15 +646,15 @@ export function ConversationView() {
   const levelLabel = LEVEL_CEFR[level] ?? level;
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-gradient-to-br from-[#080b1a] via-[#0a0e26] to-[#070d18] overflow-hidden">
+    <div className="min-h-[100dvh] flex flex-col bg-ivory overflow-hidden">
 
-      <header className="relative z-10 flex-shrink-0 px-4 pt-safe pt-3 pb-2 border-b border-white/8">
+      <header className="relative z-10 flex-shrink-0 px-4 pt-safe pt-3 pb-2 border-b border-line">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-lg flex-shrink-0">{scenarioEmoji}</span>
             <div className="min-w-0">
-              <p className="text-white/85 text-sm font-semibold leading-tight truncate">{scenarioLabel}</p>
-              <p className="text-white/35 text-[10px] leading-tight">{levelLabel}</p>
+              <p className="text-ink text-sm font-semibold leading-tight truncate">{scenarioLabel}</p>
+              <p className="text-clay text-[10px] leading-tight">{levelLabel}</p>
             </div>
           </div>
 
@@ -662,11 +662,11 @@ export function ConversationView() {
             <StateIndicator state={micState} interfaceLang={interfaceLanguage} />
             <button
               onClick={() => setShowVoicePanel(true)}
-              className="relative w-11 h-11 flex items-center justify-center rounded-full text-white/35 hover:text-white/70 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60"
+              className="relative w-11 h-11 flex items-center justify-center rounded-full text-clay hover:text-ink-soft hover:bg-line transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50"
               aria-label={t(interfaceLanguage, "settingsBtn")}
             >
               {voiceAvailable === "limited" && (
-                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-[#0a0e26]" aria-hidden="true" />
+                <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-amber-400 ring-2 ring-ivory" aria-hidden="true" />
               )}
               <svg width={14} height={14} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                 <circle cx="12" cy="12" r="3" />
@@ -677,10 +677,10 @@ export function ConversationView() {
         </div>
 
         <div className="mt-2.5 flex items-center gap-2">
-          <div className="flex-1 h-1 rounded-full bg-white/8 overflow-hidden">
-            <motion.div className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-violet-500" style={{ width: `${turnPct}%` }} transition={{ duration: 0.4 }} />
+          <div className="flex-1 h-1 rounded-full bg-sand overflow-hidden">
+            <motion.div className="h-full rounded-full bg-gradient-to-r from-coral to-coral-dark" style={{ width: `${turnPct}%` }} transition={{ duration: 0.4 }} />
           </div>
-          <span className="text-white/30 text-[10px] tabular-nums flex-shrink-0">{turnCount}/{MAX_TURNS}</span>
+          <span className="text-clay text-[10px] tabular-nums flex-shrink-0">{turnCount}/{MAX_TURNS}</span>
         </div>
       </header>
 
@@ -688,16 +688,16 @@ export function ConversationView() {
         {messages.length === 0 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="flex flex-col items-center justify-center h-full min-h-[240px] text-center px-6">
             <div className="text-5xl mb-4">{scenarioEmoji}</div>
-            <p className="text-white/80 text-base font-bold mb-1">{scenarioLabel}</p>
-            <p className="text-white/30 text-[10px] uppercase tracking-widest font-semibold mb-6">{levelLabel}</p>
+            <p className="text-ink text-base font-bold mb-1">{scenarioLabel}</p>
+            <p className="text-clay text-[10px] uppercase tracking-widest font-semibold mb-6">{levelLabel}</p>
             <div className="flex flex-col items-center gap-3">
               {isSupported ? (
-                <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-300/80 text-sm font-medium">
+                <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-forest-soft border border-forest/25 text-forest text-sm font-medium">
                   <svg width={15} height={15} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
                   {t(interfaceLanguage, "tapToSpeak")}
                 </div>
               ) : null}
-              <p className="text-white/20 text-xs">{isSupported ? t(interfaceLanguage, "typeMessage") : t(interfaceLanguage, "browserUnsupported")}</p>
+              <p className="text-clay text-xs">{isSupported ? t(interfaceLanguage, "typeMessage") : t(interfaceLanguage, "browserUnsupported")}</p>
             </div>
           </motion.div>
         )}
@@ -711,17 +711,17 @@ export function ConversationView() {
             return (
               <motion.div key={idx} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.25 }} className={`flex ${isUser ? "justify-end" : "justify-start"}`}>
                 <div className={`max-w-[82%] ${isUser ? "" : "flex flex-col gap-1"}`}>
-                  <p className={`text-[10px] font-medium mb-1 ${isUser ? "text-right text-indigo-300/60" : "text-left text-teal-300/60"}`}>
+                  <p className={`text-[10px] font-medium mb-1 ${isUser ? "text-right text-coral/70" : "text-left text-forest/70"}`}>
                     {isUser ? t(interfaceLanguage, "you") : t(interfaceLanguage, "ai")}
                   </p>
-                  <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${isUser ? "bg-indigo-500/25 border border-indigo-500/30 text-white rounded-br-md" : "bg-white/8 border border-white/10 text-white/90 rounded-bl-md"}`}>
+                  <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed ${isUser ? "bg-forest border border-forest text-cream rounded-br-md" : "bg-sand border border-line text-ink rounded-bl-md"}`}>
                     {msg.content}
                   </div>
                   {!isUser && (
                     <div className="flex items-center gap-1.5 mt-1 px-1">
                       <button
                         onClick={() => isSpeakingThis ? handleStopSpeech() : handleSpeakMsg(idx, msg.content)}
-                        className={`flex items-center gap-1 px-3 py-2.5 min-h-[44px] rounded-lg text-[11px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 ${isSpeakingThis ? "bg-teal-500/20 border border-teal-500/30 text-teal-300" : "bg-white/6 border border-white/10 text-white/40 hover:text-white/70 hover:bg-white/10"}`}
+                        className={`flex items-center gap-1 px-3 py-2.5 min-h-[44px] rounded-lg text-[11px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50 ${isSpeakingThis ? "bg-forest-soft border border-forest/30 text-forest" : "bg-sand border border-line text-clay hover:text-ink-soft hover:bg-line"}`}
                       >
                         {isSpeakingThis ? <><StopSmallIcon />{t(interfaceLanguage, "stopBtn")}</> : <><SpeakerSmallIcon />{t(interfaceLanguage, "replayButton")}</>}
                       </button>
@@ -730,7 +730,7 @@ export function ConversationView() {
                           onClick={() => handleSpeakMsg(idx, msg.content, 0.7)}
                           title={t(interfaceLanguage, "replaySlowly")}
                           aria-label={t(interfaceLanguage, "replaySlowly")}
-                          className="flex items-center justify-center w-10 min-h-[44px] rounded-lg text-base bg-white/6 border border-white/10 text-white/35 hover:text-white/65 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60"
+                          className="flex items-center justify-center w-10 min-h-[44px] rounded-lg text-base bg-sand border border-line text-clay hover:text-ink-soft hover:bg-line transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50"
                         >
                           🐢
                         </button>
@@ -738,7 +738,7 @@ export function ConversationView() {
                       {feedbackLanguage !== "English" && (
                         <button
                           onClick={() => handleTranslate(idx, msg.content)}
-                          className="flex items-center gap-1 px-3 py-2.5 min-h-[44px] rounded-lg text-[11px] font-medium bg-white/6 border border-white/10 text-white/40 hover:text-white/70 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60"
+                          className="flex items-center gap-1 px-3 py-2.5 min-h-[44px] rounded-lg text-[11px] font-medium bg-sand border border-line text-clay hover:text-ink-soft hover:bg-line transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50"
                         >
                           {translation?.loading ? t(interfaceLanguage, "translating") : translation?.visible ? t(interfaceLanguage, "hideTranslation") : t(interfaceLanguage, "translateButton")}
                         </button>
@@ -748,10 +748,10 @@ export function ConversationView() {
                   <AnimatePresence>
                     {translation?.visible && (
                       <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.2 }} className="overflow-hidden">
-                        <div className="mt-1.5 px-3 py-2 rounded-xl bg-violet-500/10 border border-violet-500/20">
-                          {translation.loading && <p className="text-violet-300/60 text-xs">{t(interfaceLanguage, "translating")}</p>}
-                          {translation.error && <p className="text-rose-300/70 text-xs">{t(interfaceLanguage, "translationError")}</p>}
-                          {translation.text && <p className="text-violet-200/80 text-xs leading-relaxed">{translation.text}</p>}
+                        <div className="mt-1.5 px-3 py-2 rounded-xl bg-coral-soft border border-coral/20">
+                          {translation.loading && <p className="text-coral/70 text-xs">{t(interfaceLanguage, "translating")}</p>}
+                          {translation.error && <p className="text-red-600 text-xs">{t(interfaceLanguage, "translationError")}</p>}
+                          {translation.text && <p className="text-coral-dark text-xs leading-relaxed">{translation.text}</p>}
                         </div>
                       </motion.div>
                     )}
@@ -764,10 +764,10 @@ export function ConversationView() {
 
         {micState === "processing" && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
-            <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-white/8 border border-white/10 flex items-center gap-2">
+            <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-sand border border-line flex items-center gap-2">
               <div className="flex gap-1">
                 {[0, 0.15, 0.3].map((d) => (
-                  <span key={d} className="w-1.5 h-1.5 rounded-full bg-white/40 animate-bounce" style={{ animationDelay: `${d}s` }} />
+                  <span key={d} className="w-1.5 h-1.5 rounded-full bg-clay animate-bounce" style={{ animationDelay: `${d}s` }} />
                 ))}
               </div>
             </div>
@@ -777,14 +777,14 @@ export function ConversationView() {
         {isListening && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-end">
             {/* Fixed min-height prevents layout shift when transcript text appears */}
-            <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-br-md bg-indigo-500/15 border border-indigo-500/20 border-dashed text-white/50 text-sm italic min-h-[48px] flex items-center">
+            <div className="max-w-[82%] px-4 py-3 rounded-2xl rounded-br-md bg-coral-soft border border-coral/25 border-dashed text-ink-soft text-sm italic min-h-[48px] flex items-center">
               {interimTranscript
                 ? `${interimTranscript}…`
                 : (
                   <span className="flex gap-1.5 items-center" aria-label="Listening">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white/30 animate-bounce" style={{ animationDelay: "0ms" }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-white/30 animate-bounce" style={{ animationDelay: "150ms" }} />
-                    <span className="w-1.5 h-1.5 rounded-full bg-white/30 animate-bounce" style={{ animationDelay: "300ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-clay animate-bounce" style={{ animationDelay: "0ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-clay animate-bounce" style={{ animationDelay: "150ms" }} />
+                    <span className="w-1.5 h-1.5 rounded-full bg-clay animate-bounce" style={{ animationDelay: "300ms" }} />
                   </span>
                 )}
             </div>
@@ -792,7 +792,7 @@ export function ConversationView() {
         )}
 
         {errorMsg && (
-          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-sm px-4 py-2.5 rounded-2xl bg-rose-500/15 border border-rose-500/25 text-rose-300 text-xs text-center">
+          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-sm px-4 py-2.5 rounded-2xl bg-red-50 border border-red-200 text-red-600 text-xs text-center">
             {errorMsg}
           </motion.div>
         )}
@@ -802,17 +802,17 @@ export function ConversationView() {
 
       <AnimatePresence>
         {hintOpen && (
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.2 }} className="flex-shrink-0 mx-4 mb-2 max-h-48 overflow-y-auto p-4 rounded-2xl bg-slate-900/95 border border-indigo-500/25 shadow-xl">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.2 }} className="flex-shrink-0 mx-4 mb-2 max-h-48 overflow-y-auto p-4 rounded-2xl bg-cream border border-coral/25 shadow-xl">
             {hintLoading ? (
-              <div className="flex items-center gap-2 text-white/40 text-sm">
-                <span className="w-3 h-3 border border-indigo-400 border-t-transparent rounded-full animate-spin flex-shrink-0" />
+              <div className="flex items-center gap-2 text-clay text-sm">
+                <span className="w-3 h-3 border border-coral border-t-transparent rounded-full animate-spin flex-shrink-0" />
                 {t(interfaceLanguage, "loading")}
               </div>
             ) : hintData ? (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-indigo-300 text-xs font-semibold uppercase tracking-widest">{t(interfaceLanguage, "helpMeAnswer")}</p>
-                  <button onClick={() => setHintOpen(false)} className="w-11 h-11 flex items-center justify-center rounded-full text-white/30 hover:text-white/60 hover:bg-white/10 transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60">✕</button>
+                  <p className="text-coral text-xs font-semibold uppercase tracking-widest">{t(interfaceLanguage, "helpMeAnswer")}</p>
+                  <button onClick={() => setHintOpen(false)} className="w-11 h-11 flex items-center justify-center rounded-full text-clay hover:text-ink-soft hover:bg-line transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50">✕</button>
                 </div>
                 {hintData.simpleReplies.map((r, i) => (
                   <button
@@ -822,7 +822,7 @@ export function ConversationView() {
                       setHintOpen(false);
                       inputRef.current?.focus();
                     }}
-                    className="w-full text-left px-3 py-3 min-h-[44px] rounded-xl bg-indigo-500/15 border border-indigo-500/25 text-white/80 text-sm hover:bg-indigo-500/25 transition-colors"
+                    className="w-full text-left px-3 py-3 min-h-[44px] rounded-xl bg-coral-soft border border-coral/25 text-ink text-sm hover:bg-coral/15 transition-colors"
                   >
                     {r}
                   </button>
@@ -834,14 +834,14 @@ export function ConversationView() {
                       setHintOpen(false);
                       inputRef.current?.focus();
                     }}
-                    className="w-full text-left px-3 py-3 min-h-[44px] rounded-xl bg-violet-500/15 border border-violet-500/25 text-white/80 text-sm hover:bg-violet-500/25 transition-colors"
+                    className="w-full text-left px-3 py-3 min-h-[44px] rounded-xl bg-coral-soft border border-coral/25 text-ink text-sm hover:bg-coral/15 transition-colors"
                   >
-                    <span className="text-violet-300 text-[10px] font-semibold block mb-0.5">{t(interfaceLanguage, "moreNatural")}</span>
+                    <span className="text-coral text-[10px] font-semibold block mb-0.5">{t(interfaceLanguage, "moreNatural")}</span>
                     {hintData.naturalReply}
                   </button>
                 )}
-                {hintData.explanation && <p className="text-white/35 text-xs leading-relaxed px-1">{hintData.explanation}</p>}
-                {hintData.vocabularyHelp && <p className="text-teal-300/60 text-xs leading-relaxed px-1">📖 {hintData.vocabularyHelp}</p>}
+                {hintData.explanation && <p className="text-clay text-xs leading-relaxed px-1">{hintData.explanation}</p>}
+                {hintData.vocabularyHelp && <p className="text-forest/70 text-xs leading-relaxed px-1">📖 {hintData.vocabularyHelp}</p>}
               </div>
             ) : null}
           </motion.div>
@@ -850,17 +850,17 @@ export function ConversationView() {
 
       <AnimatePresence>
         {improveOpen && (
-          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.2 }} className="flex-shrink-0 mx-4 mb-2 max-h-48 overflow-y-auto p-4 rounded-2xl bg-slate-900/95 border border-teal-500/25 shadow-xl">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: 10 }} transition={{ duration: 0.2 }} className="flex-shrink-0 mx-4 mb-2 max-h-48 overflow-y-auto p-4 rounded-2xl bg-cream border border-forest/25 shadow-xl">
             {improveLoading ? (
-              <div className="flex items-center gap-2 text-white/40 text-sm">
-                <span className="w-3 h-3 border border-teal-400 border-t-transparent rounded-full animate-spin flex-shrink-0" />
+              <div className="flex items-center gap-2 text-clay text-sm">
+                <span className="w-3 h-3 border border-forest border-t-transparent rounded-full animate-spin flex-shrink-0" />
                 {t(interfaceLanguage, "loading")}
               </div>
             ) : improveData ? (
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <p className="text-teal-300 text-xs font-semibold uppercase tracking-widest">{t(interfaceLanguage, "improveMyMessage")}</p>
-                  <button onClick={() => setImproveOpen(false)} className="w-11 h-11 flex items-center justify-center rounded-full text-white/30 hover:text-white/60 hover:bg-white/10 transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/60">✕</button>
+                  <p className="text-forest text-xs font-semibold uppercase tracking-widest">{t(interfaceLanguage, "improveMyMessage")}</p>
+                  <button onClick={() => setImproveOpen(false)} className="w-11 h-11 flex items-center justify-center rounded-full text-clay hover:text-ink-soft hover:bg-line transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest/50">✕</button>
                 </div>
                 {improveData.corrected && improveData.corrected !== textInput && (
                   <button
@@ -869,9 +869,9 @@ export function ConversationView() {
                       setImproveOpen(false);
                       inputRef.current?.focus();
                     }}
-                    className="w-full text-left px-3 py-3 min-h-[44px] rounded-xl bg-teal-500/15 border border-teal-500/25 text-white/80 text-sm hover:bg-teal-500/25 transition-colors"
+                    className="w-full text-left px-3 py-3 min-h-[44px] rounded-xl bg-forest-soft border border-forest/25 text-ink text-sm hover:bg-forest/10 transition-colors"
                   >
-                    <span className="text-teal-300 text-[10px] font-semibold block mb-0.5">{t(interfaceLanguage, "correctedLabel")}</span>
+                    <span className="text-forest text-[10px] font-semibold block mb-0.5">{t(interfaceLanguage, "correctedLabel")}</span>
                     {improveData.corrected}
                   </button>
                 )}
@@ -882,36 +882,36 @@ export function ConversationView() {
                       setImproveOpen(false);
                       inputRef.current?.focus();
                     }}
-                    className="w-full text-left px-3 py-3 min-h-[44px] rounded-xl bg-violet-500/15 border border-violet-500/25 text-white/80 text-sm hover:bg-violet-500/25 transition-colors"
+                    className="w-full text-left px-3 py-3 min-h-[44px] rounded-xl bg-coral-soft border border-coral/25 text-ink text-sm hover:bg-coral/15 transition-colors"
                   >
-                    <span className="text-violet-300 text-[10px] font-semibold block mb-0.5">{t(interfaceLanguage, "moreNatural")}</span>
+                    <span className="text-coral text-[10px] font-semibold block mb-0.5">{t(interfaceLanguage, "moreNatural")}</span>
                     {improveData.natural}
                   </button>
                 )}
-                {improveData.explanation && <p className="text-white/35 text-xs leading-relaxed px-1">{improveData.explanation}</p>}
+                {improveData.explanation && <p className="text-clay text-xs leading-relaxed px-1">{improveData.explanation}</p>}
               </div>
             ) : null}
           </motion.div>
         )}
       </AnimatePresence>
 
-      <div className="flex-shrink-0 px-4 pb-safe pb-4 pt-2 border-t border-white/8 space-y-2">
+      <div className="flex-shrink-0 px-4 pb-safe pb-4 pt-2 border-t border-line space-y-2">
         {micState === "speaking" && voiceSettings.autoSpeak && (
-          <p className="text-center text-teal-300/45 text-[11px]">{t(interfaceLanguage, "tapToInterrupt")}</p>
+          <p className="text-center text-forest/60 text-[11px]">{t(interfaceLanguage, "tapToInterrupt")}</p>
         )}
 
         {!voiceSettings.autoSpeak && messages.some((m) => m.role === "assistant") && (
-          <p className="text-center text-white/25 text-[10px]">{t(interfaceLanguage, "autoSpeakOffMsg")}</p>
+          <p className="text-center text-clay text-[10px]">{t(interfaceLanguage, "autoSpeakOffMsg")}</p>
         )}
 
         {voiceAvailable === "unavailable" && (
-          <p className="text-center text-amber-300/50 text-[10px]">
+          <p className="text-center text-amber-600 text-[10px]">
             {t(interfaceLanguage, "voiceUnavailableMsg")}
           </p>
         )}
 
         {!isSupported && (
-          <p className="text-center text-amber-300/50 text-[10px]">
+          <p className="text-center text-amber-600 text-[10px]">
             🎤 {t(interfaceLanguage, "browserUnsupported")}
           </p>
         )}
@@ -920,10 +920,10 @@ export function ConversationView() {
           <button
             onClick={handleHint}
             disabled={isBlocked}
-            className={`flex-1 py-3 min-h-[44px] rounded-xl text-xs font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60 ${
+            className={`flex-1 py-3 min-h-[44px] rounded-xl text-xs font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50 ${
               hintOpen
-                ? "bg-indigo-500/25 border-indigo-500/40 text-indigo-200"
-                : "bg-white/6 border-white/10 text-white/45 hover:bg-white/10 hover:text-white/70 disabled:opacity-40"
+                ? "bg-coral-soft border-coral/40 text-coral-dark"
+                : "bg-sand border-line text-ink-soft hover:bg-line hover:text-ink disabled:opacity-40"
             }`}
           >
             💡 {t(interfaceLanguage, "helpMeAnswer")}
@@ -931,10 +931,10 @@ export function ConversationView() {
           <button
             onClick={handleImprove}
             disabled={isBlocked || !textInput.trim()}
-            className={`flex-1 py-3 min-h-[44px] rounded-xl text-xs font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500/60 ${
+            className={`flex-1 py-3 min-h-[44px] rounded-xl text-xs font-medium border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest/50 ${
               improveOpen
-                ? "bg-teal-500/25 border-teal-500/40 text-teal-200"
-                : "bg-white/6 border-white/10 text-white/45 hover:bg-white/10 hover:text-white/70 disabled:opacity-40"
+                ? "bg-forest-soft border-forest/40 text-forest"
+                : "bg-sand border-line text-ink-soft hover:bg-line hover:text-ink disabled:opacity-40"
             }`}
           >
             ✏️ {t(interfaceLanguage, "improveMyMessage")}
@@ -956,14 +956,14 @@ export function ConversationView() {
               placeholder={t(interfaceLanguage, "typeMessage")}
               aria-label={t(interfaceLanguage, "typeMessage")}
               disabled={isBlocked}
-              className="w-full px-4 py-3 rounded-2xl bg-white/8 border border-white/12 text-white/90 placeholder-white/25 text-sm focus:outline-none focus:border-indigo-500/50 focus:bg-white/10 transition-all disabled:opacity-50"
+              className="w-full px-4 py-3 rounded-2xl bg-cream border border-line text-ink placeholder-clay text-sm focus:outline-none focus:border-coral/50 focus:bg-cream transition-all disabled:opacity-50"
             />
             {textInput.trim() && (
               <button
                 onClick={handleTextSend}
                 disabled={isBlocked}
                 aria-label="Send message"
-                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-xl bg-indigo-500/80 flex items-center justify-center text-white hover:bg-indigo-500 transition-colors disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400"
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-xl bg-coral flex items-center justify-center text-cream hover:bg-coral-dark transition-colors disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral"
               >
                 <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
@@ -979,19 +979,19 @@ export function ConversationView() {
               whileTap={{ scale: 0.92 }}
               className={`w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-2xl transition-all duration-200 disabled:opacity-40 ${
                 micState === "listening"
-                  ? "bg-emerald-500 shadow-lg shadow-emerald-500/30"
+                  ? "bg-forest text-cream shadow-lg shadow-forest/30"
                   : micState === "speaking"
-                  ? "bg-teal-500/30 border border-teal-500/50"
+                  ? "bg-forest-soft text-forest border border-forest/50"
                   : micState === "processing"
-                  ? "bg-indigo-500/25 border border-indigo-500/30"
-                  : "bg-white/10 border border-white/15 hover:bg-white/15"
+                  ? "bg-coral-soft text-coral border border-coral/30"
+                  : "bg-cream text-ink-soft border border-line hover:bg-sand"
               }`}
               aria-label={micState === "listening" ? t(interfaceLanguage, "stopBtn") : t(interfaceLanguage, "speakBtn")}
             >
               {micState === "listening" ? (
                 <div className="relative">
                   <MicIcon size={20} />
-                  <span className="absolute -inset-2 rounded-full border-2 border-emerald-400/40 animate-ping" />
+                  <span className="absolute -inset-2 rounded-full border-2 border-forest/40 animate-ping" />
                 </div>
               ) : micState === "speaking" ? (
                 <StopSmallIcon />
@@ -1004,27 +1004,27 @@ export function ConversationView() {
 
         <div className="flex items-center gap-2 pt-1">
           {feedbackFailed && (
-            <p className="text-rose-300/70 text-xs flex-1">{t(interfaceLanguage, "aiUnavailable")}</p>
+            <p className="text-red-600 text-xs flex-1">{t(interfaceLanguage, "aiUnavailable")}</p>
           )}
 
           {turnsLeft <= 3 && turnsLeft > 0 && (
-            <p className="text-amber-300/60 text-xs flex-1">{t(interfaceLanguage, "turnOf").replace("{current}", String(turnCount)).replace("{total}", String(MAX_TURNS))}</p>
+            <p className="text-amber-600 text-xs flex-1">{t(interfaceLanguage, "turnOf").replace("{current}", String(turnCount)).replace("{total}", String(MAX_TURNS))}</p>
           )}
 
           <button
             onClick={handleEndSession}
             disabled={feedbackLoading}
-            className={`ml-auto flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500/60 ${
+            className={`ml-auto flex items-center gap-1.5 px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400 ${
               endConfirm
-                ? "bg-rose-500/25 border border-rose-500/40 text-rose-200"
+                ? "bg-red-50 border border-red-300 text-red-600"
                 : feedbackLoading
-                ? "bg-white/6 border border-white/10 text-white/30"
-                : "bg-white/6 border border-white/10 text-white/45 hover:bg-white/12 hover:text-white/70"
+                ? "bg-sand border border-line text-clay"
+                : "bg-sand border border-line text-ink-soft hover:bg-line hover:text-ink"
             }`}
           >
             {feedbackLoading ? (
               <>
-                <span className="w-3 h-3 border border-white/30 border-t-white/70 rounded-full animate-spin" />
+                <span className="w-3 h-3 border border-clay border-t-ink rounded-full animate-spin" />
                 {t(interfaceLanguage, "loading")}
               </>
             ) : endConfirm ? (
@@ -1037,7 +1037,7 @@ export function ConversationView() {
           {endConfirm && (
             <button
               onClick={() => setEndConfirm(false)}
-              className="px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-medium text-white/35 hover:text-white/60 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
+              className="px-4 py-2.5 min-h-[44px] rounded-xl text-xs font-medium text-clay hover:text-ink-soft transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-line"
             >
               {t(interfaceLanguage, "back")}
             </button>
