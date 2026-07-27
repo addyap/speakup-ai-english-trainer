@@ -193,6 +193,15 @@ type TranslationKeys = {
   selectedLabel: string;
   startSpeaking: string;
   settingsNote: string;
+  // SessionSetupView — featured scenario descriptions
+  smallTalkDesc: string;
+  jobInterviewDesc: string;
+  travelDesc: string;
+  luxuryBoutiqueDesc: string;
+  journalistInterviewDesc: string;
+  networkingDesc: string;
+  executiveAssistantDesc: string;
+  medicalSecretaryDesc: string;
   // ConversationView
   speakBtn: string;
   replayBtn: string;
@@ -240,6 +249,14 @@ type TranslationKeys = {
 
 const translations: Record<Language, TranslationKeys> = {
   English: {
+    smallTalkDesc: "Casual conversations & daily life",
+    jobInterviewDesc: "Practice for your next interview",
+    travelDesc: "Airports, delays, navigation",
+    luxuryBoutiqueDesc: "High-end service & shopping",
+    journalistInterviewDesc: "Handle tough media questions",
+    networkingDesc: "Make connections at events",
+    executiveAssistantDesc: "Manage calls & schedules",
+    medicalSecretaryDesc: "Appointments & clinic admin",
     appTitle: "SpeakUp AI",
     appSubtitle: "Speak naturally. Think faster. Sound more confident.",
     appTagline: "Train your English with realistic AI conversations — designed for real life, business, interviews, travel, and exams.",
@@ -414,6 +431,14 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Level up with this next challenge",
   },
   French: {
+    smallTalkDesc: "Conversations informelles et vie quotidienne",
+    jobInterviewDesc: "Préparez votre prochain entretien",
+    travelDesc: "Aéroports, retards, orientation",
+    luxuryBoutiqueDesc: "Service haut de gamme et shopping",
+    journalistInterviewDesc: "Gérez des questions difficiles des médias",
+    networkingDesc: "Créez des contacts lors d'événements",
+    executiveAssistantDesc: "Gérez appels et agendas",
+    medicalSecretaryDesc: "Rendez-vous et gestion de clinique",
     appTitle: "SpeakUp AI",
     appSubtitle: "Parlez naturellement. Pensez plus vite. Soyez plus confiant.",
     appTagline: "Entraînez votre anglais avec des conversations IA réalistes — conçues pour la vie réelle, le business, les entretiens, les voyages et les examens.",
@@ -588,6 +613,14 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Relevez ce prochain défi pour progresser",
   },
   Spanish: {
+    smallTalkDesc: "Conversaciones informales y vida diaria",
+    jobInterviewDesc: "Practica para tu próxima entrevista",
+    travelDesc: "Aeropuertos, retrasos, orientación",
+    luxuryBoutiqueDesc: "Servicio exclusivo y compras",
+    journalistInterviewDesc: "Maneja preguntas difíciles de la prensa",
+    networkingDesc: "Haz contactos en eventos",
+    executiveAssistantDesc: "Gestiona llamadas y agendas",
+    medicalSecretaryDesc: "Citas y administración de clínica",
     appTitle: "SpeakUp AI",
     appSubtitle: "Habla con naturalidad. Piensa más rápido. Suena más seguro.",
     appTagline: "Entrena tu inglés con conversaciones de IA realistas — diseñadas para la vida real, negocios, entrevistas, viajes y exámenes.",
@@ -762,6 +795,14 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Supera este próximo desafío para mejorar",
   },
   German: {
+    smallTalkDesc: "Lockere Gespräche & Alltag",
+    jobInterviewDesc: "Übe für dein nächstes Vorstellungsgespräch",
+    travelDesc: "Flughäfen, Verspätungen, Orientierung",
+    luxuryBoutiqueDesc: "Gehobener Service & Shopping",
+    journalistInterviewDesc: "Meistere schwierige Medienfragen",
+    networkingDesc: "Knüpfe Kontakte bei Events",
+    executiveAssistantDesc: "Anrufe & Termine verwalten",
+    medicalSecretaryDesc: "Termine & Praxisverwaltung",
     appTitle: "SpeakUp AI",
     appSubtitle: "Sprich natürlich. Denk schneller. Klinge selbstbewusster.",
     appTagline: "Trainiere dein Englisch mit realistischen KI-Gesprächen — für Alltag, Business, Vorstellungsgespräche, Reisen und Prüfungen.",
@@ -936,6 +977,14 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Meistere diese nächste Herausforderung",
   },
   Italian: {
+    smallTalkDesc: "Conversazioni informali e vita quotidiana",
+    jobInterviewDesc: "Preparati per il tuo prossimo colloquio",
+    travelDesc: "Aeroporti, ritardi, orientamento",
+    luxuryBoutiqueDesc: "Servizio esclusivo e shopping",
+    journalistInterviewDesc: "Gestisci domande difficili dei media",
+    networkingDesc: "Crea contatti agli eventi",
+    executiveAssistantDesc: "Gestisci chiamate e agende",
+    medicalSecretaryDesc: "Appuntamenti e gestione della clinica",
     appTitle: "SpeakUp AI",
     appSubtitle: "Parla in modo naturale. Pensa più veloce. Sii più sicuro.",
     appTagline: "Allenati con conversazioni IA realistiche — progettate per la vita reale, il business, i colloqui, i viaggi e gli esami.",
@@ -1110,6 +1159,14 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Affronta questa sfida per migliorare",
   },
   Portuguese: {
+    smallTalkDesc: "Conversas informais e vida quotidiana",
+    jobInterviewDesc: "Prepare-se para a sua próxima entrevista",
+    travelDesc: "Aeroportos, atrasos, orientação",
+    luxuryBoutiqueDesc: "Serviço de luxo e compras",
+    journalistInterviewDesc: "Lide com perguntas difíceis da imprensa",
+    networkingDesc: "Faça contactos em eventos",
+    executiveAssistantDesc: "Faça a gestão de chamadas e agendas",
+    medicalSecretaryDesc: "Marcações e gestão de clínica",
     appTitle: "SpeakUp AI",
     appSubtitle: "Fale naturalmente. Pense mais rápido. Soe mais confiante.",
     appTagline: "Treine seu inglês com conversas de IA realistas — projetadas para a vida real, negócios, entrevistas, viagens e exames.",
@@ -1284,6 +1341,14 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Supere este próximo desafio para evoluir",
   },
   Russian: {
+    smallTalkDesc: "Непринуждённые беседы и повседневная жизнь",
+    jobInterviewDesc: "Подготовьтесь к следующему собеседованию",
+    travelDesc: "Аэропорты, задержки, навигация",
+    luxuryBoutiqueDesc: "Премиальный сервис и покупки",
+    journalistInterviewDesc: "Отвечайте на непростые вопросы прессы",
+    networkingDesc: "Заводите знакомства на мероприятиях",
+    executiveAssistantDesc: "Управляйте звонками и расписанием",
+    medicalSecretaryDesc: "Записи на приём и работа клиники",
     appTitle: "SpeakUp AI",
     appSubtitle: "Говорите естественно. Думайте быстрее. Звучите увереннее.",
     appTagline: "Тренируйте английский с реалистичными ИИ-разговорами — для жизни, бизнеса, собеседований, путешествий и экзаменов.",
@@ -1458,6 +1523,14 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Пройди это следующее испытание и расти",
   },
   Arabic: {
+    smallTalkDesc: "محادثات عفوية والحياة اليومية",
+    jobInterviewDesc: "تدرّب لمقابلتك القادمة",
+    travelDesc: "المطارات والتأخيرات والتنقل",
+    luxuryBoutiqueDesc: "خدمة راقية وتسوّق",
+    journalistInterviewDesc: "تعامل مع أسئلة إعلامية صعبة",
+    networkingDesc: "كوّن علاقات في الفعاليات",
+    executiveAssistantDesc: "أدر المكالمات والمواعيد",
+    medicalSecretaryDesc: "المواعيد وإدارة العيادة",
     appTitle: "SpeakUp AI",
     appSubtitle: "تحدث بشكل طبيعي. فكر أسرع. اسمع أكثر ثقة.",
     appTagline: "درّب إنجليزيتك مع محادثات ذكاء اصطناعي واقعية — مصممة للحياة اليومية والأعمال والمقابلات والسفر والامتحانات.",
@@ -1632,6 +1705,14 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "تقدّم مع هذا التحدي القادم",
   },
   Chinese: {
+    smallTalkDesc: "日常闲聊与生活对话",
+    jobInterviewDesc: "为下一次面试做练习",
+    travelDesc: "机场、延误、导航",
+    luxuryBoutiqueDesc: "高端服务与购物",
+    journalistInterviewDesc: "应对棘手的媒体提问",
+    networkingDesc: "在活动中拓展人脉",
+    executiveAssistantDesc: "管理电话与日程",
+    medicalSecretaryDesc: "预约与诊所事务",
     appTitle: "SpeakUp AI",
     appSubtitle: "自然表达。思维更快。更加自信。",
     appTagline: "通过真实的AI对话训练您的英语 — 专为日常生活、商务、面试、旅行和考试设计。",
@@ -1806,6 +1887,14 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "挑战下一个场景，提升你的水平",
   },
   Japanese: {
+    smallTalkDesc: "気軽な会話と日常生活",
+    jobInterviewDesc: "次の面接に向けて練習",
+    travelDesc: "空港・遅延・道案内",
+    luxuryBoutiqueDesc: "高級接客とショッピング",
+    journalistInterviewDesc: "厳しい取材質問に対応",
+    networkingDesc: "イベントで人脈を作る",
+    executiveAssistantDesc: "電話と予定を管理",
+    medicalSecretaryDesc: "予約とクリニック事務",
     appTitle: "SpeakUp AI",
     appSubtitle: "自然に話す。速く考える。自信を持って話せる。",
     appTagline: "リアルなAI会話で英語をトレーニング — 日常生活、ビジネス、面接、旅行、試験に対応。",
@@ -1980,6 +2069,14 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "次のチャレンジでレベルアップしよう",
   },
   Polish: {
+    smallTalkDesc: "Swobodne rozmowy i życie codzienne",
+    jobInterviewDesc: "Ćwicz przed kolejną rozmową kwalifikacyjną",
+    travelDesc: "Lotniska, opóźnienia, orientacja",
+    luxuryBoutiqueDesc: "Ekskluzywna obsługa i zakupy",
+    journalistInterviewDesc: "Radź sobie z trudnymi pytaniami mediów",
+    networkingDesc: "Nawiązuj kontakty na wydarzeniach",
+    executiveAssistantDesc: "Zarządzaj rozmowami i harmonogramem",
+    medicalSecretaryDesc: "Wizyty i administracja kliniki",
     appTitle: "SpeakUp AI",
     appSubtitle: "Mów naturalnie. Myśl szybciej. Brzm pewniej.",
     appTagline: "Trenuj angielski z realistycznymi rozmowami AI — zaprojektowanymi na codzienne życie, biznes, rozmowy kwalifikacyjne, podróże i egzaminy.",
@@ -2154,6 +2251,14 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Zmierz się z tym wyzwaniem i rozwijaj się",
   },
   Ukrainian: {
+    smallTalkDesc: "Невимушені розмови та повсякденне життя",
+    jobInterviewDesc: "Готуйтеся до наступної співбесіди",
+    travelDesc: "Аеропорти, затримки, орієнтування",
+    luxuryBoutiqueDesc: "Преміальний сервіс і шопінг",
+    journalistInterviewDesc: "Відповідайте на складні запитання преси",
+    networkingDesc: "Знайомтеся на заходах",
+    executiveAssistantDesc: "Керуйте дзвінками та розкладом",
+    medicalSecretaryDesc: "Записи та адміністрування клініки",
     appTitle: "SpeakUp AI",
     appSubtitle: "Говоріть природно. Думайте швидше. Звучіть впевненіше.",
     appTagline: "Тренуйте англійську з реалістичними розмовами ШІ — для повсякденного життя, бізнесу, співбесід, подорожей та іспитів.",

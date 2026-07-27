@@ -42,18 +42,6 @@ const MORE_SCENARIOS: { value: Scenario; emoji: string; labelKey: string }[] = [
   { value: "cooking",           emoji: "👨‍🍳", labelKey: "cooking" },
 ];
 
-// ─── Featured scenario static English fallbacks (for descs not in translation) ──
-const FEATURED_DESCS: Record<string, string> = {
-  smallTalkDesc:           "Casual conversations & daily life",
-  jobInterviewDesc:        "Practice for your next interview",
-  travelDesc:              "Airports, delays, navigation",
-  luxuryBoutiqueDesc:      "High-end service & shopping",
-  journalistInterviewDesc: "Handle tough media questions",
-  networkingDesc:          "Make connections at events",
-  executiveAssistantDesc:  "Manage calls & schedules",
-  medicalSecretaryDesc:    "Appointments & clinic admin",
-};
-
 // ─── Coaches ──────────────────────────────────────────────────────────────────
 const COACHES: { value: Mode; emoji: string; labelKey: string; descKey: string; activeClass: string }[] = [
   { value: "practice",  emoji: "🌱", labelKey: "friendlyLabel",  descKey: "practiceDesc",  activeClass: "bg-emerald-500/18 border-emerald-500/45 text-emerald-100" },
@@ -194,7 +182,7 @@ export function SessionSetupView() {
             {FEATURED.map(({ value, emoji, labelKey, descKey }) => {
               const isActive = scenario === value;
               const label = tr(labelKey);
-              const desc = FEATURED_DESCS[descKey] ?? "";
+              const desc = tr(descKey);
               return (
                 <motion.button
                   key={value}
