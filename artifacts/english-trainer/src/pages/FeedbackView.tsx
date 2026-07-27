@@ -31,37 +31,37 @@ const SCENARIO_EMOJIS: Record<Scenario, string> = {
   executive_assistant: "🗂️", medical_secretary: "🩺", journalist_interview: "🎙️",
 };
 
-const NEXT_CHALLENGE: Record<Scenario, { value: Scenario; desc: string }> = {
-  job_interview:        { value: "business_meeting",    desc: "Pitch your ideas and hold your own in a corporate discussion." },
-  small_talk:           { value: "networking",          desc: "Build professional connections at an industry event." },
-  business_meeting:     { value: "job_interview",       desc: "Put your skills on the line in a formal interview." },
-  travel:               { value: "airport",             desc: "Navigate delays, gate changes, and rebooking under pressure." },
-  daily_life:           { value: "restaurant",          desc: "Order confidently and handle dietary conversations in English." },
-  restaurant:           { value: "customer_service",    desc: "Handle a complaint and push for a resolution calmly." },
-  shopping:             { value: "luxury_boutique",     desc: "Engage at the highest level in a luxury retail environment." },
-  medical:              { value: "phone_call",          desc: "Book an appointment and communicate clearly on the phone." },
-  academic:             { value: "job_interview",       desc: "Transfer your academic confidence to a real job interview." },
-  phone_call:           { value: "customer_service",    desc: "Turn a difficult call into a successful resolution." },
-  airport:              { value: "hotel",               desc: "Check in, make requests, and handle hotel issues in English." },
-  hotel:                { value: "travel",              desc: "Handle delays, lost bags, and navigation challenges." },
-  banking:              { value: "real_estate",         desc: "Negotiate a property purchase — all in English." },
-  apartment:            { value: "banking",             desc: "Handle financial conversations with confidence." },
-  dating:               { value: "small_talk",          desc: "Keep any conversation flowing naturally with new people." },
-  sports:               { value: "daily_life",          desc: "Master the English of everyday situations and errands." },
-  news_debate:          { value: "journalist_interview", desc: "Face sharp questions from a press-room journalist." },
-  customer_service:     { value: "phone_call",          desc: "Handle professional calls clearly and efficiently." },
-  tech_support:         { value: "business_meeting",    desc: "Present a technical idea to a non-technical audience." },
-  real_estate:          { value: "legal",               desc: "Review contract terms with a lawyer in English." },
-  legal:                { value: "business_meeting",    desc: "Bring the precision of legal English into a boardroom." },
-  emergency:            { value: "phone_call",          desc: "Practice staying clear and calm on an urgent call." },
-  cooking:              { value: "restaurant",          desc: "Discuss menus, recommend dishes, and chat with staff." },
-  entertainment:        { value: "small_talk",          desc: "Turn any shared interest into a fluent conversation." },
-  networking:           { value: "business_meeting",    desc: "Take your professional English into a formal meeting." },
-  luxury_boutique:      { value: "networking",          desc: "Refine your professional English at an elite industry event." },
-  trade_fair:           { value: "business_meeting",    desc: "Follow up your trade fair conversations in a formal meeting." },
-  executive_assistant:  { value: "phone_call",          desc: "Handle professional calls with precision and poise." },
-  medical_secretary:    { value: "medical",             desc: "Practice patient communication from the other side." },
-  journalist_interview: { value: "news_debate",         desc: "Hold your own in a live debate on current events." },
+const NEXT_CHALLENGE: Record<Scenario, { value: Scenario; descKey: TranslationKey }> = {
+  job_interview:        { value: "business_meeting",     descKey: "ncJobInterview" },
+  small_talk:           { value: "networking",           descKey: "ncSmallTalk" },
+  business_meeting:     { value: "job_interview",        descKey: "ncBusinessMeeting" },
+  travel:               { value: "airport",              descKey: "ncTravel" },
+  daily_life:           { value: "restaurant",           descKey: "ncDailyLife" },
+  restaurant:           { value: "customer_service",     descKey: "ncRestaurant" },
+  shopping:             { value: "luxury_boutique",      descKey: "ncShopping" },
+  medical:              { value: "phone_call",           descKey: "ncMedical" },
+  academic:             { value: "job_interview",        descKey: "ncAcademic" },
+  phone_call:           { value: "customer_service",     descKey: "ncPhoneCall" },
+  airport:              { value: "hotel",                descKey: "ncAirport" },
+  hotel:                { value: "travel",               descKey: "ncHotel" },
+  banking:              { value: "real_estate",          descKey: "ncBanking" },
+  apartment:            { value: "banking",              descKey: "ncApartment" },
+  dating:               { value: "small_talk",           descKey: "ncDating" },
+  sports:               { value: "daily_life",           descKey: "ncSports" },
+  news_debate:          { value: "journalist_interview", descKey: "ncNewsDebate" },
+  customer_service:     { value: "phone_call",           descKey: "ncCustomerService" },
+  tech_support:         { value: "business_meeting",     descKey: "ncTechSupport" },
+  real_estate:          { value: "legal",                descKey: "ncRealEstate" },
+  legal:                { value: "business_meeting",     descKey: "ncLegal" },
+  emergency:            { value: "phone_call",           descKey: "ncEmergency" },
+  cooking:              { value: "restaurant",           descKey: "ncCooking" },
+  entertainment:        { value: "small_talk",           descKey: "ncEntertainment" },
+  networking:           { value: "business_meeting",     descKey: "ncNetworking" },
+  luxury_boutique:      { value: "networking",           descKey: "ncLuxuryBoutique" },
+  trade_fair:           { value: "business_meeting",     descKey: "ncTradeFair" },
+  executive_assistant:  { value: "phone_call",           descKey: "ncExecutiveAssistant" },
+  medical_secretary:    { value: "medical",              descKey: "ncMedicalSecretary" },
+  journalist_interview: { value: "news_debate",          descKey: "ncJournalistInterview" },
 };
 
 function Card({
@@ -89,20 +89,20 @@ function CardLabel({ color, children }: { color: string; children: React.ReactNo
   );
 }
 
-const CEFR_EXPLANATIONS: Record<string, string> = {
-  A1: "Basic greetings and simple phrases",
-  A2: "Familiar topics and simple exchanges",
-  B1: "Most everyday and travel situations",
-  B2: "Complex topics and fluent conversation",
-  C1: "Fluent, flexible, effective English",
-  C2: "Near-native mastery and precision",
+const CEFR_EXPLANATION_KEYS: Record<string, TranslationKey> = {
+  A1: "cefrA1",
+  A2: "cefrA2",
+  B1: "cefrB1",
+  B2: "cefrB2",
+  C1: "cefrC1",
+  C2: "cefrC2",
 };
 
-function getCefrExplanation(level: string): string {
-  for (const [key, val] of Object.entries(CEFR_EXPLANATIONS)) {
+function getCefrExplanationKey(level: string): TranslationKey {
+  for (const [key, val] of Object.entries(CEFR_EXPLANATION_KEYS)) {
     if (level.includes(key)) return val;
   }
-  return "Keep practising to improve your level";
+  return "cefrDefault";
 }
 
 export function FeedbackView() {
@@ -196,7 +196,7 @@ export function FeedbackView() {
             </span>
           </div>
           <p className="text-indigo-200/60 text-xs leading-relaxed">
-            {getCefrExplanation(feedback.estimatedLevel)}
+            {t(interfaceLanguage, getCefrExplanationKey(feedback.estimatedLevel))}
           </p>
         </Card>
         {isFallback && (
@@ -319,7 +319,7 @@ export function FeedbackView() {
                 <p className="text-white font-semibold text-sm leading-tight mb-1">
                   {t(interfaceLanguage, SCENARIO_LABEL_KEYS[nextChallenge.value])}
                 </p>
-                <p className="text-white/50 text-xs leading-relaxed">{nextChallenge.desc}</p>
+                <p className="text-white/50 text-xs leading-relaxed">{t(interfaceLanguage, nextChallenge.descKey)}</p>
               </div>
             </div>
             <button
