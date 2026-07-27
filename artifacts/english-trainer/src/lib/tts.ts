@@ -634,13 +634,3 @@ export function isSpeaking(): boolean {
   return window.speechSynthesis.speaking;
 }
 
-// ─── Premium provider hook (optional future extension) ────────────────────────
-export interface VoiceProvider {
-  name: string;
-  speak(text: string, options: SpeakOptions): Promise<void>;
-  isAvailable(): boolean;
-}
-
-let _premiumProvider: VoiceProvider | null = null;
-export function registerPremiumVoiceProvider(provider: VoiceProvider): void { _premiumProvider = provider; }
-export function getPremiumProvider(): VoiceProvider | null { return _premiumProvider; }
