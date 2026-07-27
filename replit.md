@@ -41,7 +41,7 @@ See the `pnpm-workspace` skill for workspace structure, TypeScript setup, and pa
   - Translate AI messages to native language
   - Session feedback with CEFR level estimate
   - Learner memory across sessions (localStorage, `src/lib/learnerMemory.ts`)
-  - 30 conversation scenarios, 3 coaching modes, 4 difficulty levels
+  - 38 conversation scenarios, 5 coaching modes, 4 difficulty levels
   - Session progress bar (15 turns max)
 
 ### API Server (`artifacts/api-server`)
