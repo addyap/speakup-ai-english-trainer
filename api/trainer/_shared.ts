@@ -1041,8 +1041,8 @@ RULES:
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-5.2",
-      temperature: 0.5,
+      model: "gpt-5-mini",
+      reasoning_effort: "minimal",
       max_completion_tokens: 500,
       response_format: { type: "json_object" },
       messages: [{ role: "system", content: systemPrompt }],
