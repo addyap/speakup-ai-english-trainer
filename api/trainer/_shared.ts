@@ -292,12 +292,12 @@ function buildFeedbackPrompt(feedbackLanguage: string, mode: string): string {
     challenge: "Be firm, direct, and high-standard. Push the learner to do better.",
     exam:      "Be neutral and objective. Examiner-style. No encouragement, just facts.",
   };
-  return `English coach. Analyze learner transcript. Language: ${feedbackLanguage} (except correctedExample=English). ${modeStyle[mode] ?? modeStyle.practice}
+  return `English SPEAKING coach. Analyze this transcript of what the learner SAID out loud. Language: ${feedbackLanguage} (except correctedExample=English). ${modeStyle[mode] ?? modeStyle.practice}
 
 Return ONLY this JSON (no markdown):
 {"estimatedLevel":"B1","strengths":["quote learner phrase + observation","quote learner phrase + observation"],"improvements":["Use 'X' instead of 'Y'. Short reason.","Use 'X' instead of 'Y'. Short reason."],"correctedExample":"A native speaker might say: '...'","fluencyComment":"1 sentence on pace/fillers/rhythm (not grammar).","nextStep":"1 concrete exercise. Max 20 words.","strongestPhrase":"verbatim learner quote","tip":""}
 
-Rules: estimatedLevel=CEFR only. strengths=2 in ${feedbackLanguage}. improvements=max 3. correctedExample=English. fluencyComment/nextStep in ${feedbackLanguage}. strongestPhrase=exact learner words.`;
+Rules: estimatedLevel=CEFR only. strengths=2 in ${feedbackLanguage}. improvements=max 3. correctedExample=English. fluencyComment/nextStep in ${feedbackLanguage}. strongestPhrase=exact learner words. This is SPOKEN practice: the transcript has no reliable punctuation or capitalization — NEVER flag punctuation, capitalization, or spelling. improvements must be about spoken grammar, word choice, and natural phrasing a listener would notice, nothing written.`;
 }
 
 async function logSession(
@@ -793,21 +793,22 @@ export async function improveHandler(req: AppReq, res: AppRes): Promise<void> {
   const safeText = text.trim().slice(0, 500);
   const scenarioLabel = SCENARIO_LABELS[scenario] ?? scenario;
 
-  const systemPrompt = `The learner is practising English in the context of: ${scenarioLabel}.
-They wrote: "${safeText}"
+  const systemPrompt = `The learner is practising SPOKEN English in the context of: ${scenarioLabel}.
+They said (transcribed): "${safeText}"
 
-Improve this message. Return ONLY valid JSON — no markdown, no code blocks:
+This is a speaking app. Treat the text as speech — a listener never hears punctuation, capitalization or spelling, so those are irrelevant. Improve only what matters when spoken aloud. Return ONLY valid JSON — no markdown, no code blocks:
 {
-  "corrected": "Grammatically correct version — fix errors only, keep meaning identical",
-  "natural": "More natural, fluent version a confident English speaker would say",
+  "corrected": "The same message with spoken-language errors fixed — verb tense, agreement, articles, prepositions, word choice, word order. Meaning unchanged.",
+  "natural": "A more natural, fluent version a confident speaker would actually say out loud",
   "explanation": "Brief explanation of changes in ${feedbackLanguage}"
 }
 
 RULES:
-- corrected: minimal changes — fix grammar, spelling, word order only; do NOT change meaning or vocabulary
-- natural: may restructure for fluency, idiom, and natural flow; should sound genuinely native
-- explanation: 1-3 sentences in ${feedbackLanguage} — explain what changed and why, keep it concise and practical
-- If the original is already correct and natural: set corrected = original, make natural only slightly more idiomatic, note in explanation that the original was already good
+- NEVER correct punctuation, capitalization, or spelling — this is oral practice, not writing.
+- corrected: minimal changes to grammar and word choice so it is correct spoken English; do NOT change meaning or vocabulary unnecessarily
+- natural: may restructure for fluency, idiom, and natural spoken flow; should sound genuinely native
+- explanation: 1-3 sentences in ${feedbackLanguage}, concise and practical; do not mention punctuation/capitalization/spelling
+- If the spoken grammar is already fine: set corrected = original, make natural only slightly more idiomatic, and note the original was already good
 - Return raw JSON only`;
 
   try {
