@@ -9,7 +9,9 @@ export type Scenario =
   | "airport" | "hotel" | "banking" | "apartment" | "dating"
   | "sports" | "news_debate" | "customer_service" | "tech_support" | "real_estate"
   | "legal" | "emergency" | "cooking" | "entertainment" | "networking"
-  | "luxury_boutique" | "trade_fair" | "executive_assistant" | "medical_secretary" | "journalist_interview";
+  | "luxury_boutique" | "trade_fair" | "executive_assistant" | "medical_secretary" | "journalist_interview"
+  | "salary_negotiation" | "performance_review" | "presentation" | "client_pitch" | "border_control"
+  | "pharmacy" | "admin_office" | "formal_complaint";
 export type Level = "auto" | "beginner" | "intermediate" | "advanced";
 export type MicState = "idle" | "listening" | "processing" | "speaking";
 export type View = "home" | "language" | "setup" | "conversation" | "feedback" | "privacy";

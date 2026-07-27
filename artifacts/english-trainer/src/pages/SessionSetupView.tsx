@@ -40,6 +40,14 @@ const MORE_SCENARIOS: { value: Scenario; emoji: string; labelKey: string }[] = [
   { value: "daily_life",        emoji: "🏙️", labelKey: "dailyLife" },
   { value: "emergency",         emoji: "🚨", labelKey: "emergency" },
   { value: "cooking",           emoji: "👨‍🍳", labelKey: "cooking" },
+  { value: "salary_negotiation", emoji: "💰", labelKey: "salaryNegotiation" },
+  { value: "performance_review", emoji: "📈", labelKey: "performanceReview" },
+  { value: "presentation",       emoji: "🎤", labelKey: "presentation" },
+  { value: "client_pitch",       emoji: "📣", labelKey: "clientPitch" },
+  { value: "border_control",     emoji: "🛂", labelKey: "borderControl" },
+  { value: "pharmacy",           emoji: "💊", labelKey: "pharmacy" },
+  { value: "admin_office",       emoji: "📋", labelKey: "adminOffice" },
+  { value: "formal_complaint",   emoji: "🗣️", labelKey: "formalComplaint" },
 ];
 
 // ─── Coaches ──────────────────────────────────────────────────────────────────
