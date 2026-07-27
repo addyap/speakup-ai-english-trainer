@@ -90,6 +90,12 @@ export const ImproveMessageBody = z.object({
   feedbackLanguage: z.string().optional().default("English"),
 });
 
+export const GetScenarioPhrasesBody = z.object({
+  scenario: z.string(),
+  level: z.string(),
+  feedbackLanguage: z.string().optional().default("English"),
+});
+
 // ─── OpenAI error classifier ──────────────────────────────────────────────────
 function openAIStatus(err: unknown): number | undefined {
   if (err !== null && typeof err === "object" && "status" in err) {
@@ -281,6 +287,8 @@ const MODE_INSTRUCTIONS: Record<string, string> = {
   practice:  "Be warm and encouraging. Build the learner's confidence. Acknowledge good moments naturally — not effusively. Maintain a comfortable, supportive pace.",
   challenge: "Be demanding and precise. Push for more accurate vocabulary, richer expression, and sharper responses. Ask harder follow-ups. Apply real but respectful pressure.",
   exam:      "Be neutral and evaluative. No praise, no warmth. Ask exact, formal questions. Do not fill silences. Maintain a professionally detached, examiner manner throughout.",
+  debate:    "Take the opposite side of whatever the learner argues and defend it with genuine conviction. Challenge their reasoning, offer counter-arguments, and concede only when a point is truly strong. Stay respectful but relentless — your job is to make them defend and sharpen their position, never simply to agree.",
+  storytelling: "Draw the learner into telling a story or describing something at length. Ask one open, narrative question that invites an extended answer — what happened next, how it felt, what it looked like — then hand the floor straight back. Keep your own turn short and warm. Never fire rapid factual questions; prompt, react, and let their narration breathe.",
 };
 
 // ─── CEFR-specific level instructions ────────────────────────────────────────
@@ -989,6 +997,77 @@ RULES:
     if (status === 529) { res.status(503).json({ error: "The AI service is overloaded. Please try again in a few seconds." }); return; }
     logger.error({ err }, "OpenAI improve error");
     res.status(500).json({ error: "Improvement failed. Please try again." });
+  }
+}
+
+// ─── /phrases ─────────────────────────────────────────────────────────────────
+const PHRASE_LEVEL_HINT: Record<string, string> = {
+  beginner: "CEFR A1–A2: short, simple, high-frequency phrases only.",
+  intermediate: "CEFR B1–B2: natural everyday phrasing, some common idioms.",
+  advanced: "CEFR C1–C2: richer, more idiomatic and nuanced expressions.",
+  auto: "around CEFR B1 intermediate, a useful everyday spread.",
+};
+
+export async function phrasesHandler(req: AppReq, res: AppRes): Promise<void> {
+  if (!applyRateLimit(req, res)) return;
+
+  const parseResult = GetScenarioPhrasesBody.safeParse(req.body);
+  if (!parseResult.success) {
+    res.status(400).json({ error: "Invalid request body", details: parseResult.error.message });
+    return;
+  }
+
+  const { scenario, level, feedbackLanguage } = parseResult.data;
+  const logger = log(req);
+  const scenarioLabel = SCENARIO_LABELS[scenario] ?? scenario;
+  const levelNote = PHRASE_LEVEL_HINT[level] ?? PHRASE_LEVEL_HINT.auto;
+  const glossNote = feedbackLanguage && feedbackLanguage !== "English"
+    ? `For each phrase, add a short ${feedbackLanguage} translation as "gloss".`
+    : `For each phrase, add a short note on when to use it as "gloss".`;
+
+  const systemPrompt = `Give 7 genuinely useful English phrases a learner could say out loud in this SPOKEN scenario: ${scenarioLabel}.
+Target level: ${levelNote}
+These are model expressions to STUDY before practising — natural, high-frequency, and directly usable in the scene. Spread them across the arc of the conversation (opening, asking, responding, handling difficulty, closing). ${glossNote}
+
+Return ONLY valid JSON — no markdown, no code blocks:
+{ "phrases": [ { "en": "the English phrase", "gloss": "..." } ] }
+
+RULES:
+- Exactly 7 phrases, each something a real person would actually say aloud in this scene.
+- Match the target level: simpler at beginner, richer and more idiomatic at advanced.
+- Each phrase is a natural spoken sentence or set phrase — no numbering, no surrounding quotes.
+- Keep glosses to a few words.
+- Return raw JSON only.`;
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-5.2",
+      temperature: 0.5,
+      max_completion_tokens: 500,
+      response_format: { type: "json_object" },
+      messages: [{ role: "system", content: systemPrompt }],
+    });
+
+    const raw = response.choices[0]?.message?.content ?? "";
+    if (!raw.trim()) {
+      res.status(500).json({ error: "Empty response from AI. Please try again." });
+      return;
+    }
+    const parsed = JSON.parse(raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim());
+    const phrases = Array.isArray(parsed.phrases)
+      ? parsed.phrases
+          .filter((p: unknown): p is { en: string; gloss?: unknown } =>
+            p !== null && typeof p === "object" && typeof (p as { en?: unknown }).en === "string")
+          .slice(0, 8)
+          .map((p) => ({ en: p.en.trim(), gloss: typeof p.gloss === "string" ? p.gloss.trim() : "" }))
+      : [];
+    res.json({ phrases });
+  } catch (err) {
+    const status = openAIStatus(err);
+    if (status === 429) { res.status(429).json({ error: "Rate limit reached. Please wait a moment and try again." }); return; }
+    if (status === 529) { res.status(503).json({ error: "The AI service is overloaded. Please try again in a few seconds." }); return; }
+    logger.error({ err }, "OpenAI phrases error");
+    res.status(500).json({ error: "Could not load phrases. Please try again." });
   }
 }
 

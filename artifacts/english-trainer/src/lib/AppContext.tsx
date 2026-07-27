@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useCallback, useEffect, type React
 import type { Language } from "@/i18n/translations";
 import { getLearnerProfile, updateLearnerLanguages } from "@/lib/learnerMemory";
 
-export type Mode = "practice" | "challenge" | "exam";
+export type Mode = "practice" | "challenge" | "exam" | "debate" | "storytelling";
 export type Scenario =
   | "job_interview" | "small_talk" | "business_meeting" | "travel" | "daily_life"
   | "restaurant" | "shopping" | "medical" | "academic" | "phone_call"

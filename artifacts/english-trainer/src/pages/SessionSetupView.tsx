@@ -1,8 +1,23 @@
-import { useState, type ReactNode } from "react";
+import { useState, useEffect, type ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp, type Mode, type Scenario, type Level } from "@/lib/AppContext";
 import { LANGUAGES, LANGUAGE_NATIVE_NAMES, type Language, t } from "@/i18n/translations";
 import { getLearnerProfile } from "@/lib/learnerMemory";
+
+// ─── Useful-phrases study panel (dynamic, cached per scenario+level+language) ──
+type Phrase = { en: string; gloss: string };
+const phraseCache = new Map<string, Phrase[]>();
+
+async function fetchPhrases(scenario: string, level: string, feedbackLanguage: string): Promise<Phrase[]> {
+  const res = await fetch("/api/trainer/phrases", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ scenario, level, feedbackLanguage }),
+  });
+  if (!res.ok) throw new Error(`Phrases HTTP ${res.status}`);
+  const data = (await res.json()) as { phrases?: Phrase[] };
+  return Array.isArray(data.phrases) ? data.phrases : [];
+}
 
 // ─── Featured 8 scenarios ─────────────────────────────────────────────────────
 const FEATURED: { value: Scenario; emoji: string; labelKey: string; descKey: string }[] = [
@@ -55,6 +70,8 @@ const COACHES: { value: Mode; emoji: string; labelKey: string; descKey: string; 
   { value: "practice",  emoji: "🌱", labelKey: "friendlyLabel",  descKey: "practiceDesc",  activeClass: "border-forest/45 bg-forest-soft text-forest" },
   { value: "challenge", emoji: "🔥", labelKey: "demandingLabel", descKey: "challengeDesc", activeClass: "border-coral/45 bg-coral-soft text-coral-dark" },
   { value: "exam",      emoji: "🎓", labelKey: "examinerLabel",  descKey: "examDesc",      activeClass: "border-[#b98a2e]/45 bg-[#f6edda] text-[#8a6416]" },
+  { value: "debate",    emoji: "🥊", labelKey: "debateLabel",    descKey: "debateDesc",    activeClass: "border-[#9a3b4d]/45 bg-[#f6e5e8] text-[#8a3346]" },
+  { value: "storytelling", emoji: "📖", labelKey: "storyLabel",  descKey: "storyDesc",     activeClass: "border-[#5b5aa6]/45 bg-[#eae9f4] text-[#4a4a86]" },
 ];
 
 // ─── Levels ───────────────────────────────────────────────────────────────────
@@ -79,6 +96,32 @@ export function SessionSetupView() {
 
   const [moreOpen, setMoreOpen] = useState(false);
   const isFeatured = FEATURED.some((s) => s.value === scenario);
+
+  // Useful-phrases study panel
+  const [phrasesOpen, setPhrasesOpen] = useState(false);
+  const [phrases, setPhrases] = useState<Phrase[]>([]);
+  const [phrasesLoading, setPhrasesLoading] = useState(false);
+  const [phrasesError, setPhrasesError] = useState(false);
+
+  useEffect(() => {
+    if (!phrasesOpen) return;
+    const key = `${scenario}|${level}|${feedbackLanguage}`;
+    const cached = phraseCache.get(key);
+    if (cached) {
+      setPhrases(cached);
+      setPhrasesError(false);
+      setPhrasesLoading(false);
+      return;
+    }
+    let cancelled = false;
+    setPhrasesLoading(true);
+    setPhrasesError(false);
+    fetchPhrases(scenario, level, feedbackLanguage)
+      .then((p) => { if (cancelled) return; phraseCache.set(key, p); setPhrases(p); })
+      .catch(() => { if (!cancelled) setPhrasesError(true); })
+      .finally(() => { if (!cancelled) setPhrasesLoading(false); });
+    return () => { cancelled = true; };
+  }, [phrasesOpen, scenario, level, feedbackLanguage]);
 
   const handleBegin = () => {
     if (messages.length > 0) resetSession();
@@ -148,7 +191,7 @@ export function SessionSetupView() {
         {/* Coach */}
         <section className="mb-8">
           <SectionLabel>{tr("coachPersona")}</SectionLabel>
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-3 gap-2.5 sm:grid-cols-5">
             {COACHES.map(({ value, emoji, labelKey, descKey, activeClass }) => {
               const isActive = mode === value;
               return (
@@ -269,6 +312,56 @@ export function SessionSetupView() {
               );
             })}
           </div>
+        </section>
+
+        {/* Useful phrases (study before you start) */}
+        <section className="mb-4">
+          <button
+            onClick={() => setPhrasesOpen((v) => !v)}
+            className="flex w-full items-center justify-between rounded-2xl border border-line bg-cream px-4 py-3.5 text-left transition-colors hover:border-line-strong"
+            aria-expanded={phrasesOpen}
+          >
+            <span className="flex items-center gap-2.5">
+              <span className="text-lg leading-none">💬</span>
+              <span className="text-[13px] font-semibold text-ink">{tr("usefulPhrasesTitle")}</span>
+            </span>
+            <svg className={`h-4 w-4 flex-shrink-0 text-clay transition-transform ${phrasesOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+
+          <AnimatePresence>
+            {phrasesOpen && (
+              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
+                <div className="pt-2">
+                  {phrasesLoading && (
+                    <div className="flex items-center gap-2 px-1 py-3 text-[12px] text-clay">
+                      <span className="h-3.5 w-3.5 animate-spin rounded-full border-2 border-line-strong border-t-coral" />
+                      {tr("phrasesLoading")}
+                    </div>
+                  )}
+                  {phrasesError && !phrasesLoading && (
+                    <button onClick={() => { setPhrasesOpen(false); setTimeout(() => setPhrasesOpen(true), 0); }} className="px-1 py-3 text-left text-[12px] text-coral underline decoration-line underline-offset-2">
+                      {tr("phrasesError")}
+                    </button>
+                  )}
+                  {!phrasesLoading && !phrasesError && (
+                    <ul className="flex flex-col gap-1.5">
+                      {phrases.map((p, i) => (
+                        <li key={i} className="rounded-xl border border-line bg-cream px-3.5 py-2.5">
+                          <p className="text-[13px] font-medium leading-snug text-ink">{p.en}</p>
+                          {p.gloss && <p className="mt-0.5 text-[11px] leading-snug text-clay">{p.gloss}</p>}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {!phrasesLoading && !phrasesError && phrases.length > 0 && (
+                    <p className="mt-2 px-1 text-[11px] leading-relaxed text-clay">{tr("phrasesHint")}</p>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </section>
       </div>
 
