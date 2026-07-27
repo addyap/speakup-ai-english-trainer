@@ -648,7 +648,7 @@ export function ConversationView() {
   return (
     <div className="min-h-[100dvh] flex flex-col bg-ivory overflow-hidden">
 
-      <header className="relative z-10 flex-shrink-0 px-4 pt-safe pt-3 pb-2 border-b border-line">
+      <header className="relative z-10 mx-auto w-full max-w-3xl flex-shrink-0 px-4 pt-safe pt-3 pb-2 border-b border-line">
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2 min-w-0">
             <span className="text-lg flex-shrink-0">{scenarioEmoji}</span>
@@ -684,7 +684,7 @@ export function ConversationView() {
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3" role="log" aria-live="polite" aria-label="Conversation">
+      <div className="mx-auto w-full max-w-3xl flex-1 overflow-y-auto px-4 py-3 space-y-3" role="log" aria-live="polite" aria-label="Conversation">
         {messages.length === 0 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="flex flex-col items-center justify-center h-full min-h-[240px] text-center px-6">
             <div className="text-5xl mb-4">{scenarioEmoji}</div>
@@ -895,7 +895,7 @@ export function ConversationView() {
         )}
       </AnimatePresence>
 
-      <div className="flex-shrink-0 px-4 pb-safe pb-4 pt-2 border-t border-line space-y-2">
+      <div className="mx-auto w-full max-w-3xl flex-shrink-0 px-4 pb-safe pb-4 pt-2 border-t border-line space-y-2">
         {micState === "speaking" && voiceSettings.autoSpeak && (
           <p className="text-center text-forest/60 text-[11px]">{t(interfaceLanguage, "tapToInterrupt")}</p>
         )}
