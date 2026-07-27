@@ -66,6 +66,7 @@ export const SendConversationMessageBody = z.object({
   interfaceLanguage: z.string(),
   feedbackLanguage: z.string().optional().default("English"),
   learnerContext: z.string().optional(),
+  stream: z.boolean().optional(),
 });
 
 export const GenerateFeedbackBody = z.object({
@@ -335,7 +336,7 @@ export async function conversationHandler(req: AppReq, res: AppRes): Promise<voi
     return;
   }
 
-  const { messages, mode, scenario, level, interfaceLanguage, feedbackLanguage, learnerContext } = parseResult.data;
+  const { messages, mode, scenario, level, interfaceLanguage, feedbackLanguage, learnerContext, stream: wantStream } = parseResult.data;
   const logger = log(req);
 
   type MsgInput = { role: "user" | "assistant" | "system"; content: string };
@@ -438,6 +439,47 @@ OPENER ROTATION — never begin 3 consecutive replies with "You" or "Your". Use 
 • IMPLICIT CORRECTION — weave the correct form into your own sentence. Never announce it. Never echo the error.
 • NO BRIDGE SENTENCES — never begin a sentence with the banned patterns above.`;
 
+  const openaiMessages = [
+    { role: "system" as const, content: systemPrompt },
+    ...safeHistory,
+  ];
+
+  // ── Streaming branch: emit tokens as SSE so the reply appears immediately ──
+  if (wantStream) {
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("X-Accel-Buffering", "no");
+    res.flushHeaders();
+    try {
+      const stream = await openai.chat.completions.create({
+        model: "gpt-5.2",
+        temperature: 0.85,
+        max_completion_tokens: 220,
+        frequency_penalty: 0.8,
+        presence_penalty: 0.6,
+        messages: openaiMessages,
+        stream: true,
+      });
+      let raw = "";
+      for await (const chunk of stream) {
+        const token = chunk.choices[0]?.delta?.content ?? "";
+        if (token) { raw += token; res.write(`data: ${JSON.stringify({ t: token })}\n\n`); }
+      }
+      const finalMsg = stripBridgeSentence(raw) || raw;
+      res.write(`data: ${JSON.stringify({ done: true, message: finalMsg })}\n\n`);
+      res.end();
+    } catch (err) {
+      const status = openAIStatus(err);
+      const msg = status === 429 ? "Rate limit reached. Please wait a moment and try again."
+        : status === 529 ? "The AI service is overloaded. Please try again in a few seconds."
+        : "The AI is temporarily unavailable. Please try again.";
+      logger.error({ err }, "OpenAI conversation-stream error");
+      res.write(`data: ${JSON.stringify({ error: msg })}\n\n`);
+      res.end();
+    }
+    return;
+  }
+
   try {
     const response = await openai.chat.completions.create({
       model: "gpt-5.2",
@@ -445,10 +487,7 @@ OPENER ROTATION — never begin 3 consecutive replies with "You" or "Your". Use 
       max_completion_tokens: 220,
       frequency_penalty: 0.8,
       presence_penalty: 0.6,
-      messages: [
-        { role: "system", content: systemPrompt },
-        ...safeHistory,
-      ],
+      messages: openaiMessages,
     });
 
     const rawMessage = response.choices[0]?.message?.content ?? "";

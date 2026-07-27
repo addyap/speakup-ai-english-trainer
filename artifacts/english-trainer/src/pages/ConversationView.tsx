@@ -131,6 +131,49 @@ async function fetchHintStream(payload: HintStreamPayload): Promise<HintResponse
   }
 }
 
+// ─── Streaming conversation fetch ─────────────────────────────────────────────
+type ConversationStreamPayload = {
+  messages: Message[];
+  mode: string;
+  scenario: string;
+  level: string;
+  interfaceLanguage: string;
+  feedbackLanguage: string;
+  learnerContext?: string;
+};
+
+// Streams the AI reply token-by-token via SSE. Calls onToken with the growing
+// text so it appears immediately; resolves with the final (bridge-stripped) reply.
+async function fetchConversationStream(
+  payload: ConversationStreamPayload,
+  onToken: (partial: string) => void,
+): Promise<string> {
+  const res = await fetch("/api/trainer/conversation", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ ...payload, stream: true }),
+  });
+  if (!res.ok || !res.body) throw new Error(`Conversation stream HTTP ${res.status}`);
+  const reader = res.body.getReader();
+  const decoder = new TextDecoder();
+  let buf = "";
+  let acc = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) return acc;
+    buf += decoder.decode(value, { stream: true });
+    const lines = buf.split("\n");
+    buf = lines.pop() ?? "";
+    for (const line of lines) {
+      if (!line.startsWith("data: ")) continue;
+      const evt = JSON.parse(line.slice(6)) as { t?: string; done?: boolean; message?: string; error?: string };
+      if (evt.error) throw new Error(evt.error);
+      if (evt.t) { acc += evt.t; onToken(acc); }
+      if (evt.done) return evt.message ?? acc;
+    }
+  }
+}
+
 function MicIcon({ size = 24 }: { size?: number }) {
   return (
     <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round">
@@ -194,6 +237,7 @@ export function ConversationView() {
   const { settings: voiceSettings, updateSettings: updateVoiceSettings } = useVoiceSettings();
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [streamingText, setStreamingText] = useState<string | null>(null);
   const [textInput, setTextInput] = useState("");
   const [feedbackLoading, setFeedbackLoading] = useState(false);
   const [feedbackFailed, setFeedbackFailed] = useState(false);
@@ -401,8 +445,9 @@ export function ConversationView() {
 
     try {
       const allMessages: Message[] = [...messages, { role: "user", content: userText.trim() }];
-      const result = await conversationMutation.mutateAsync({
-        data: {
+      setStreamingText("");
+      const finalText = await fetchConversationStream(
+        {
           messages: allMessages,
           mode,
           scenario,
@@ -411,16 +456,19 @@ export function ConversationView() {
           feedbackLanguage: feedbackLanguage || interfaceLanguage,
           learnerContext: learnerContextRef.current || undefined,
         },
-      });
+        (partial) => { if (isMountedRef.current) setStreamingText(partial); },
+      );
       if (!isMountedRef.current) return;
-      handleAiResponse(result.message);
+      setStreamingText(null);
+      handleAiResponse(finalText);
     } catch {
       if (!isMountedRef.current) return;
+      setStreamingText(null);
       setMicState("idle");
       isProcessingRef.current = false;
       setErrorMsg(t(interfaceLanguage, "aiUnavailable"));
     }
-  }, [messages, mode, scenario, level, interfaceLanguage, feedbackLanguage, addMessage, incrementTurn, setMicState, conversationMutation, handleAiResponse]);
+  }, [messages, mode, scenario, level, interfaceLanguage, feedbackLanguage, addMessage, incrementTurn, setMicState, handleAiResponse]);
 
   const handleSpeechResult = useCallback((transcript: string) => {
     if (!transcript.trim()) return;
@@ -765,7 +813,18 @@ export function ConversationView() {
           })}
         </AnimatePresence>
 
-        {micState === "processing" && (
+        {streamingText !== null && (
+          <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="flex justify-start">
+            <div className="max-w-[82%] flex flex-col gap-1">
+              <p className="mb-1 text-left text-[10px] font-medium text-forest/70">{t(interfaceLanguage, "ai")}</p>
+              <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-sand border border-line text-ink text-sm leading-relaxed">
+                {streamingText || <span className="opacity-40">…</span>}
+              </div>
+            </div>
+          </motion.div>
+        )}
+
+        {micState === "processing" && streamingText === null && (
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex justify-start">
             <div className="px-4 py-3 rounded-2xl rounded-bl-md bg-sand border border-line flex items-center gap-2">
               <div className="flex gap-1">
