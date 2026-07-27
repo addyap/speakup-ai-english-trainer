@@ -399,6 +399,7 @@ export function warmUpTts(): void {
 
 // ─── Availability & auto-selection ───────────────────────────────────────────
 export function getVoiceAvailability(accent: AccentPref = "auto"): VoiceAvailability {
+  if (isPremiumVoiceActive()) return "available";
   if (!("speechSynthesis" in window)) return "unavailable";
   const voices = window.speechSynthesis.getVoices();
   if (!voices.length) return "available"; // voices not yet loaded — optimistic
@@ -433,8 +434,8 @@ export function autoSelectVoiceURI(accent: AccentPref = "auto"): string {
   return best.voiceURI;
 }
 
-// ─── Main speak() ─────────────────────────────────────────────────────────────
-export function speak(text: string, options: SpeakOptions = {}): void {
+// ─── Web Speech synthesis (fallback path) ────────────────────────────────────
+function speakWeb(text: string, options: SpeakOptions = {}): void {
   if (!("speechSynthesis" in window)) {
     options.onEnd?.();
     return;
@@ -515,7 +516,103 @@ export function speak(text: string, options: SpeakOptions = {}): void {
   }, 50);
 }
 
+// ─── Premium (OpenAI) voice ───────────────────────────────────────────────────
+// Natural server-side TTS via /api/tts. speak() prefers this and falls back to
+// Web Speech automatically if the route is unavailable in this session.
+let _premiumEnabled = true;
+let _premiumState: "unknown" | "ok" | "unavailable" = "unknown";
+let _premiumAudio: HTMLAudioElement | null = null;
+const _premiumCache = new Map<string, string>(); // key -> object URL
+
+export function setPremiumVoiceEnabled(on: boolean): void {
+  _premiumEnabled = on;
+  if (!on) stopPremiumAudio();
+}
+export function isPremiumVoiceEnabled(): boolean { return _premiumEnabled; }
+export function isPremiumVoiceActive(): boolean {
+  return _premiumEnabled && _premiumState !== "unavailable";
+}
+
+function stopPremiumAudio(): void {
+  if (_premiumAudio) {
+    _premiumAudio.onended = null;
+    _premiumAudio.onerror = null;
+    _premiumAudio.onplaying = null;
+    try { _premiumAudio.pause(); } catch { /* ignore */ }
+    _premiumAudio = null;
+  }
+}
+
+async function fetchPremiumAudio(text: string, accent: AccentPref, slow: boolean): Promise<string> {
+  const key = `${accent}|${slow ? "s" : "n"}|${text}`;
+  const cached = _premiumCache.get(key);
+  if (cached) return cached;
+  const res = await fetch("/api/tts", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, accent, slow }),
+  });
+  if (!res.ok) throw new Error(`tts ${res.status}`);
+  const url = URL.createObjectURL(await res.blob());
+  if (_premiumCache.size >= 40) {
+    const first = _premiumCache.keys().next().value;
+    if (first) { URL.revokeObjectURL(_premiumCache.get(first)!); _premiumCache.delete(first); }
+  }
+  _premiumCache.set(key, url);
+  return url;
+}
+
+// Resolves on natural end (or a mid-playback error, treated as "done").
+// Rejects only when playback never started, so the caller can fall back.
+async function speakPremium(text: string, options: SpeakOptions): Promise<void> {
+  const cleaned = cleanText(text);
+  if (!cleaned) { options.onEnd?.(); return; }
+  const accent = options.accent ?? "auto";
+  const slow = (options.rate ?? 0.95) <= 0.8;
+  const url = await fetchPremiumAudio(cleaned, accent, slow); // pre-playback throw → fallback
+
+  if ("speechSynthesis" in window) window.speechSynthesis.cancel();
+  stopPremiumAudio();
+
+  _lastText = cleaned;
+  _lastOptions = options;
+
+  const audio = new Audio(url);
+  _premiumAudio = audio;
+  let started = false;
+  const clear = () => { if (_premiumAudio === audio) _premiumAudio = null; };
+
+  await new Promise<void>((resolve, reject) => {
+    audio.onplaying = () => { started = true; };
+    audio.onended = () => { clear(); options.onEnd?.(); resolve(); };
+    audio.onerror = () => {
+      clear();
+      if (started) { options.onEnd?.(); resolve(); }
+      else reject(new Error("audio play error"));
+    };
+    audio.play().then(() => { started = true; }).catch((e) => {
+      if (!started) { clear(); reject(e); }
+    });
+  });
+}
+
+// ─── Main speak() — premium first, Web Speech fallback ───────────────────────
+export function speak(text: string, options: SpeakOptions = {}): void {
+  if (_premiumEnabled && _premiumState !== "unavailable") {
+    speakPremium(text, options)
+      .then(() => { _premiumState = "ok"; })
+      .catch(() => {
+        // Only disable for the session if premium never worked (setup/network).
+        if (_premiumState !== "ok") _premiumState = "unavailable";
+        speakWeb(text, options);
+      });
+    return;
+  }
+  speakWeb(text, options);
+}
+
 export function stopSpeech(): void {
+  stopPremiumAudio();
   if (!("speechSynthesis" in window)) return;
   stopKeepAlive();
   _currentUtterance = null;
@@ -532,6 +629,7 @@ export function replayLastSlow(): void {
 }
 
 export function isSpeaking(): boolean {
+  if (_premiumAudio && !_premiumAudio.paused) return true;
   if (!("speechSynthesis" in window)) return false;
   return window.speechSynthesis.speaking;
 }
