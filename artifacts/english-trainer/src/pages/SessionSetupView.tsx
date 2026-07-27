@@ -65,6 +65,37 @@ const MORE_SCENARIOS: { value: Scenario; emoji: string; labelKey: string }[] = [
   { value: "formal_complaint",   emoji: "🗣️", labelKey: "formalComplaint" },
 ];
 
+// ─── Unified, categorised scenario catalogue ─────────────────────────────────
+const ALL_SCENARIOS: { value: Scenario; emoji: string; labelKey: string }[] = [
+  ...FEATURED.map(({ value, emoji, labelKey }) => ({ value, emoji, labelKey })),
+  ...MORE_SCENARIOS,
+];
+
+const POPULAR: Scenario[] = FEATURED.map((s) => s.value);
+
+type Category = "work" | "travel" | "everyday" | "services" | "academic";
+const CATEGORY_OF: Record<Scenario, Category> = {
+  job_interview: "work", business_meeting: "work", networking: "work", salary_negotiation: "work",
+  performance_review: "work", presentation: "work", client_pitch: "work", trade_fair: "work",
+  executive_assistant: "work", phone_call: "work",
+  travel: "travel", airport: "travel", hotel: "travel", border_control: "travel",
+  small_talk: "everyday", daily_life: "everyday", restaurant: "everyday", shopping: "everyday",
+  cooking: "everyday", dating: "everyday", sports: "everyday", entertainment: "everyday", luxury_boutique: "everyday",
+  banking: "services", legal: "services", medical: "services", medical_secretary: "services",
+  pharmacy: "services", admin_office: "services", customer_service: "services", tech_support: "services",
+  real_estate: "services", apartment: "services", formal_complaint: "services", emergency: "services",
+  academic: "academic", news_debate: "academic", journalist_interview: "academic",
+};
+
+const CATEGORIES: { key: string; labelKey: string }[] = [
+  { key: "popular",  labelKey: "catPopular" },
+  { key: "work",     labelKey: "catWork" },
+  { key: "travel",   labelKey: "catTravel" },
+  { key: "everyday", labelKey: "catEveryday" },
+  { key: "services", labelKey: "catServices" },
+  { key: "academic", labelKey: "catAcademic" },
+];
+
 // ─── Coaches ──────────────────────────────────────────────────────────────────
 const COACHES: { value: Mode; emoji: string; labelKey: string; descKey: string; activeClass: string }[] = [
   { value: "practice",  emoji: "🌱", labelKey: "friendlyLabel",  descKey: "practiceDesc",  activeClass: "border-forest/45 bg-forest-soft text-forest" },
@@ -94,8 +125,8 @@ export function SessionSetupView() {
     messages, resetSession,
   } = useApp();
 
-  const [moreOpen, setMoreOpen] = useState(false);
-  const isFeatured = FEATURED.some((s) => s.value === scenario);
+  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState("popular");
 
   // Useful-phrases study panel
   const [phrasesOpen, setPhrasesOpen] = useState(false);
@@ -128,8 +159,21 @@ export function SessionSetupView() {
     setCurrentView("conversation");
   };
 
+  const handleQuickStart = () => {
+    setMode("practice");
+    setLevel("auto");
+    setScenario("small_talk");
+    if (messages.length > 0) resetSession();
+    setCurrentView("conversation");
+  };
+
   const hasHistory = getLearnerProfile().totalSessions > 0;
   const tr = (key: string) => t(interfaceLanguage, key as Parameters<typeof t>[1]);
+
+  const q = query.trim().toLowerCase();
+  const visibleScenarios = q
+    ? ALL_SCENARIOS.filter((s) => tr(s.labelKey).toLowerCase().includes(q) || s.value.replace(/_/g, " ").includes(q))
+    : ALL_SCENARIOS.filter((s) => (category === "popular" ? POPULAR.includes(s.value) : CATEGORY_OF[s.value] === category));
 
   return (
     <div className="flex min-h-[100dvh] flex-col overflow-x-hidden bg-ivory text-ink">
@@ -168,23 +212,28 @@ export function SessionSetupView() {
           </section>
         )}
 
+        {/* Quick start */}
+        <button
+          onClick={handleQuickStart}
+          className="mb-8 flex w-full items-center gap-3 rounded-2xl border border-coral/30 bg-coral-soft px-4 py-3.5 text-left transition-all hover:border-coral/50 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/40"
+        >
+          <span className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-xl bg-coral text-lg text-cream">⚡</span>
+          <span className="min-w-0">
+            <span className="block text-[14px] font-semibold text-coral-dark">{tr("quickStartTitle")}</span>
+            <span className="block text-[12px] leading-snug text-ink-soft">{tr("quickStartDesc")}</span>
+          </span>
+          <svg className="ml-auto h-4 w-4 flex-shrink-0 text-coral" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>
+        </button>
+
         {/* Language */}
-        <section className="mb-8 grid gap-6 md:grid-cols-2">
+        <section className="mb-8 grid gap-4 md:grid-cols-2">
           <div>
             <SectionLabel>{tr("yourLanguage")}</SectionLabel>
-            <div className="flex flex-wrap gap-1.5" role="group" aria-label={tr("yourLanguage")}>
-              {LANGUAGES.map((lang) => (
-                <LangPill key={lang} lang={lang as Language} active={interfaceLanguage === lang} color="coral" onClick={() => setInterfaceLanguage(lang as Language)} />
-              ))}
-            </div>
+            <LangSelect value={interfaceLanguage} onChange={setInterfaceLanguage} label={tr("yourLanguage")} />
           </div>
           <div>
             <SectionLabel>{tr("feedbackTranslationLang")}</SectionLabel>
-            <div className="flex flex-wrap gap-1.5" role="group" aria-label={tr("feedbackTranslationLang")}>
-              {LANGUAGES.map((lang) => (
-                <LangPill key={lang} lang={lang as Language} active={feedbackLanguage === lang} color="forest" onClick={() => setFeedbackLanguage(lang as Language)} />
-              ))}
-            </div>
+            <LangSelect value={feedbackLanguage} onChange={setFeedbackLanguage} label={tr("feedbackTranslationLang")} />
           </div>
         </section>
 
@@ -211,81 +260,67 @@ export function SessionSetupView() {
           </div>
         </section>
 
-        {/* Featured scenarios */}
-        <section className="mb-3">
-          <SectionLabel>{tr("selectScenario")}</SectionLabel>
-          <div className="grid grid-cols-2 gap-2.5 lg:grid-cols-4">
-            {FEATURED.map(({ value, emoji, labelKey, descKey }) => {
-              const isActive = scenario === value;
-              return (
-                <motion.button
-                  key={value}
-                  onClick={() => setScenario(value)}
-                  whileTap={{ scale: 0.97 }}
-                  className={`flex min-h-[96px] flex-col rounded-2xl border p-4 text-left transition-all duration-200 ${
-                    isActive
-                      ? "border-coral/50 bg-coral-soft shadow-sm"
-                      : "border-line bg-cream hover:border-line-strong hover:shadow-sm"
-                  }`}
-                >
-                  <span className="mb-2 text-2xl leading-none">{emoji}</span>
-                  <p className={`mb-0.5 text-[13px] font-semibold leading-tight ${isActive ? "text-coral-dark" : "text-ink"}`}>{tr(labelKey)}</p>
-                  <p className={`text-[11px] leading-snug ${isActive ? "text-coral-dark/70" : "text-clay"}`}>{tr(descKey)}</p>
-                  {isActive && (
-                    <div className="mt-2 flex items-center gap-1">
-                      <span className="h-1.5 w-1.5 rounded-full bg-coral" />
-                      <span className="font-mono text-[10px] font-bold uppercase tracking-wide text-coral">{tr("selectedLabel")}</span>
-                    </div>
-                  )}
-                </motion.button>
-              );
-            })}
-          </div>
-        </section>
-
-        {/* More scenarios */}
+        {/* Scenario picker: search + categories + grid */}
         <section className="mb-8">
-          <button
-            onClick={() => setMoreOpen((v) => !v)}
-            className="flex w-full items-center justify-between py-3 text-clay transition-colors hover:text-ink-soft"
-          >
-            <span className="font-mono text-[11px] font-semibold uppercase tracking-wider">
-              {moreOpen ? tr("hideTranslation") : tr("allScenariosBtn")}
-            </span>
-            <svg className={`h-4 w-4 transition-transform ${moreOpen ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+          <SectionLabel>{tr("selectScenario")}</SectionLabel>
+
+          {/* Search */}
+          <div className="relative mb-3">
+            <svg className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-clay" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-4.35-4.35M11 18a7 7 0 100-14 7 7 0 000 14z" />
             </svg>
-          </button>
+            <input
+              type="text"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder={tr("searchScenarios")}
+              className="w-full rounded-2xl border border-line bg-cream py-3 pl-10 pr-4 text-sm text-ink placeholder:text-clay focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/40"
+            />
+          </div>
 
-          <AnimatePresence>
-            {moreOpen && (
-              <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} transition={{ duration: 0.25 }} className="overflow-hidden">
-                <div className="grid grid-cols-2 gap-2 pt-1 pb-2 sm:grid-cols-3 lg:grid-cols-4">
-                  {MORE_SCENARIOS.map(({ value, emoji, labelKey }) => {
-                    const isActive = scenario === value;
-                    return (
-                      <button
-                        key={value}
-                        onClick={() => { setScenario(value); setMoreOpen(false); }}
-                        className={`flex min-h-[48px] items-center gap-2.5 rounded-xl border px-3 py-3 text-left transition-all ${
-                          isActive ? "border-coral/45 bg-coral-soft text-coral-dark" : "border-line bg-cream text-ink-soft hover:border-line-strong"
-                        }`}
-                      >
-                        <span className="flex-shrink-0 text-lg leading-none">{emoji}</span>
-                        <span className="text-[12px] font-medium leading-tight">{tr(labelKey)}</span>
-                        {isActive && <span className="ml-auto h-1.5 w-1.5 flex-shrink-0 rounded-full bg-coral" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* Category chips */}
+          {!q && (
+            <div className="mb-3 flex flex-wrap gap-1.5">
+              {CATEGORIES.map((c) => {
+                const active = category === c.key;
+                return (
+                  <button
+                    key={c.key}
+                    onClick={() => setCategory(c.key)}
+                    className={`min-h-[36px] rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all ${
+                      active ? "border-coral/45 bg-coral-soft text-coral-dark" : "border-line bg-cream text-ink-soft hover:border-line-strong hover:text-ink"
+                    }`}
+                  >
+                    {tr(c.labelKey)}
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
-          {!moreOpen && !isFeatured && (
-            <p className="-mt-1 mb-1 text-[11px] text-coral">
-              ✓ {tr("selectedLabel")}: {tr(MORE_SCENARIOS.find((s) => s.value === scenario)?.labelKey ?? "") || scenario}
-            </p>
+          {/* Grid */}
+          {visibleScenarios.length === 0 ? (
+            <p className="py-6 text-center text-[13px] text-clay">{tr("noScenariosFound")}</p>
+          ) : (
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4">
+              {visibleScenarios.map(({ value, emoji, labelKey }) => {
+                const isActive = scenario === value;
+                return (
+                  <motion.button
+                    key={value}
+                    onClick={() => setScenario(value)}
+                    whileTap={{ scale: 0.97 }}
+                    className={`flex min-h-[68px] items-center gap-2.5 rounded-2xl border px-3.5 py-3 text-left transition-all duration-200 ${
+                      isActive ? "border-coral/50 bg-coral-soft shadow-sm" : "border-line bg-cream hover:border-line-strong hover:shadow-sm"
+                    }`}
+                  >
+                    <span className="flex-shrink-0 text-xl leading-none">{emoji}</span>
+                    <span className={`text-[13px] font-semibold leading-tight ${isActive ? "text-coral-dark" : "text-ink"}`}>{tr(labelKey)}</span>
+                    {isActive && <span className="ml-auto h-1.5 w-1.5 flex-shrink-0 rounded-full bg-coral" />}
+                  </motion.button>
+                );
+              })}
+            </div>
           )}
         </section>
 
@@ -390,20 +425,24 @@ function SectionLabel({ children }: { children: ReactNode }) {
   return <h2 className="mb-3 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-clay">{children}</h2>;
 }
 
-function LangPill({ lang, active, color, onClick }: {
-  lang: Language; active: boolean; color: "coral" | "forest"; onClick: () => void;
+function LangSelect({ value, onChange, label }: {
+  value: Language; onChange: (l: Language) => void; label: string;
 }) {
-  const activeClass = color === "coral"
-    ? "border-coral/45 bg-coral-soft text-coral-dark"
-    : "border-forest/45 bg-forest-soft text-forest";
   return (
-    <button
-      onClick={onClick}
-      className={`min-h-[44px] flex-none whitespace-nowrap rounded-full border px-3.5 py-2.5 text-xs font-medium transition-all ${
-        active ? activeClass : "border-line bg-cream text-ink-soft hover:border-line-strong hover:text-ink"
-      }`}
-    >
-      {LANGUAGE_NATIVE_NAMES[lang]}
-    </button>
+    <div className="relative">
+      <select
+        value={value}
+        onChange={(e) => onChange(e.target.value as Language)}
+        aria-label={label}
+        className="min-h-[44px] w-full appearance-none rounded-2xl border border-line bg-cream py-3 pl-4 pr-10 text-sm font-medium text-ink transition-colors hover:border-line-strong focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/40"
+      >
+        {LANGUAGES.map((lang) => (
+          <option key={lang} value={lang}>{LANGUAGE_NATIVE_NAMES[lang as Language]}</option>
+        ))}
+      </select>
+      <svg className="pointer-events-none absolute right-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-clay" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+      </svg>
+    </div>
   );
 }
