@@ -1092,7 +1092,7 @@ export function ConversationView() {
             ) : endConfirm ? (
               <>✓ {t(interfaceLanguage, "endSession") }?</>
             ) : (
-              t(interfaceLanguage, "endSession")
+              t(interfaceLanguage, "finishSession")
             )}
           </button>
 

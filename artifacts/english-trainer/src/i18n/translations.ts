@@ -142,6 +142,7 @@ type TranslationKeys = {
   aiSpeaking: string;
   replayButton: string;
   endSession: string;
+  finishSession: string;
   turnOf: string;
   feedbackTitle: string;
   feedbackSubtitle: string;
@@ -453,6 +454,7 @@ const translations: Record<Language, TranslationKeys> = {
     aiSpeaking: "AI speaking...",
     replayButton: "Replay",
     endSession: "End Session",
+    finishSession: "Finish & see report",
     turnOf: "Turn {current} of {total}",
     feedbackTitle: "Your Session Review",
     feedbackSubtitle: "Here's how you did",
@@ -707,6 +709,7 @@ const translations: Record<Language, TranslationKeys> = {
     aiSpeaking: "L'IA parle...",
     replayButton: "Rejouer",
     endSession: "Terminer la session",
+    finishSession: "Terminer & voir le bilan",
     turnOf: "Tour {current} sur {total}",
     feedbackTitle: "Bilan de session",
     feedbackSubtitle: "Voici comment vous vous en êtes sorti",
@@ -961,6 +964,7 @@ const translations: Record<Language, TranslationKeys> = {
     aiSpeaking: "IA hablando...",
     replayButton: "Repetir",
     endSession: "Terminar sesión",
+    finishSession: "Terminar y ver informe",
     turnOf: "Turno {current} de {total}",
     feedbackTitle: "Tu resumen de sesión",
     feedbackSubtitle: "Así fue tu desempeño",
@@ -1215,6 +1219,7 @@ const translations: Record<Language, TranslationKeys> = {
     aiSpeaking: "KI spricht...",
     replayButton: "Wiederholen",
     endSession: "Sitzung beenden",
+    finishSession: "Beenden & Bericht ansehen",
     turnOf: "Runde {current} von {total}",
     feedbackTitle: "Dein Sitzungsrückblick",
     feedbackSubtitle: "So hast du abgeschnitten",
@@ -1469,6 +1474,7 @@ const translations: Record<Language, TranslationKeys> = {
     aiSpeaking: "IA che parla...",
     replayButton: "Riproduci",
     endSession: "Termina sessione",
+    finishSession: "Termina e vedi il report",
     turnOf: "Turno {current} di {total}",
     feedbackTitle: "Il tuo riepilogo",
     feedbackSubtitle: "Ecco come te la sei cavata",
@@ -1723,6 +1729,7 @@ const translations: Record<Language, TranslationKeys> = {
     aiSpeaking: "IA falando...",
     replayButton: "Repetir",
     endSession: "Encerrar sessão",
+    finishSession: "Terminar e ver relatório",
     turnOf: "Turno {current} de {total}",
     feedbackTitle: "Seu resumo de sessão",
     feedbackSubtitle: "Veja como você se saiu",
@@ -1977,6 +1984,7 @@ const translations: Record<Language, TranslationKeys> = {
     aiSpeaking: "ИИ говорит...",
     replayButton: "Воспроизвести",
     endSession: "Завершить сессию",
+    finishSession: "Завершить и открыть отчёт",
     turnOf: "Ход {current} из {total}",
     feedbackTitle: "Ваш итог сессии",
     feedbackSubtitle: "Вот как вы справились",
@@ -2231,6 +2239,7 @@ const translations: Record<Language, TranslationKeys> = {
     aiSpeaking: "...الذكاء الاصطناعي يتحدث",
     replayButton: "إعادة التشغيل",
     endSession: "إنهاء الجلسة",
+    finishSession: "إنهاء وعرض التقرير",
     turnOf: "الدور {current} من {total}",
     feedbackTitle: "ملخص جلستك",
     feedbackSubtitle: "إليك كيف أديت",
@@ -2485,6 +2494,7 @@ const translations: Record<Language, TranslationKeys> = {
     aiSpeaking: "AI正在说话...",
     replayButton: "重播",
     endSession: "结束课程",
+    finishSession: "结束并查看报告",
     turnOf: "第 {current} 轮，共 {total} 轮",
     feedbackTitle: "您的课程回顾",
     feedbackSubtitle: "以下是您的表现",
@@ -2739,6 +2749,7 @@ const translations: Record<Language, TranslationKeys> = {
     aiSpeaking: "AIが話しています...",
     replayButton: "再生",
     endSession: "セッションを終了",
+    finishSession: "終了してレポートを見る",
     turnOf: "{current}ターン目 / {total}ターン",
     feedbackTitle: "セッションのまとめ",
     feedbackSubtitle: "今回の結果はこちらです",
@@ -2993,6 +3004,7 @@ const translations: Record<Language, TranslationKeys> = {
     aiSpeaking: "AI mówi...",
     replayButton: "Odtwórz ponownie",
     endSession: "Zakończ sesję",
+    finishSession: "Zakończ i zobacz raport",
     turnOf: "Tura {current} z {total}",
     feedbackTitle: "Twoje podsumowanie",
     feedbackSubtitle: "Oto jak ci poszło",
@@ -3247,6 +3259,7 @@ const translations: Record<Language, TranslationKeys> = {
     aiSpeaking: "ШІ говорить...",
     replayButton: "Відтворити",
     endSession: "Завершити сесію",
+    finishSession: "Завершити й переглянути звіт",
     turnOf: "Хід {current} з {total}",
     feedbackTitle: "Ваш підсумок сесії",
     feedbackSubtitle: "Ось як ви справилися",
