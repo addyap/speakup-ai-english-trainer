@@ -452,7 +452,7 @@ OPENER ROTATION — never begin 3 consecutive replies with "You" or "Your". Use 
     res.flushHeaders();
     try {
       const stream = await openai.chat.completions.create({
-        model: "gpt-5-mini",
+        model: "gpt-5.2",
         temperature: 0.85,
         max_completion_tokens: 220,
         frequency_penalty: 0.8,
@@ -482,7 +482,7 @@ OPENER ROTATION — never begin 3 consecutive replies with "You" or "Your". Use 
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-5-mini",
+      model: "gpt-5.2",
       temperature: 0.85,
       max_completion_tokens: 220,
       frequency_penalty: 0.8,
