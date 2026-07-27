@@ -1055,8 +1055,8 @@ RULES:
     }
     const parsed = JSON.parse(raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim());
     const phrases = Array.isArray(parsed.phrases)
-      ? parsed.phrases
-          .filter((p: unknown): p is { en: string; gloss?: unknown } =>
+      ? (parsed.phrases as unknown[])
+          .filter((p): p is { en: string; gloss?: unknown } =>
             p !== null && typeof p === "object" && typeof (p as { en?: unknown }).en === "string")
           .slice(0, 8)
           .map((p) => ({ en: p.en.trim(), gloss: typeof p.gloss === "string" ? p.gloss.trim() : "" }))
