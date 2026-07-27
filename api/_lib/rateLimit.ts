@@ -5,7 +5,11 @@
 
 const _rateWindows = new Map<string, { count: number; resetAt: number }>();
 const RATE_WINDOW_MS = 60_000;
-const RATE_MAX = 30;
+// A single voice turn = STT + conversation + TTS (~3 calls), plus replays,
+// hints and "improve". 90/min comfortably covers an active human session
+// while still capping abuse. Raise via Upstash if this ever needs to be
+// enforced consistently across serverless instances.
+const RATE_MAX = 90;
 
 export function checkRateLimit(
   headers: Record<string, string | string[] | undefined>,
