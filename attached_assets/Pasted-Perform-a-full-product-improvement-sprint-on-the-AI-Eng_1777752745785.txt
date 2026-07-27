@@ -1,0 +1,237 @@
+Perform a full product improvement sprint on the AI English Trainer.
+
+Do NOT rebuild from scratch.
+Do NOT break working architecture.
+Do NOT remove monetization or subscription logic.
+Keep:
+FREE_ACCESS_ENABLED = true
+
+Mission:
+Raise launch readiness from approximately 68/100 to at least 85/100.
+
+Implement the following improvements:
+
+==================================================
+1. FIX FIRST IMPRESSION (5-second clarity)
+==================================================
+
+The homepage must instantly communicate:
+
+Headline:
+"Professional AI English Coaching"
+
+Subheadline:
+"Real-world English training for work, interviews, business, travel, and professional communication."
+
+Trust strip:
+"Created by Antony Addy — professional English trainer."
+
+Free-access messaging:
+"Free during launch"
+"No card required today"
+"Premium plans coming later"
+
+Main CTA:
+"Start Training Free"
+
+Goal:
+A new user understands the product in under 5 seconds.
+
+==================================================
+2. REDUCE ONBOARDING FRICTION
+==================================================
+
+Simplify setup.
+
+Rules:
+- Remember previous user choices.
+- Preselect last used:
+  interface language
+  feedback language
+  CEFR level
+  scenario
+- If no history exists, preselect intelligent defaults.
+
+Goal:
+User starts training in under 20 seconds.
+
+==================================================
+3. FIX AI REPETITION + COACH QUALITY
+==================================================
+
+Rewrite the system prompt.
+
+The AI must:
+
+- Respond to the learner’s exact last message
+- Never repeat previous responses
+- Stay in the selected scenario
+- Adapt to CEFR level
+- Ask one natural follow-up question
+- Give useful corrections only when valuable
+- Support non-native accents and imperfect English
+- Feel like a coach, not a chatbot
+
+Professional contexts must feel authentic:
+- Luxury Retail
+- Journalist Interview
+- Trade Fair / ACOM
+- Assistant de Direction
+- Medical Secretary
+
+Test with at least 20 turns.
+
+No loops allowed.
+
+==================================================
+4. ADD LIVE PROGRESS + REWARD
+==================================================
+
+During sessions, show:
+
+- Current scenario
+- Current CEFR level
+- Number of turns completed
+- Vocabulary learned
+- Error tags detected
+
+At end of session, show:
+
+- Estimated CEFR level
+- 2 strengths
+- Up to 3 corrections
+- Natural improved answer
+- Fluency comment
+- "Your strongest phrase today"
+- "Next challenge"
+
+Goal:
+Create motivation to return.
+
+==================================================
+5. STRENGTHEN MOBILE EXPERIENCE
+==================================================
+
+Audit mobile UX.
+
+Fix:
+
+- Horizontal overflow
+- Overlapping elements
+- Tiny buttons
+- Input field visibility
+- Sticky input
+- Safe keyboard behavior
+
+Must work on:
+
+Safari iPhone
+Chrome Android
+
+==================================================
+6. FIX MIC RELIABILITY
+==================================================
+
+Voice system must:
+
+- Request permissions correctly
+- Handle permission denial gracefully
+- Offer immediate Retry
+- Never block typed input
+- Fall back automatically if speech recognition fails
+
+Show status indicators:
+
+Mic Ready
+Listening
+Retry Needed
+
+==================================================
+7. IMPROVE TRANSLATION UX
+==================================================
+
+Translate button under every AI message.
+
+Requirements:
+
+- Translate into selected feedback language
+- Cache translations
+- Fast response
+- Clean mobile display
+
+==================================================
+8. ADD TRUST + AUTHORITY
+==================================================
+
+Across homepage and trainer:
+
+Display:
+
+"Created by Antony Addy"
+"Professional English trainer"
+"Real exam and business scenarios"
+
+Goal:
+Differentiate from generic AI tools.
+
+==================================================
+9. RETURN USER RETENTION
+==================================================
+
+At session end:
+
+Suggest:
+
+"Tomorrow's challenge"
+
+Examples:
+- Difficult customer handling
+- Trade fair objection handling
+- Interview confidence
+- Professional phone call
+
+Goal:
+Give users a reason to return.
+
+==================================================
+10. FINAL QA MODE
+==================================================
+
+Create internal audit mode:
+
+TRAINER_AUDIT_MODE = true
+
+Run automated tests for:
+
+UI
+Mobile
+AI conversation
+Translation
+Mic
+Memory
+Performance
+
+Return:
+
+PASS / WARNING / FAIL
+
+Then generate:
+
+Launch Readiness Score /100
+
+Target:
+85+ before deployment.
+
+==================================================
+FINAL RULES
+==================================================
+
+Do not break:
+- payment code
+- chat architecture
+- translation system
+- end session system
+- existing scenarios
+- mobile responsiveness
+
+Then implement only the highest-impact fixes first.

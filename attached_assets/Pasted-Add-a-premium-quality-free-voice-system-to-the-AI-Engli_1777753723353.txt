@@ -1,0 +1,198 @@
+Add a premium-quality free voice system to the AI English Trainer.
+
+This project is a mobile/tablet-first app.
+
+Treat it as a real mobile product, not a desktop website.
+
+Core rules:
+- Do NOT break existing chat.
+- Do NOT break typed input.
+- Do NOT make voice mandatory.
+- Do NOT use paid APIs for version 1.
+- Do NOT require ElevenLabs for launch.
+- Keep architecture open for premium voices later.
+
+Goal:
+Use the best free voices available on each device/browser using SpeechSynthesis API and optimize the entire experience for phones and tablets.
+
+==================================================
+STAGE 1 — FREE HIGH-QUALITY VOICE OUTPUT
+==================================================
+
+Add text-to-speech for every AI reply.
+
+Under every AI message add:
+
+- Speak
+- Stop
+- Replay
+
+Also add:
+
+- Auto-speak ON/OFF
+
+Requirements:
+
+- User can hear AI responses naturally
+- User can replay any AI reply
+- User can stop speech instantly
+- No overlapping speech
+
+==================================================
+STAGE 2 — BEST FREE VOICE SELECTION
+==================================================
+
+Automatically select the best available English voice.
+
+Selection logic:
+
+Prefer:
+1. Natural / neural / premium local voices exposed by device/browser
+2. High-quality system voices
+3. Standard browser voices only as fallback
+
+Accent preferences:
+
+Add setting:
+
+Accent:
+- Auto
+- British
+- American
+
+Selection priorities:
+
+If British:
+Prefer strong en-GB voices
+
+If American:
+Prefer strong en-US voices
+
+If Auto:
+Choose highest quality available
+
+Avoid robotic voices if better voices exist.
+
+==================================================
+STAGE 3 — MOBILE APP UX
+==================================================
+
+This must feel like a real mobile app.
+
+Optimize for:
+
+- iPhone Safari
+- iPad Safari
+- Android Chrome
+- Android tablets
+
+UI requirements:
+
+- Large touch buttons
+- No tiny icons
+- Clear labels
+- Portrait safe
+- Tablet safe
+- No horizontal overflow
+- Compact bottom controls
+
+Voice status indicators:
+
+Show:
+
+- Speaking
+- Ready
+- Stopped
+- Voice unavailable
+
+==================================================
+STAGE 4 — VOICE SAFETY
+==================================================
+
+Prevent mobile browser issues.
+
+Automatically stop speech when:
+
+- user starts microphone recording
+- page becomes hidden
+- app goes to background
+- route/page changes
+
+Use:
+
+- visibilitychange
+- pagehide
+
+Also:
+
+- Prevent overlapping speech
+- Cancel previous utterances before starting a new one
+- Never leave speech running in background
+
+==================================================
+STAGE 5 — SETTINGS
+==================================================
+
+Create a voice settings panel.
+
+Options:
+
+- Voice ON/OFF
+- Auto-speak ON/OFF
+- Accent preference
+- Speaking speed
+
+Save all settings in localStorage.
+
+Restore settings after refresh.
+
+==================================================
+STAGE 6 — FUTURE-PROOFING
+==================================================
+
+Keep architecture ready for future premium voices such as
+0
+
+But:
+
+- Do not activate premium APIs yet
+- Do not require API keys
+- Browser voices must be the default launch system
+
+==================================================
+STAGE 7 — QA
+==================================================
+
+Test:
+
+1. iPhone Safari
+- Voice plays
+- Stop works
+- Auto-speak works
+- Mic + voice do not conflict
+
+2. iPad Safari
+- Layout works
+- Buttons remain touch-friendly
+
+3. Android Chrome
+- Voice selection works
+- Replay works
+- No background audio
+
+4. Refresh
+- Settings persist
+
+5. Fallback
+If no voice exists:
+
+Show:
+"Voice quality depends on your device/browser."
+
+Chat must still work perfectly.
+
+==================================================
+FINAL RULE
+==================================================
+
+The final result must feel like a polished mobile language-learning app, not a browser demo.

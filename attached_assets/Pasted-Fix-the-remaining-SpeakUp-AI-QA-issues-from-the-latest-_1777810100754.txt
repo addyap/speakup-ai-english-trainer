@@ -1,0 +1,72 @@
+Fix the remaining SpeakUp AI QA issues from the latest audit.
+
+Current score: 79/100.
+Goal: push the app to public-beta quality without changing the core design, routes, AI logic, or existing working features.
+
+Issues to fix:
+
+1. Mobile touch targets
+- Find every button/icon button/tappable control in the chat UI, voice settings panel, learning tools, translation controls, mic controls, and session controls.
+- Ensure every interactive target has at least:
+  - min-height: 44px
+  - min-width: 44px
+  - comfortable padding
+  - clear focus-visible state
+- Do not make the UI bulky. Preserve the visual design, but make taps reliable on mobile.
+
+2. iOS input zoom
+- Ensure every input, textarea, select, and editable text field has font-size: 16px minimum.
+- Apply globally if needed.
+- Do not shrink text below 16px on mobile.
+
+3. Improve browser TTS voice quality
+- Audit the current voice selection logic.
+- Prioritize natural/premium/neural/local English voices before basic system voices.
+- Prefer voices matching:
+  - en-GB first when available
+  - then en-US
+  - then any English voice
+- Prioritize names containing:
+  - Samantha
+  - Daniel
+  - Google UK English
+  - Google US English
+  - Microsoft Aria
+  - Microsoft Jenny
+  - Microsoft Ryan
+  - Natural
+  - Neural
+  - Premium
+- Avoid low-quality/basic fallback voices unless no better option exists.
+- Set a more natural default speaking rate around 0.9–0.95.
+- Persist selected voice and rate in localStorage.
+- Make sure speech stops immediately when mic recording starts.
+
+4. Speed up “Help Me Answer”
+- Find the prompt/function that generates Help Me Answer replies.
+- Reduce prompt verbosity.
+- Limit output to:
+  - 2 short learner-friendly replies
+  - 1 more natural native-style reply
+- Keep output concise, ideally under 120 tokens.
+- Target response time under 2500ms.
+- Do not break multilingual feedback support.
+
+5. Keep existing passes intact
+Do not regress:
+- AI conversation uniqueness
+- Translation
+- Improve My Sentence
+- End Session Feedback
+- Learner profile persistence
+- Typed fallback input
+- Mic retry path
+- Safe-area CSS
+- No horizontal overflow
+
+After implementation:
+- Run TypeScript/build checks.
+- Run the QA audit again.
+- Report before/after results.
+- List every file changed.
+- If any issue cannot be fully fixed, explain exactly why and provide the safest fallback.

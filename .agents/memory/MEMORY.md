@@ -1,0 +1,1 @@
+- [Vercel migration architecture](vercel-migration.md) — /api/ handlers are the single impl; Express is a thin wrapper; unified OpenAI client tries Replit vars first

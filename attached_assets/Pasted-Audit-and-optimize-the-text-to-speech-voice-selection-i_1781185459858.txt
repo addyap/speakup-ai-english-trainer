@@ -1,0 +1,25 @@
+Audit and optimize the text-to-speech voice selection in this app. The app currently uses the Web Speech API (speechSynthesis) for voice output. Goal: get the best possible FREE voice quality on every platform, with zero paid APIs.
+
+Do the following:
+
+1. AUDIT — Add a temporary debug function that logs all voices returned by speechSynthesis.getVoices() with name, lang, localService, and default flags. Note that getVoices() is async on Chrome — it must be called after the 'voiceschanged' event fires, with a fallback retry. Fix this if the current code calls it synchronously.
+
+2. BUILD A VOICE RANKING SYSTEM — Implement a pickBestVoice(lang) function that scores available voices for a target language (e.g. 'en-GB', 'en-US') using this priority order:
+   a. Google voices (e.g. "Google UK English Female") — best free quality on Chrome desktop/Android
+   b. Microsoft Natural/Online voices (e.g. "Microsoft Sonia Online (Natural)") — best on Edge/Windows
+   c. Apple premium voices (e.g. "Samantha", "Daniel", "Kate", "Serena") — best on Safari/iOS/macOS
+   d. Any other remote (localService: false) voice matching the language
+   e. Any local voice matching the language exactly (en-GB before en-US for British English preference)
+   f. Any voice matching the base language code
+   Never fall back to obviously robotic voices (e.g. "eSpeak", "Fred", "Albert", "Zarvox", novelty voices) if anything else exists — maintain an exclusion list.
+
+3. PLATFORM HANDLING —
+   - Detect iOS/Safari quirks: voices list loads late, speech must be triggered by user gesture first. Add a one-time "unlock" utterance on first user interaction.
+   - Chrome bug: long utterances get cut off after ~15 seconds. Split text into sentence-level chunks and queue them sequentially.
+   - Handle the Chrome pause/resume garbage-collection bug (speechSynthesis going silent) with a resume() keepalive interval while speaking.
+
+4. SPEECH QUALITY TUNING — Set rate ≈ 0.95 and pitch = 1.0 by default for a natural teaching pace. Strip markdown symbols, asterisks, and emoji from text before speaking. Expand common abbreviations that TTS mispronounces.
+
+5. USER OVERRIDE — Add a small settings option listing the top 3–5 ranked voices for the current language so the learner can pick their preferred voice. Persist the choice (in-memory or existing storage mechanism — do NOT introduce localStorage if the app doesn't already use it on this platform).
+
+6. VERIFY — After changes, log which voice was selected on load and confirm speech works on first click. Keep all existing app functionality intact; touch only the TTS layer.

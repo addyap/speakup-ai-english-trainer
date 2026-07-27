@@ -1,0 +1,26 @@
+Prepare this app for deployment on Vercel. Restructure the backend without changing any frontend functionality.
+
+CONTEXT
+Vercel does not run persistent servers. The Express/Node backend must become Vercel serverless functions in an /api directory. The frontend is Vite/React and deploys as static output — leave its behaviour untouched.
+
+STEP 1 — AUDIT THE BACKEND
+List every backend route, middleware, and service the app currently uses. Flag anything Vercel-incompatible: WebSockets, Replit DB, Replit Auth, in-memory session state, long-running processes, file writes to local disk. Report findings before changing anything.
+
+STEP 2 — CONVERT ROUTES TO SERVERLESS FUNCTIONS
+- Create an /api directory at the project root. Convert each Express route to its own file using the Vercel Node signature: export default async function handler(req, res).
+- The Anthropic API call must live server-side in /api (e.g. /api/chat.ts). The API key is read from process.env.ANTHROPIC_API_KEY only — it must never be sent to or readable by the browser.
+- Preserve the streaming response: use the Anthropic SDK streaming API and pipe the stream to the response with appropriate headers (Content-Type: text/event-stream or chunked transfer). Confirm the frontend's existing stream-consumption code still works unchanged; adapt the function, not the frontend.
+- Handle CORS only if needed (same-origin on Vercel usually means it isn't — don't add unnecessary middleware).
+
+STEP 3 — CONFIG
+- Add vercel.json only if required (rewrites for SPA routing: all non-/api routes → index.html).
+- Ensure vite build outputs to the directory Vercel expects (dist) and package.json has a standard build script.
+- Create .env.example listing ANTHROPIC_API_KEY (no real value). Confirm no API key or secret is hardcoded anywhere in the repo, including old commits' leftover files.
+
+STEP 4 — KEEP REPLIT WORKING
+Keep the app runnable on Replit during transition: retain the Express server as a thin dev wrapper that mounts the same /api handler functions, so there is one implementation of each route, not two copies.
+
+STEP 5 — VERIFY AND REPORT
+- App still runs on Replit with full functionality (chat, streaming, TTS, STT).
+- No references to Replit-specific services remain in the serverless code path.
+- Report explicitly: files created/moved, any incompatibilities found in Step 1 and how they were resolved, and anything that will need manual setup on Vercel (env vars, domains). Do not summarize as "done" if any verification failed.

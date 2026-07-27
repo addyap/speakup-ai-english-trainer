@@ -1,0 +1,385 @@
+openapi: 3.1.0
+info:
+  # Do not change the title, if the title changes, the import paths will be broken
+  title: Api
+  version: 0.1.0
+  description: API specification
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+    description: Health operations
+  - name: trainer
+    description: AI English speaking trainer operations
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      description: Returns server health status
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /trainer/conversation:
+    post:
+      operationId: sendConversationMessage
+      tags: [trainer]
+      summary: Send message to AI conversation partner
+      description: Sends message history to OpenAI and returns AI response
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConversationRequest"
+      responses:
+        "200":
+          description: AI response
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ConversationResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /trainer/feedback:
+    post:
+      operationId: generateFeedback
+      tags: [trainer]
+      summary: Generate structured session feedback
+      description: Analyzes conversation transcript and returns structured feedback in JSON
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/FeedbackRequest"
+      responses:
+        "200":
+          description: Structured feedback
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FeedbackResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /trainer/hint:
+    post:
+      operationId: getConversationHint
+      tags: [trainer]
+      summary: Get reply suggestions for the learner
+      description: Returns simple and natural reply options plus vocabulary help and context explanation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HintRequest"
+      responses:
+        "200":
+          description: Hint suggestions
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HintResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /trainer/improve:
+    post:
+      operationId: improveMessage
+      tags: [trainer]
+      summary: Improve learner's typed sentence
+      description: Returns corrected and more natural versions with explanation in feedback language
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ImproveRequest"
+      responses:
+        "200":
+          description: Improved sentence
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ImproveResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /trainer/translate:
+    post:
+      operationId: translateMessage
+      tags: [trainer]
+      summary: Translate AI message to native language
+      description: Translates an English AI message into the user's native language
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TranslateRequest"
+      responses:
+        "200":
+          description: Translated text
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TranslateResponse"
+        "500":
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+components:
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required:
+        - status
+
+    ConversationMessage:
+      type: object
+      properties:
+        role:
+          type: string
+          enum: [user, assistant, system]
+        content:
+          type: string
+      required:
+        - role
+        - content
+
+    ConversationRequest:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConversationMessage"
+        mode:
+          type: string
+          enum: [practice, challenge, exam]
+        scenario:
+          type: string
+          enum: [job_interview, small_talk, business_meeting, travel, daily_life, restaurant, shopping, medical, academic, phone_call, airport, hotel, banking, apartment, dating, sports, news_debate, customer_service, tech_support, real_estate, legal, emergency, cooking, entertainment, networking, luxury_boutique, trade_fair, executive_assistant, medical_secretary, journalist_interview]
+        level:
+          type: string
+          enum: [auto, beginner, intermediate, advanced]
+        interfaceLanguage:
+          type: string
+        feedbackLanguage:
+          type: string
+        learnerContext:
+          type: string
+      required:
+        - messages
+        - mode
+        - scenario
+        - level
+        - interfaceLanguage
+
+    ConversationResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        role:
+          type: string
+      required:
+        - message
+        - role
+
+    FeedbackRequest:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConversationMessage"
+        mode:
+          type: string
+          enum: [practice, challenge, exam]
+        feedbackLanguage:
+          type: string
+        interfaceLanguage:
+          type: string
+        deviceId:
+          type: string
+        scenario:
+          type: string
+      required:
+        - messages
+        - mode
+        - feedbackLanguage
+
+    FeedbackData:
+      type: object
+      properties:
+        estimatedLevel:
+          type: string
+        strengths:
+          type: array
+          items:
+            type: string
+        improvements:
+          type: array
+          items:
+            type: string
+        correctedExample:
+          type: string
+        fluencyComment:
+          type: string
+        nextStep:
+          type: string
+        strongestPhrase:
+          type: string
+        tip:
+          type: string
+      required:
+        - estimatedLevel
+        - strengths
+        - improvements
+        - correctedExample
+        - fluencyComment
+        - nextStep
+        - strongestPhrase
+        - tip
+
+    FeedbackResponse:
+      type: object
+      properties:
+        feedback:
+          $ref: "#/components/schemas/FeedbackData"
+      required:
+        - feedback
+
+    TranslateRequest:
+      type: object
+      properties:
+        text:
+          type: string
+        targetLanguage:
+          type: string
+      required:
+        - text
+        - targetLanguage
+
+    TranslateResponse:
+      type: object
+      properties:
+        translation:
+          type: string
+      required:
+        - translation
+
+    HintRequest:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: "#/components/schemas/ConversationMessage"
+        scenario:
+          type: string
+        level:
+          type: string
+        feedbackLanguage:
+          type: string
+        interfaceLanguage:
+          type: string
+        learnerContext:
+          type: string
+          description: Summary of learner's history from previous sessions (errors, level, scenarios)
+      required:
+        - messages
+        - scenario
+        - level
+        - feedbackLanguage
+        - interfaceLanguage
+
+    HintResponse:
+      type: object
+      properties:
+        simpleReplies:
+          type: array
+          items:
+            type: string
+        naturalReply:
+          type: string
+        vocabularyHelp:
+          type: string
+        explanation:
+          type: string
+      required:
+        - simpleReplies
+        - naturalReply
+        - vocabularyHelp
+        - explanation
+
+    ImproveRequest:
+      type: object
+      properties:
+        text:
+          type: string
+        scenario:
+          type: string
+        feedbackLanguage:
+          type: string
+      required:
+        - text
+        - scenario
+        - feedbackLanguage
+
+    ImproveResponse:
+      type: object
+      properties:
+        corrected:
+          type: string
+        natural:
+          type: string
+        explanation:
+          type: string
+      required:
+        - corrected
+        - natural
+        - explanation
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        details:
+          type: string
+      required:
+        - error

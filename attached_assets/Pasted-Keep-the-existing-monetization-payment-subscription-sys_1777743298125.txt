@@ -1,0 +1,55 @@
+Keep the existing monetization/payment/subscription system fully in place, but temporarily make the AI Trainer free to use.
+
+Do NOT delete Stripe/payment code.
+Do NOT remove pricing logic.
+Do NOT remove user plan/subscription fields.
+Do NOT break any existing premium/paid architecture.
+Simply add a temporary “free access” mode so users can use the trainer without paying for now.
+
+Required changes:
+
+1. Access logic
+- Allow all users to access the AI Trainer for free at the moment.
+- Bypass payment gating temporarily.
+- Keep the monetization system ready to reactivate later with one config flag.
+- Add a clear config variable such as:
+  FREE_ACCESS_ENABLED = true
+- When this is true, allow full trainer use.
+- When changed to false, the original monetization/paywall system should work again.
+
+2. Homepage/front page messaging
+Add a clear, attractive message on the front page:
+
+“Free access for now”
+“Try the AI English Trainer today — no payment required while we are testing and improving the platform.”
+
+Make it clear this is temporary, but positive:
+- “Currently free during the launch/testing phase”
+- “Premium features and subscriptions will be available later”
+- “No card required right now”
+
+3. UI treatment
+Add a small badge or banner near the main CTA:
+“Free during launch”
+or
+“Currently free to use”
+
+The main CTA should say something like:
+“Start training for free”
+
+4. Do not mislead users
+Do not say “free forever”.
+Do not remove references to future premium plans.
+Do not remove pricing pages if they already exist.
+Instead, mark them as:
+“Coming later” / “Premium plans launching soon”.
+
+5. Technical requirement
+Centralize the free-access override in one place only, so I can turn monetization back on easily later.
+
+6. Final QA
+After changes:
+- Confirm a new/free user can start a trainer session without payment.
+- Confirm paid/subscription code still exists.
+- Confirm homepage clearly says access is currently free.
+- Confirm no broken routes, buttons, or payment-related errors.

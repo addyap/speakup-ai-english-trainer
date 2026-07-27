@@ -1,0 +1,98 @@
+PROJECT: SpeakUp AI English Trainer
+
+TASK:
+Add an optional translation feature for AI assistant messages.
+
+GOAL:
+Users should be able to translate AI replies into their selected feedback language to help understanding, without interrupting the English conversation practice.
+
+IMPORTANT:
+- Do NOT translate the whole conversation automatically.
+- Do NOT replace the original English AI message.
+- Keep the English message visible.
+- Add a small “Translate” button under each AI assistant message.
+- When clicked, show the translated version directly under the original message.
+- If clicked again, hide/show the translation.
+- Do NOT translate user messages unless the user explicitly asks later.
+- Keep mobile-first layout.
+- Do NOT break existing chat, voice, mic, or feedback logic.
+
+FUNCTIONAL REQUIREMENTS:
+
+1. Detect the user’s selected feedback language
+Use the existing feedback language setting already chosen during onboarding/session setup.
+
+2. Add translation button to AI messages only
+For every assistant/AI message, display:
+
+“Translate”
+
+or, better:
+
+“Translate to [Feedback Language]”
+
+Example:
+- Translate to French
+- Translate to Ukrainian
+- Translate to Spanish
+
+3. Translation behaviour
+When the user taps the button:
+- Send only that AI message text to the translation function/API
+- Translate it into the selected feedback language
+- Display translation below the original English message
+- Keep original English visible above
+- Allow user to collapse/expand translation
+
+4. Loading and error states
+While translating, show:
+“Translating…”
+
+If translation fails, show:
+“Translation unavailable. Please try again.”
+
+5. Cache translations
+Avoid translating the same message repeatedly.
+Cache by:
+- message id
+- target language
+- original text
+
+If the same message is translated again, reuse cached translation.
+
+6. UI design
+The translation should appear in a subtle card below the AI message:
+
+- smaller text
+- slightly muted background
+- clear label: “Translation”
+- mobile-friendly spacing
+- no layout overflow
+
+7. Prompt/API instruction
+The translation must preserve meaning, tone, and educational clarity.
+Do not add explanations unless the original message contains explanations.
+Do not simplify unless necessary for natural translation.
+
+8. Data structure
+If needed, extend message state with:
+- translatedText
+- translationLanguage
+- isTranslationVisible
+- isTranslating
+
+But avoid major refactors if simpler state management already exists.
+
+9. Acceptance criteria
+After implementation:
+- AI replies remain in English
+- User can translate each AI reply into feedback language
+- Translation appears under the original message
+- Translation can be hidden/shown
+- No automatic full-chat translation
+- No broken mic/text chat functionality
+- Works on mobile
+- Works with existing session feedback language
+
+FINAL RESULT:
+SpeakUp should feel more supportive for lower-level learners because they can understand AI replies in their own feedback language while still practising English.
