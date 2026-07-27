@@ -40,22 +40,24 @@
   --color-destructive-foreground: hsl(var(--destructive-foreground));
   --color-destructive-border: var(--destructive-border);
 
-  --color-chart-1: hsl(var(--chart-1));
-  --color-chart-2: hsl(var(--chart-2));
-  --color-chart-3: hsl(var(--chart-3));
-  --color-chart-4: hsl(var(--chart-4));
-  --color-chart-5: hsl(var(--chart-5));
-
   --color-sidebar: hsl(var(--sidebar));
   --color-sidebar-foreground: hsl(var(--sidebar-foreground));
   --color-sidebar-border: hsl(var(--sidebar-border));
-  --color-sidebar-primary: hsl(var(--sidebar-primary));
-  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
-  --color-sidebar-primary-border: var(--sidebar-primary-border);
-  --color-sidebar-accent: hsl(var(--sidebar-accent));
-  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
-  --color-sidebar-accent-border: var(--sidebar-accent-border);
-  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  /* ── SpeakUp "Fluent" brand palette — warm editorial coaching studio ── */
+  --color-ivory: #f7f2e9;      /* page ground */
+  --color-sand: #efe7d8;       /* deeper panel ground */
+  --color-cream: #fffdf8;      /* cards */
+  --color-ink: #1b1a17;        /* headings / primary text */
+  --color-ink-soft: #47433c;   /* secondary text */
+  --color-clay: #736c60;       /* muted text */
+  --color-line: #e6ddce;       /* hairline borders */
+  --color-line-strong: #d8cdb8;
+  --color-coral: #df5a3d;       /* primary accent */
+  --color-coral-dark: #c34a2f;
+  --color-coral-soft: #fbe7df;
+  --color-forest: #0f5c46;      /* secondary accent — growth/language */
+  --color-forest-soft: #e7f0ea;
 
   --font-sans: var(--app-font-sans);
   --font-serif: var(--app-font-serif);
@@ -67,132 +69,82 @@
   --radius-xl: calc(var(--radius) + 4px);
 }
 
-/* LIGHT MODE */
+/* ── "Fluent" warm light theme (single committed world) ───────────── */
 :root {
   --button-outline: rgba(0,0,0, .10);
   --badge-outline: rgba(0,0,0, .05);
   --opaque-button-border-intensity: -8;
-  --elevate-1: rgba(0,0,0, .03);
-  --elevate-2: rgba(0,0,0, .08);
+  --elevate-1: rgba(27,26,23, .035);
+  --elevate-2: rgba(27,26,23, .07);
 
-  /* Indigo/Violet/Teal palette */
-  --background: 234 47% 7%;
-  --foreground: 210 40% 98%;
-  --border: 234 30% 18%;
-  --card: 234 40% 10%;
-  --card-foreground: 210 40% 96%;
-  --card-border: 234 30% 20%;
-  --sidebar: 234 42% 8%;
-  --sidebar-foreground: 210 40% 90%;
-  --sidebar-border: 234 30% 16%;
-  --sidebar-primary: 245 70% 60%;
+  --background: 40 45% 94%;
+  --foreground: 40 8% 10%;
+  --border: 40 33% 85%;
+  --card: 44 55% 98%;
+  --card-foreground: 40 8% 12%;
+  --card-border: 40 30% 86%;
+  --sidebar: 40 44% 92%;
+  --sidebar-foreground: 40 8% 18%;
+  --sidebar-border: 40 30% 84%;
+  --sidebar-primary: 11 72% 56%;
   --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 234 30% 16%;
-  --sidebar-accent-foreground: 210 40% 85%;
-  --sidebar-ring: 245 70% 60%;
-  --popover: 234 42% 9%;
-  --popover-foreground: 210 40% 96%;
-  --popover-border: 234 30% 18%;
-  --primary: 245 70% 60%;
+  --sidebar-accent: 40 40% 88%;
+  --sidebar-accent-foreground: 40 8% 18%;
+  --sidebar-ring: 11 72% 56%;
+  --popover: 44 55% 98%;
+  --popover-foreground: 40 8% 12%;
+  --popover-border: 40 30% 86%;
+  --primary: 11 72% 56%;
   --primary-foreground: 0 0% 100%;
-  --secondary: 234 30% 16%;
-  --secondary-foreground: 210 40% 90%;
-  --muted: 234 30% 14%;
-  --muted-foreground: 215 20% 65%;
-  --accent: 175 65% 45%;
+  --secondary: 40 40% 90%;
+  --secondary-foreground: 40 8% 18%;
+  --muted: 40 35% 91%;
+  --muted-foreground: 38 8% 42%;
+  --accent: 162 72% 21%;
   --accent-foreground: 0 0% 100%;
-  --destructive: 0 72% 51%;
+  --destructive: 8 72% 50%;
   --destructive-foreground: 0 0% 100%;
-  --input: 234 30% 18%;
-  --ring: 245 70% 60%;
-  --chart-1: 245 70% 60%;
-  --chart-2: 175 65% 45%;
-  --chart-3: 262 60% 58%;
-  --chart-4: 38 80% 55%;
-  --chart-5: 0 72% 51%;
+  --input: 40 33% 85%;
+  --ring: 11 72% 56%;
+  --chart-1: 11 72% 56%;
+  --chart-2: 162 72% 21%;
+  --chart-3: 38 80% 52%;
+  --chart-4: 262 45% 52%;
+  --chart-5: 199 60% 45%;
 
   --app-font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --app-font-serif: Georgia, serif;
-  --app-font-mono: Menlo, monospace;
+  --app-font-serif: 'Fraunces', Georgia, 'Iowan Old Style', 'Times New Roman', serif;
+  --app-font-mono: 'Inter', ui-monospace, Menlo, monospace;
   --radius: .75rem;
 
-  --shadow-2xs: 0px 2px 4px 0px rgba(0, 0, 0, 0.4);
-  --shadow-xs: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
-  --shadow-sm: 0px 2px 8px 0px rgba(0, 0, 0, 0.4), 0px 1px 2px -1px rgba(0, 0, 0, 0.4);
-  --shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.4), 0px 2px 4px -1px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0px 4px 16px 0px rgba(0, 0, 0, 0.45), 0px 2px 6px -1px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0px 8px 24px 0px rgba(0, 0, 0, 0.5), 0px 4px 8px -1px rgba(0, 0, 0, 0.4);
-  --shadow-xl: 0px 12px 32px 0px rgba(0, 0, 0, 0.55), 0px 8px 12px -1px rgba(0, 0, 0, 0.4);
-  --shadow-2xl: 0px 24px 48px 0px rgba(0, 0, 0, 0.6);
+  --shadow-2xs: 0px 1px 2px 0px rgba(60,40,20, 0.06);
+  --shadow-xs: 0px 2px 6px 0px rgba(60,40,20, 0.07);
+  --shadow-sm: 0px 2px 8px 0px rgba(60,40,20, 0.08), 0px 1px 2px -1px rgba(60,40,20, 0.06);
+  --shadow: 0px 6px 16px 0px rgba(60,40,20, 0.09), 0px 2px 4px -1px rgba(60,40,20, 0.06);
+  --shadow-md: 0px 10px 22px -6px rgba(60,40,20, 0.12);
+  --shadow-lg: 0px 20px 40px -18px rgba(60,40,20, 0.22);
+  --shadow-xl: 0px 30px 60px -30px rgba(60,40,20, 0.30);
+  --shadow-2xl: 0px 40px 80px -30px rgba(60,40,20, 0.35);
   --tracking-normal: 0em;
   --spacing: 0.25rem;
 
-  --sidebar-primary-border: hsl(var(--sidebar-primary));
   --sidebar-primary-border: hsl(from hsl(var(--sidebar-primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --sidebar-accent-border: hsl(var(--sidebar-accent));
   --sidebar-accent-border: hsl(from hsl(var(--sidebar-accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --primary-border: hsl(var(--primary));
   --primary-border: hsl(from hsl(var(--primary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --secondary-border: hsl(var(--secondary));
   --secondary-border: hsl(from hsl(var(--secondary)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --muted-border: hsl(var(--muted));
   --muted-border: hsl(from hsl(var(--muted)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --accent-border: hsl(var(--accent));
   --accent-border: hsl(from hsl(var(--accent)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
-  --destructive-border: hsl(var(--destructive));
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
+/* The app commits to the warm light world; keep .dark identical so any
+   forced-dark context (e.g. Clerk) still renders on-brand. */
 .dark {
-  --button-outline: rgba(255,255,255, .10);
-  --badge-outline: rgba(255,255,255, .05);
-  --opaque-button-border-intensity: 9;
-  --elevate-1: rgba(255,255,255, .04);
-  --elevate-2: rgba(255,255,255, .09);
-
-  --background: 234 47% 7%;
-  --foreground: 210 40% 98%;
-  --border: 234 30% 18%;
-  --card: 234 40% 10%;
-  --card-foreground: 210 40% 96%;
-  --card-border: 234 30% 20%;
-  --sidebar: 234 42% 8%;
-  --sidebar-foreground: 210 40% 90%;
-  --sidebar-border: 234 30% 16%;
-  --sidebar-primary: 245 70% 60%;
-  --sidebar-primary-foreground: 0 0% 100%;
-  --sidebar-accent: 234 30% 16%;
-  --sidebar-accent-foreground: 210 40% 85%;
-  --sidebar-ring: 245 70% 60%;
-  --popover: 234 42% 9%;
-  --popover-foreground: 210 40% 96%;
-  --popover-border: 234 30% 18%;
-  --primary: 245 70% 60%;
-  --primary-foreground: 0 0% 100%;
-  --secondary: 234 30% 16%;
-  --secondary-foreground: 210 40% 90%;
-  --muted: 234 30% 14%;
-  --muted-foreground: 215 20% 65%;
-  --accent: 175 65% 45%;
-  --accent-foreground: 0 0% 100%;
-  --destructive: 0 72% 51%;
-  --destructive-foreground: 0 0% 100%;
-  --input: 234 30% 18%;
-  --ring: 245 70% 60%;
-  --chart-1: 245 70% 60%;
-  --chart-2: 175 65% 45%;
-  --chart-3: 262 60% 58%;
-  --chart-4: 38 80% 55%;
-  --chart-5: 0 72% 51%;
-
-  --shadow-2xs: 0px 2px 4px 0px rgba(0, 0, 0, 0.4);
-  --shadow-xs: 0px 2px 6px 0px rgba(0, 0, 0, 0.4);
-  --shadow-sm: 0px 2px 8px 0px rgba(0, 0, 0, 0.4), 0px 1px 2px -1px rgba(0, 0, 0, 0.4);
-  --shadow: 0px 4px 12px 0px rgba(0, 0, 0, 0.4), 0px 2px 4px -1px rgba(0, 0, 0, 0.4);
-  --shadow-md: 0px 4px 16px 0px rgba(0, 0, 0, 0.45), 0px 2px 6px -1px rgba(0, 0, 0, 0.4);
-  --shadow-lg: 0px 8px 24px 0px rgba(0, 0, 0, 0.5), 0px 4px 8px -1px rgba(0, 0, 0, 0.4);
-  --shadow-xl: 0px 12px 32px 0px rgba(0, 0, 0, 0.55), 0px 8px 12px -1px rgba(0, 0, 0, 0.4);
-  --shadow-2xl: 0px 24px 48px 0px rgba(0, 0, 0, 0.6);
+  --button-outline: rgba(0,0,0, .10);
+  --badge-outline: rgba(0,0,0, .05);
+  --opaque-button-border-intensity: -8;
+  --elevate-1: rgba(27,26,23, .035);
+  --elevate-2: rgba(27,26,23, .07);
 }
 
 @layer base {
@@ -200,21 +152,29 @@
     @apply border-border;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     @apply font-sans antialiased bg-background text-foreground;
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  h1, h2, h3 {
+    font-family: var(--app-font-serif);
   }
 }
 
-/* iOS input zoom fix — prevents iOS from zooming on focus when font-size < 16px */
+/* iOS input zoom fix */
 input,
 textarea,
 select {
   font-size: 16px;
 }
 
-/* Clerk dark input placeholder fix */
 .cl-formFieldInput::placeholder {
-  color: #4a5568;
+  color: #a89f8d;
   opacity: 1;
 }
 
@@ -280,12 +240,21 @@ select {
     background-color: var(--elevate-2);
   }
 
-  .border.hover-elevate:not(.no-hover-interaction-elevate)::after,
-  .border.active-elevate:not(.no-active-interaction-elevate)::after,
-  .border.hover-elevate-2:not(.no-hover-interaction-elevate)::after,
-  .border.active-elevate-2:not(.no-active-interaction-elevate)::after,
-  .border.hover-elevate:not(.no-hover-interaction-elevate)::after {
+  .border.hover-elevate::after,
+  .border.active-elevate::after,
+  .border.hover-elevate-2::after,
+  .border.active-elevate-2::after {
     inset: -1px;
+  }
+
+  /* animated voice waveform bars */
+  @keyframes wavepulse {
+    0%, 100% { transform: scaleY(0.35); }
+    50%      { transform: scaleY(1); }
+  }
+  .wavebar { transform-origin: center; animation: wavepulse 1.1s ease-in-out infinite; }
+  @media (prefers-reduced-motion: reduce) {
+    .wavebar { animation: none; }
   }
 }
 
