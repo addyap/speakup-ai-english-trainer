@@ -69,7 +69,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
       instructions: instructionFor(accent, slow),
       response_format: "mp3",
     });
-    const buf = Buffer.from(await speech.arrayBuffer());
+    // The SDK returns a fetch Response at runtime (has arrayBuffer); cast
+    // structurally so the type resolves identically across build environments.
+    const audioBytes = await (speech as unknown as {
+      arrayBuffer(): Promise<ArrayBuffer>;
+    }).arrayBuffer();
+    const buf = Buffer.from(audioBytes);
     res.setHeader("Content-Type", "audio/mpeg");
     res.setHeader("Cache-Control", "public, max-age=86400");
     res.status(200).send(buf);
