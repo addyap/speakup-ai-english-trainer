@@ -15,7 +15,7 @@ interface VoiceInputResult {
   stopListening: () => void;
 }
 
-const SILENCE_MS = 1600;    // stop after this much silence once speech is detected
+const SILENCE_MS = 1150;    // stop after this much silence once speech is detected
 const MAX_MS = 30_000;      // hard cap on a single utterance
 const SILENCE_LEVEL = 0.012;
 
