@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useApp, type Message, type Scenario } from "@/lib/AppContext";
-import { useSpeechRecognition } from "@/hooks/useSpeechRecognition";
+import { useVoiceInput } from "@/hooks/useVoiceInput";
 import { useVoiceSettings } from "@/hooks/useVoiceSettings";
 import { speak, stopSpeech, warmUpTts, unlockTtsOnGesture, getVoiceAvailability, autoSelectVoiceURI, type VoiceAvailability } from "@/lib/tts";
 import { VoiceSettingsPanel } from "@/components/VoiceSettingsPanel";
@@ -427,9 +427,12 @@ export function ConversationView() {
     sendMessage(transcript);
   }, [sendMessage]);
 
-  // Sync recognition lang to accent preference: British → en-GB, otherwise en-US
-  const recognitionLang = voiceSettings.accentPreference === "british" ? "en-GB" : "en-US";
-  const { isListening, isSupported, startListening, stopListening, interimTranscript, error: speechError } = useSpeechRecognition(handleSpeechResult, recognitionLang);
+  const { isListening, isTranscribing, isSupported, startListening, stopListening, interimTranscript, error: speechError } = useVoiceInput(handleSpeechResult);
+
+  // Reflect the brief server transcription round-trip as the "processing" mic state.
+  useEffect(() => {
+    if (isTranscribing) setMicState("processing");
+  }, [isTranscribing, setMicState]);
 
   useEffect(() => {
     if (!speechError) return;
