@@ -2,13 +2,14 @@ import type { ReactNode } from "react";
 import { useApp } from "@/lib/AppContext";
 import { t } from "@/i18n/translations";
 
-// SpeakUp AI — Privacy Policy & Legal Notice.
-// Operator identity reused from antonyaddy.com; data-handling section reflects
-// how this app actually works (anonymous use; message/voice content sent to
-// OpenAI to power the AI features). English is the canonical version for this
-// international audience; the French "mentions légales" live on antonyaddy.com.
+// SpeakUp AI — Politique de confidentialité & Mentions légales (FR).
+// L'activité est une auto-entreprise française : le français est la version
+// de référence des documents légaux (mentions légales obligatoires en droit
+// français). Identité de l'éditeur reprise de antonyaddy.com ; la section
+// « données » reflète le fonctionnement réel de l'application (usage anonyme ;
+// contenu des messages et voix transmis à OpenAI pour faire fonctionner l'IA).
 
-const UPDATED = "27 July 2026";
+const UPDATED = "27 juillet 2026";
 const CONTACT = "formations@antonyaddy.com";
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
@@ -33,119 +34,126 @@ export function PrivacyView() {
           ← {t(interfaceLanguage, "back")}
         </button>
 
-        <h1 className="font-serif text-3xl font-semibold text-ink">Privacy &amp; Legal</h1>
-        <p className="mt-1 mb-8 text-xs text-clay">SpeakUp AI · Last updated {UPDATED}</p>
+        <h1 className="font-serif text-3xl font-semibold text-ink">Confidentialité &amp; Mentions légales</h1>
+        <p className="mt-1 mb-8 text-xs text-clay">SpeakUp AI · Dernière mise à jour : {UPDATED}</p>
 
-        {/* ── Privacy Policy ─────────────────────────────────────────── */}
-        <h2 className="mb-4 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-coral">Privacy Policy</h2>
+        {/* ── Politique de confidentialité ───────────────────────────── */}
+        <h2 className="mb-4 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-coral">Politique de confidentialité</h2>
 
-        <Section title="No account, anonymous by design">
+        <Section title="Aucun compte, anonyme par conception">
           <p>
-            You can use SpeakUp AI without creating an account or giving your name, email, or any
-            personal contact details. A random anonymous identifier is generated in your browser to
-            remember your progress between sessions — it is not linked to your real identity.
+            Vous pouvez utiliser SpeakUp AI sans créer de compte ni communiquer votre nom, votre adresse
+            e-mail ou toute autre coordonnée personnelle. Un identifiant anonyme aléatoire est généré dans
+            votre navigateur pour mémoriser votre progression d'une session à l'autre ; il n'est pas relié
+            à votre identité réelle.
           </p>
         </Section>
 
-        <Section title="What is stored in your browser">
+        <Section title="Ce qui est stocké dans votre navigateur">
           <p>
-            Your learning progress — an estimated CEFR level, recurring error tags, session count and
-            your language preferences — is saved locally in your browser (localStorage). It stays on
-            your device and you can erase it at any time by clearing your browser's site data.
+            Votre progression — un niveau estimé (CECRL), les types d'erreurs récurrentes, le nombre de
+            sessions et vos préférences de langue — est enregistrée localement dans votre navigateur
+            (localStorage). Ces données restent sur votre appareil et vous pouvez les effacer à tout moment
+            en vidant les données du site dans votre navigateur.
           </p>
         </Section>
 
-        <Section title="What is sent to our AI provider">
+        <Section title="Ce qui est transmis à notre prestataire d'IA">
           <p>
-            To power the conversation, hints, corrections, end-of-session feedback, transcription and
-            spoken replies, the <strong className="text-ink">text of your messages and your recorded
-            voice audio</strong> are sent to <strong className="text-ink">OpenAI</strong> (OpenAI,
-            L.L.C., USA), which processes them on our behalf to generate the AI responses. Your voice
-            recording is used only to produce the transcription and is not stored by us afterwards.
-            Please avoid sharing sensitive personal information in your practice conversations.
+            Pour faire fonctionner la conversation, les suggestions, les corrections, le bilan de fin de
+            session, la transcription et les réponses vocales, le{" "}
+            <strong className="text-ink">texte de vos messages et l'enregistrement de votre voix</strong>{" "}
+            sont transmis à <strong className="text-ink">OpenAI</strong> (OpenAI, L.L.C., États-Unis), qui
+            les traite pour notre compte afin de générer les réponses de l'IA. Votre enregistrement vocal
+            sert uniquement à produire la transcription et n'est pas conservé par nos soins ensuite. Merci
+            d'éviter de communiquer des informations personnelles sensibles pendant vos conversations
+            d'entraînement.
           </p>
         </Section>
 
-        <Section title="Anonymous usage records">
+        <Section title="Données d'usage anonymes">
           <p>
-            To understand how the app is used and to improve it, we may store anonymous session records
-            (the anonymous device identifier, estimated level, error tags, chosen scenario and language
-            settings). These records contain no name, email address or other directly identifying
-            information.
+            Afin de comprendre l'utilisation de l'application et de l'améliorer, nous pouvons conserver des
+            enregistrements de session anonymes (identifiant anonyme, niveau estimé, types d'erreurs,
+            scénario choisi et paramètres de langue). Ces enregistrements ne contiennent aucun nom, adresse
+            e-mail ni autre information permettant de vous identifier directement.
           </p>
         </Section>
 
-        <Section title="Cookies & tracking">
+        <Section title="Cookies & traceurs">
           <p>
-            SpeakUp AI uses no advertising cookies and no third-party audience-tracking or analytics
-            tools. Only technical browser storage strictly necessary for the app to function is used.
+            SpeakUp AI n'utilise aucun cookie publicitaire ni outil de mesure d'audience ou de suivi tiers.
+            Seul le stockage technique strictement nécessaire au fonctionnement de l'application est utilisé.
           </p>
         </Section>
 
-        <Section title="Processors & international transfers">
-          <p>Data is shared only with technical providers acting on our behalf:</p>
+        <Section title="Sous-traitants & transferts internationaux">
+          <p>Les données ne sont partagées qu'avec des prestataires techniques agissant pour notre compte :</p>
           <ul className="ml-4 list-disc space-y-1">
-            <li><strong className="text-ink">OpenAI, L.L.C.</strong> (USA) — AI language, speech and transcription processing.</li>
-            <li><strong className="text-ink">Vercel Inc.</strong> (USA) — website hosting and delivery.</li>
-            <li><strong className="text-ink">Clerk</strong> — authentication infrastructure (used only if sign-in is enabled).</li>
+            <li><strong className="text-ink">OpenAI, L.L.C.</strong> (États-Unis) — traitement du langage, de la parole et de la transcription par IA.</li>
+            <li><strong className="text-ink">Vercel Inc.</strong> (États-Unis) — hébergement et diffusion du site.</li>
+            <li><strong className="text-ink">Clerk</strong> — infrastructure d'authentification (utilisée uniquement si la connexion est activée).</li>
           </ul>
           <p>
-            Transfers outside the European Union are covered by appropriate safeguards under the GDPR
-            (such as the European Commission's Standard Contractual Clauses).
+            Les transferts en dehors de l'Union européenne sont encadrés par des garanties appropriées au
+            titre du RGPD (notamment les clauses contractuelles types de la Commission européenne).
           </p>
         </Section>
 
-        <Section title="Legal basis & retention">
+        <Section title="Base légale & conservation">
           <p>
-            Processing is based on your consent and our legitimate interest in providing and improving
-            the service. Data stored in your browser remains until you clear it; anonymous usage records
-            are kept only as long as useful for improving the product.
+            Le traitement repose sur votre consentement et sur notre intérêt légitime à fournir et améliorer
+            le service. Les données stockées dans votre navigateur y demeurent jusqu'à ce que vous les
+            effaciez ; les enregistrements d'usage anonymes ne sont conservés que le temps utile à
+            l'amélioration du produit.
           </p>
         </Section>
 
-        <Section title="Your rights (GDPR / RGPD)">
+        <Section title="Vos droits (RGPD)">
           <p>
-            You have the right to access, rectify, erase, restrict, object to and port your data. Because
-            the app is anonymous, the simplest way to remove your local data is to clear your browser's
-            site storage. For any request, contact{" "}
+            Vous disposez d'un droit d'accès, de rectification, d'effacement, de limitation, d'opposition et
+            de portabilité de vos données. L'application étant anonyme, le moyen le plus simple de supprimer
+            vos données locales est de vider le stockage du site dans votre navigateur. Pour toute demande,
+            écrivez à{" "}
             <a href={`mailto:${CONTACT}`} className="font-medium text-coral underline decoration-line underline-offset-2">{CONTACT}</a>.
-            You may also lodge a complaint with the French data-protection authority, the CNIL
+            Vous pouvez également introduire une réclamation auprès de la CNIL
             (<a href="https://www.cnil.fr" className="font-medium text-coral underline decoration-line underline-offset-2" target="_blank" rel="noopener noreferrer">www.cnil.fr</a>).
           </p>
         </Section>
 
-        {/* ── Legal Notice ───────────────────────────────────────────── */}
+        {/* ── Mentions légales ───────────────────────────────────────── */}
         <div className="my-9 h-px w-full bg-line" />
-        <h2 className="mb-4 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-coral">Legal Notice (Mentions légales)</h2>
+        <h2 className="mb-4 font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-coral">Mentions légales</h2>
 
-        <Section title="Publisher">
+        <Section title="Éditeur">
           <p>
-            <strong className="text-ink">Antony Addy</strong> — auto-entrepreneur (independent
-            professional adult trainer).<br />
+            <strong className="text-ink">Antony Addy</strong> — auto-entrepreneur (formateur professionnel
+            d'adultes indépendant).<br />
             135 rue Henri Vadon, Résidence des Arènes, 83600 Fréjus, France.<br />
-            SIRET 48317889300028 · Déclaration d'activité 93830738883 registered with DREETS
-            Provence-Alpes-Côte d'Azur (this registration <em>ne vaut pas agrément de l'État</em>).<br />
-            Contact: <a href={`mailto:${CONTACT}`} className="font-medium text-coral underline decoration-line underline-offset-2">{CONTACT}</a> · +33 6 49 82 98 26.<br />
-            Publication director: Antony Addy.
+            SIRET 48317889300028 · Déclaration d'activité n° 93830738883 enregistrée auprès de la DREETS
+            Provence-Alpes-Côte d'Azur (cet enregistrement ne vaut pas agrément de l'État).<br />
+            Contact : <a href={`mailto:${CONTACT}`} className="font-medium text-coral underline decoration-line underline-offset-2">{CONTACT}</a> · +33 6 49 82 98 26.<br />
+            Directeur de la publication : Antony Addy.
           </p>
         </Section>
 
-        <Section title="Hosting">
+        <Section title="Hébergement">
           <p>
-            This site is hosted by <strong className="text-ink">Vercel Inc.</strong>, 340 S Lemon Ave
-            #4133, Walnut, CA 91789, USA — <a href="https://vercel.com" className="font-medium text-coral underline decoration-line underline-offset-2" target="_blank" rel="noopener noreferrer">vercel.com</a>.
+            Ce site est hébergé par <strong className="text-ink">Vercel Inc.</strong>, 340 S Lemon Ave
+            #4133, Walnut, CA 91789, États-Unis — <a href="https://vercel.com" className="font-medium text-coral underline decoration-line underline-offset-2" target="_blank" rel="noopener noreferrer">vercel.com</a>.
           </p>
         </Section>
 
-        <Section title="Intellectual property">
+        <Section title="Propriété intellectuelle">
           <p>
-            All content on this site — texts, design, and pedagogical materials — is the exclusive
-            property of Antony Addy. Any reproduction without prior authorization is prohibited.
+            L'ensemble du contenu de ce site — textes, design et supports pédagogiques — est la propriété
+            exclusive d'Antony Addy. Toute reproduction sans autorisation préalable est interdite.
           </p>
         </Section>
 
         <p className="mt-8 text-[11px] leading-relaxed text-clay">
-          The French legal notice and privacy policy for Antony Addy's activity are also available at{" "}
+          Les mentions légales et la politique de confidentialité complètes de l'activité d'Antony Addy sont
+          également disponibles sur{" "}
           <a href="https://antonyaddy.com/mentions-legales" className="text-coral underline decoration-line underline-offset-2" target="_blank" rel="noopener noreferrer">antonyaddy.com</a>.
         </p>
       </div>
