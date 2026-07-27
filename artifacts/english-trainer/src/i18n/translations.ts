@@ -207,6 +207,7 @@ type TranslationKeys = {
   replayBtn: string;
   stopBtn: string;
   moreNatural: string;
+  replaySlowly: string;
   correctedLabel: string;
   vocabLabel: string;
   autoSpeakOffMsg: string;
@@ -288,6 +289,7 @@ type TranslationKeys = {
 
 const translations: Record<Language, TranslationKeys> = {
   English: {
+    replaySlowly: "Replay slowly",
     ncJobInterview: "Pitch your ideas and hold your own in a corporate discussion.",
     ncSmallTalk: "Build professional connections at an industry event.",
     ncBusinessMeeting: "Put your skills on the line in a formal interview.",
@@ -507,6 +509,7 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Level up with this next challenge",
   },
   French: {
+    replaySlowly: "Réécouter lentement",
     ncJobInterview: "Défendez vos idées et tenez tête dans une discussion d'entreprise.",
     ncSmallTalk: "Créez des contacts professionnels lors d'un événement du secteur.",
     ncBusinessMeeting: "Mettez vos compétences à l'épreuve lors d'un entretien formel.",
@@ -726,6 +729,7 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Relevez ce prochain défi pour progresser",
   },
   Spanish: {
+    replaySlowly: "Reproducir lentamente",
     ncJobInterview: "Defiende tus ideas y hazte valer en una discusión corporativa.",
     ncSmallTalk: "Crea contactos profesionales en un evento del sector.",
     ncBusinessMeeting: "Pon a prueba tus habilidades en una entrevista formal.",
@@ -945,6 +949,7 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Supera este próximo desafío para mejorar",
   },
   German: {
+    replaySlowly: "Langsam wiedergeben",
     ncJobInterview: "Bring deine Ideen ein und behaupte dich in einer Firmendiskussion.",
     ncSmallTalk: "Knüpfe berufliche Kontakte auf einem Branchenevent.",
     ncBusinessMeeting: "Stelle deine Fähigkeiten in einem formellen Vorstellungsgespräch unter Beweis.",
@@ -1164,6 +1169,7 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Meistere diese nächste Herausforderung",
   },
   Italian: {
+    replaySlowly: "Riascolta lentamente",
     ncJobInterview: "Presenta le tue idee e tieni testa in una discussione aziendale.",
     ncSmallTalk: "Crea contatti professionali a un evento di settore.",
     ncBusinessMeeting: "Metti alla prova le tue capacità in un colloquio formale.",
@@ -1383,6 +1389,7 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Affronta questa sfida per migliorare",
   },
   Portuguese: {
+    replaySlowly: "Reproduzir lentamente",
     ncJobInterview: "Defenda as suas ideias e afirme-se numa discussão empresarial.",
     ncSmallTalk: "Crie contactos profissionais num evento do setor.",
     ncBusinessMeeting: "Ponha as suas competências à prova numa entrevista formal.",
@@ -1602,6 +1609,7 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Supere este próximo desafio para evoluir",
   },
   Russian: {
+    replaySlowly: "Воспроизвести медленно",
     ncJobInterview: "Отстаивайте свои идеи и уверенно держитесь в деловой дискуссии.",
     ncSmallTalk: "Заводите профессиональные знакомства на отраслевом мероприятии.",
     ncBusinessMeeting: "Проверьте свои навыки на официальном собеседовании.",
@@ -1821,6 +1829,7 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Пройди это следующее испытание и расти",
   },
   Arabic: {
+    replaySlowly: "إعادة التشغيل ببطء",
     ncJobInterview: "اعرض أفكارك وأثبت وجودك في نقاش داخل الشركة.",
     ncSmallTalk: "كوّن علاقات مهنية في فعالية متخصصة.",
     ncBusinessMeeting: "اختبر مهاراتك في مقابلة رسمية.",
@@ -2040,6 +2049,7 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "تقدّم مع هذا التحدي القادم",
   },
   Chinese: {
+    replaySlowly: "慢速重播",
     ncJobInterview: "在公司讨论中表达观点并据理力争。",
     ncSmallTalk: "在行业活动中建立职业人脉。",
     ncBusinessMeeting: "在正式面试中检验你的能力。",
@@ -2259,6 +2269,7 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "挑战下一个场景，提升你的水平",
   },
   Japanese: {
+    replaySlowly: "ゆっくり再生",
     ncJobInterview: "社内の議論で自分の意見を主張し、堂々と渡り合いましょう。",
     ncSmallTalk: "業界イベントで仕事のつながりを築きましょう。",
     ncBusinessMeeting: "正式な面接で自分の実力を試しましょう。",
@@ -2478,6 +2489,7 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "次のチャレンジでレベルアップしよう",
   },
   Polish: {
+    replaySlowly: "Odtwórz wolno",
     ncJobInterview: "Przedstaw swoje pomysły i obroń swoje zdanie w firmowej dyskusji.",
     ncSmallTalk: "Nawiązuj kontakty zawodowe na wydarzeniu branżowym.",
     ncBusinessMeeting: "Sprawdź swoje umiejętności podczas formalnej rozmowy kwalifikacyjnej.",
@@ -2697,6 +2709,7 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Zmierz się z tym wyzwaniem i rozwijaj się",
   },
   Ukrainian: {
+    replaySlowly: "Відтворити повільно",
     ncJobInterview: "Відстоюйте свої ідеї та впевнено тримайтеся в діловій дискусії.",
     ncSmallTalk: "Установлюйте професійні контакти на галузевому заході.",
     ncBusinessMeeting: "Випробуйте свої навички на офіційній співбесіді.",

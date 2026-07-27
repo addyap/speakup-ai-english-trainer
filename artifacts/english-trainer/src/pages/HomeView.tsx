@@ -2,8 +2,6 @@ import { motion } from "framer-motion";
 import { useApp } from "@/lib/AppContext";
 import { t } from "@/i18n/translations";
 import { getLearnerProfile } from "@/lib/learnerMemory";
-import authorImage from "@assets/IMG-20260308-WA0008(1)_1777804765325.jpg";
-import linkedInQr from "@assets/image_b74e7332-6bc1-4b4d-bb3c-a653520fce8e20260503_124202_1777804981304.jpg";
 
 const FEATURE_PILLS = [
   { icon: "🌍", key: "featureLanguages", fallback: "12 languages" },

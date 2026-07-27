@@ -728,8 +728,8 @@ export function ConversationView() {
                       {!isSpeakingThis && (
                         <button
                           onClick={() => handleSpeakMsg(idx, msg.content, 0.7)}
-                          title="Replay slowly"
-                          aria-label="Replay at slow speed"
+                          title={t(interfaceLanguage, "replaySlowly")}
+                          aria-label={t(interfaceLanguage, "replaySlowly")}
                           className="flex items-center justify-center w-10 min-h-[44px] rounded-lg text-base bg-white/6 border border-white/10 text-white/35 hover:text-white/65 hover:bg-white/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500/60"
                         >
                           🐢
