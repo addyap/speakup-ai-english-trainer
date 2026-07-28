@@ -254,6 +254,12 @@ export function FeedbackView() {
                 </li>
               ))}
             </ul>
+            <button
+              onClick={() => setCurrentView("grammar")}
+              className="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-2 text-xs font-semibold text-amber-700 transition-colors hover:bg-amber-500/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500/40"
+            >
+              📘 {t(interfaceLanguage, "homeGrammarBtn")} →
+            </button>
           </Card>
         )}
 
