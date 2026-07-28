@@ -114,6 +114,12 @@ export function HomeView() {
                 <path strokeLinecap="round" strokeLinejoin="round" d="M13 7l5 5m0 0l-5 5m5-5H6" />
               </svg>
             </button>
+            <button
+              onClick={() => setCurrentView("grammar")}
+              className="inline-flex min-h-[56px] w-full items-center justify-center gap-2 rounded-2xl border border-forest/35 bg-forest-soft px-6 text-lg font-semibold text-forest transition-all hover:border-forest/55 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest/40 active:scale-[0.98] sm:w-auto"
+            >
+              📘 {tr("homeGrammarBtn")}
+            </button>
           </motion.div>
 
           {/* Trust row */}

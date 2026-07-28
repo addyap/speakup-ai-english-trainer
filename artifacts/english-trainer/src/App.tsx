@@ -11,6 +11,7 @@ import { SessionSetupView } from "@/pages/SessionSetupView";
 import { ConversationView } from "@/pages/ConversationView";
 import { FeedbackView } from "@/pages/FeedbackView";
 import { PrivacyView } from "@/pages/PrivacyView";
+import { GrammarView } from "@/pages/GrammarView";
 import { FREE_ACCESS_ENABLED } from "@/lib/freeAccess";
 import { AuditDashboard } from "@/pages/AuditDashboard";
 
@@ -97,6 +98,7 @@ function ViewRouter() {
     case "conversation": return <ConversationView />;
     case "feedback": return <FeedbackView />;
     case "privacy": return <PrivacyView />;
+    case "grammar": return <GrammarView />;
     default: return <HomeView />;
   }
 }

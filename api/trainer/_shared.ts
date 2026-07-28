@@ -96,6 +96,13 @@ export const GetScenarioPhrasesBody = z.object({
   feedbackLanguage: z.string().optional().default("English"),
 });
 
+export const GetGrammarLessonBody = z.object({
+  id: z.string(),
+  title: z.string(),
+  level: z.string(),
+  feedbackLanguage: z.string().optional().default("English"),
+});
+
 // ─── OpenAI error classifier ──────────────────────────────────────────────────
 function openAIStatus(err: unknown): number | undefined {
   if (err !== null && typeof err === "object" && "status" in err) {
@@ -1068,6 +1075,89 @@ RULES:
     if (status === 529) { res.status(503).json({ error: "The AI service is overloaded. Please try again in a few seconds." }); return; }
     logger.error({ err }, "OpenAI phrases error");
     res.status(500).json({ error: "Could not load phrases. Please try again." });
+  }
+}
+
+// ─── /grammar ─────────────────────────────────────────────────────────────────
+export async function grammarHandler(req: AppReq, res: AppRes): Promise<void> {
+  if (!applyRateLimit(req, res)) return;
+
+  const parseResult = GetGrammarLessonBody.safeParse(req.body);
+  if (!parseResult.success) {
+    res.status(400).json({ error: "Invalid request body", details: parseResult.error.message });
+    return;
+  }
+
+  const { title, level, feedbackLanguage } = parseResult.data;
+  const logger = log(req);
+  const explainLang = feedbackLanguage && feedbackLanguage.trim() ? feedbackLanguage : "English";
+
+  const systemPrompt = `You are an expert English teacher writing a concise, accurate lesson on the ENGLISH grammar point: "${title}", around CEFR ${level}.
+Write the "explanation" and every exercise "explanation" in ${explainLang}. Keep all English examples, target forms and the exercise answers in ENGLISH.
+
+Return ONLY valid JSON — no markdown fences:
+{
+  "explanation": "A clear explanation in ${explainLang}, 2–4 short paragraphs separated by \\n\\n. Wrap English forms/words in **double asterisks**. Cover the rule, the key forms, and the most common mistake learners make.",
+  "examples": [ { "en": "English example sentence", "gloss": "translation in ${explainLang}" } ],
+  "exercises": [ { "prompt": "An English sentence with a ___ gap, with a hint in parentheses", "answer": "the correct English word(s) for the gap", "accept": ["acceptable variant"], "explanation": "1 short sentence in ${explainLang} on why" } ]
+}
+
+RULES:
+- explanation: in ${explainLang}, accurate, friendly, concise. Bold English forms with **asterisks**.
+- examples: exactly 5 English sentences showing the point in use, each with a ${explainLang} translation as "gloss".
+- exercises: exactly 5 fill-in-the-blank items in English testing THIS point only. "answer" is just the missing English word(s), lowercase unless a proper noun. "accept" lists other fully-correct answers (e.g. contractions) or [].
+- Correct standard English only. Return raw JSON only.`;
+
+  try {
+    const response = await openai.chat.completions.create({
+      model: "gpt-5-mini",
+      reasoning_effort: "minimal",
+      max_completion_tokens: 1200,
+      response_format: { type: "json_object" },
+      messages: [{ role: "system", content: systemPrompt }],
+    });
+
+    const raw = response.choices[0]?.message?.content ?? "";
+    if (!raw.trim()) {
+      res.status(500).json({ error: "Empty response from AI. Please try again." });
+      return;
+    }
+    const parsed = JSON.parse(raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim());
+
+    const examples = Array.isArray(parsed.examples)
+      ? (parsed.examples as unknown[])
+          .filter((e): e is { en: string; gloss?: unknown } =>
+            e !== null && typeof e === "object" && typeof (e as { en?: unknown }).en === "string")
+          .slice(0, 8)
+          .map((e) => ({ en: e.en.trim(), gloss: typeof e.gloss === "string" ? e.gloss.trim() : "" }))
+      : [];
+
+    const exercises = Array.isArray(parsed.exercises)
+      ? (parsed.exercises as unknown[])
+          .filter((e): e is { prompt: string; answer: string; accept?: unknown; explanation?: unknown } =>
+            e !== null && typeof e === "object" &&
+            typeof (e as { prompt?: unknown }).prompt === "string" &&
+            typeof (e as { answer?: unknown }).answer === "string")
+          .slice(0, 8)
+          .map((e) => ({
+            prompt: e.prompt.trim(),
+            answer: e.answer.trim(),
+            accept: Array.isArray(e.accept) ? e.accept.filter((a): a is string => typeof a === "string").map((a) => a.trim()) : [],
+            explanation: typeof e.explanation === "string" ? e.explanation.trim() : "",
+          }))
+      : [];
+
+    res.json({
+      explanation: typeof parsed.explanation === "string" ? parsed.explanation : "",
+      examples,
+      exercises,
+    });
+  } catch (err) {
+    const status = openAIStatus(err);
+    if (status === 429) { res.status(429).json({ error: "Rate limit reached. Please wait a moment and try again." }); return; }
+    if (status === 529) { res.status(503).json({ error: "The AI service is overloaded. Please try again in a few seconds." }); return; }
+    logger.error({ err }, "OpenAI grammar error");
+    res.status(500).json({ error: "Could not load the lesson. Please try again." });
   }
 }
 
