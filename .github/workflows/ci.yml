@@ -1,0 +1,38 @@
+name: CI
+
+# Runs the typecheck gate + i18n completeness test on every push and PR, so
+# regressions (an incomplete Record<Scenario> map, a missing/empty translation)
+# fail here on Linux before they can reach production.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Typecheck (libs + frontend)
+        run: pnpm run typecheck
+
+      - name: Typecheck API functions
+        run: pnpm exec tsc -p api/tsconfig.json --noEmit
+
+      - name: Data checks (i18n completeness)
+        run: pnpm run test
