@@ -45,7 +45,6 @@ Rules: max 2 tips, each naming a concrete sound or word where helpful (keep exam
       model: "gpt-4o-audio-preview",
       modalities: ["text"],
       max_completion_tokens: 300,
-      response_format: { type: "json_object" },
       messages: [
         { role: "system", content: systemPrompt },
         {
@@ -62,15 +61,18 @@ Rules: max 2 tips, each naming a concrete sound or word where helpful (keep exam
       res.status(502).json({ error: "Empty response" });
       return;
     }
-    const p = JSON.parse(raw) as { overall?: string; tips?: unknown; strength?: string };
+    const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
+    const match = cleaned.match(/\{[\s\S]*\}/);
+    const p = JSON.parse(match ? match[0] : cleaned) as { overall?: string; tips?: unknown; strength?: string };
     res.status(200).json({
       overall: typeof p.overall === "string" ? p.overall : "",
       tips: Array.isArray(p.tips) ? (p.tips as unknown[]).filter((t): t is string => typeof t === "string").slice(0, 2) : [],
       strength: typeof p.strength === "string" ? p.strength : "",
     });
   } catch (err) {
+    const detail = err instanceof Error ? err.message : String(err);
     console.error("[pronounce] failed:", err);
-    res.status(502).json({ error: "Pronunciation feedback unavailable" });
+    res.status(502).json({ error: "Pronunciation feedback unavailable", detail: detail.slice(0, 400) });
   }
 }
 
