@@ -73,7 +73,8 @@ Rules: max 2 tips, each naming a concrete sound or word where helpful (keep exam
     });
   } catch (err) {
     console.error("[pronounce] failed:", err);
-    res.status(502).json({ error: "Pronunciation feedback unavailable" });
+    const detail = err instanceof Error ? err.message : String(err);
+    res.status(502).json({ error: "Pronunciation feedback unavailable", detail: detail.slice(0, 500) });
   }
 }
 
