@@ -39,15 +39,14 @@ async function pronounce(
   const systemPrompt = `You are a warm English pronunciation coach. You will hear a short clip of a learner speaking English. Assess ONLY pronunciation and delivery — clarity, individual sounds, word stress, sentence rhythm and intonation. Do NOT comment on grammar, vocabulary or content. Be specific but encouraging.
 Return ONLY this JSON (no markdown):
 {"overall":"1 short encouraging sentence on how clear they sound (in ${feedbackLanguage})","tips":["specific tip on a sound/stress/rhythm to improve (in ${feedbackLanguage})","a second tip (in ${feedbackLanguage})"],"strength":"1 thing they did well (in ${feedbackLanguage})"}
-Rules: max 2 tips, each naming a concrete sound or word where helpful (keep example words in English). If the audio is unclear or too short to judge, say so kindly in "overall" and return empty tips.`;
+Rules: max 2 tips, each naming a concrete sound or word where helpful (keep example words in English). If the audio is unclear or too short to judge, say so kindly in "overall" and return empty tips.
+IMPORTANT: Output ONLY the raw JSON object — it must start with { and end with }. No greeting, no preamble, no explanation, no markdown fences.`;
   try {
     const response = await openai.chat.completions.create({
       // Audio-input chat model (successor to the retired gpt-4o-audio-preview).
       // Requires org verification; if unavailable the client hides the card.
       model: "gpt-audio",
       modalities: ["text"],
-      // Force pure JSON — gpt-audio otherwise sometimes prefixes prose ("Sure!…").
-      response_format: { type: "json_object" },
       max_completion_tokens: 300,
       messages: [
         { role: "system", content: systemPrompt },
@@ -65,14 +64,24 @@ Rules: max 2 tips, each naming a concrete sound or word where helpful (keep exam
       res.status(502).json({ error: "Empty response" });
       return;
     }
+    // gpt-audio doesn't support forced JSON mode and occasionally answers in
+    // prose. Try to parse the JSON object; if that fails, degrade gracefully by
+    // surfacing the model's prose as the overall comment rather than erroring.
     const cleaned = raw.replace(/```json\n?/g, "").replace(/```\n?/g, "").trim();
     const match = cleaned.match(/\{[\s\S]*\}/);
-    const p = JSON.parse(match ? match[0] : cleaned) as { overall?: string; tips?: unknown; strength?: string };
-    res.status(200).json({
-      overall: typeof p.overall === "string" ? p.overall : "",
-      tips: Array.isArray(p.tips) ? (p.tips as unknown[]).filter((t): t is string => typeof t === "string").slice(0, 2) : [],
-      strength: typeof p.strength === "string" ? p.strength : "",
-    });
+    let parsed: { overall?: string; tips?: unknown; strength?: string } | null = null;
+    if (match) {
+      try { parsed = JSON.parse(match[0]); } catch { parsed = null; }
+    }
+    if (parsed) {
+      res.status(200).json({
+        overall: typeof parsed.overall === "string" ? parsed.overall : "",
+        tips: Array.isArray(parsed.tips) ? (parsed.tips as unknown[]).filter((t): t is string => typeof t === "string").slice(0, 2) : [],
+        strength: typeof parsed.strength === "string" ? parsed.strength : "",
+      });
+    } else {
+      res.status(200).json({ overall: cleaned.slice(0, 300), tips: [], strength: "" });
+    }
   } catch (err) {
     console.error("[pronounce] failed:", err);
     const detail = err instanceof Error ? err.message : String(err);
