@@ -4,6 +4,10 @@ packages:
   - lib/integrations/*
   - scripts
 
+allowBuilds:
+  '@clerk/shared': set this to true or false
+  esbuild: set this to true or false
+
 autoInstallPeers: false
 
 catalog:
@@ -134,3 +138,5 @@ overrides:
   vite>picomatch: ^4.0.4
   ws: '>=8.20.1'
   yaml: ^2.8.3
+
+verifyDepsBeforeRun: false
