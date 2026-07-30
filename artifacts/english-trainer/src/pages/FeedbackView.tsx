@@ -131,10 +131,10 @@ export function FeedbackView() {
     (async () => {
       try {
         const wav = await blobToWavBase64(clip);
-        const res = await fetch("/api/pronunciation", {
+        const res = await fetch("/api/stt", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ audio: wav, format: "wav", feedbackLanguage }),
+          body: JSON.stringify({ task: "pronounce", audio: wav, format: "wav", feedbackLanguage }),
         });
         if (!res.ok) throw new Error(String(res.status));
         const d = (await res.json()) as { overall?: string; tips?: unknown; strength?: string };
