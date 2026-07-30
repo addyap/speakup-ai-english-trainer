@@ -140,7 +140,7 @@ export function FeedbackView() {
         const d = (await res.json()) as { overall?: string; tips?: unknown; strength?: string };
         setPron({ loading: false, data: { overall: d.overall ?? "", tips: Array.isArray(d.tips) ? (d.tips as string[]) : [], strength: d.strength ?? "" } });
       } catch {
-        setPron({ loading: false, error: true });
+        setPron(null); // audio-input model not available on the account → hide silently
       }
     })();
   }, [feedback, feedbackLanguage]);

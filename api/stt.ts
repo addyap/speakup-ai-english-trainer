@@ -42,7 +42,9 @@ Return ONLY this JSON (no markdown):
 Rules: max 2 tips, each naming a concrete sound or word where helpful (keep example words in English). If the audio is unclear or too short to judge, say so kindly in "overall" and return empty tips.`;
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini-audio-preview",
+      // Requires an audio-input model on the OpenAI account (org verification).
+      // If unavailable the client silently hides the pronunciation card.
+      model: "gpt-4o-audio-preview",
       modalities: ["text"],
       max_completion_tokens: 300,
       messages: [
@@ -70,9 +72,8 @@ Rules: max 2 tips, each naming a concrete sound or word where helpful (keep exam
       strength: typeof p.strength === "string" ? p.strength : "",
     });
   } catch (err) {
-    const detail = err instanceof Error ? err.message : String(err);
     console.error("[pronounce] failed:", err);
-    res.status(502).json({ error: "Pronunciation feedback unavailable", detail: detail.slice(0, 400) });
+    res.status(502).json({ error: "Pronunciation feedback unavailable" });
   }
 }
 
