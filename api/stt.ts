@@ -46,6 +46,8 @@ Rules: max 2 tips, each naming a concrete sound or word where helpful (keep exam
       // Requires org verification; if unavailable the client hides the card.
       model: "gpt-audio",
       modalities: ["text"],
+      // Force pure JSON — gpt-audio otherwise sometimes prefixes prose ("Sure!…").
+      response_format: { type: "json_object" },
       max_completion_tokens: 300,
       messages: [
         { role: "system", content: systemPrompt },
