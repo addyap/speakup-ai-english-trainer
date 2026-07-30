@@ -84,8 +84,7 @@ IMPORTANT: Output ONLY the raw JSON object — it must start with { and end with
     }
   } catch (err) {
     console.error("[pronounce] failed:", err);
-    const detail = err instanceof Error ? err.message : String(err);
-    res.status(502).json({ error: "Pronunciation feedback unavailable", detail: detail.slice(0, 500) });
+    res.status(502).json({ error: "Pronunciation feedback unavailable" });
   }
 }
 
