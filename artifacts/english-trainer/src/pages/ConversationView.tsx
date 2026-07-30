@@ -5,6 +5,7 @@ import { useVoiceInput } from "@/hooks/useVoiceInput";
 import { useVoiceSettings } from "@/hooks/useVoiceSettings";
 import { speak, stopSpeech, warmUpTts, unlockTtsOnGesture, getVoiceAvailability, autoSelectVoiceURI, type VoiceAvailability } from "@/lib/tts";
 import { trackEvent } from "@/lib/analytics";
+import { offerVoiceClip } from "@/lib/voiceClip";
 import { VoiceSettingsPanel } from "@/components/VoiceSettingsPanel";
 import {
   useSendConversationMessage,
@@ -472,8 +473,9 @@ export function ConversationView() {
     }
   }, [messages, mode, scenario, level, interfaceLanguage, feedbackLanguage, addMessage, incrementTurn, setMicState, handleAiResponse]);
 
-  const handleSpeechResult = useCallback((transcript: string) => {
+  const handleSpeechResult = useCallback((transcript: string, audio?: Blob) => {
     if (!transcript.trim()) return;
+    if (audio) offerVoiceClip(audio);
     sendMessage(transcript);
   }, [sendMessage]);
 

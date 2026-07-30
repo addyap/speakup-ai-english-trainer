@@ -38,7 +38,7 @@ function blobToBase64(blob: Blob): Promise<string> {
   });
 }
 
-export function useVoiceInput(onResult?: (transcript: string) => void): VoiceInputResult {
+export function useVoiceInput(onResult?: (transcript: string, audio?: Blob) => void): VoiceInputResult {
   const [isListening, setIsListening] = useState(false);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -99,7 +99,7 @@ export function useVoiceInput(onResult?: (transcript: string) => void): VoiceInp
       const data = (await res.json()) as { text?: string };
       const text = (data.text ?? "").trim();
       if (cancelledRef.current) return;
-      if (text) onResultRef.current?.(text);
+      if (text) onResultRef.current?.(text, blob);
       else setError("no_speech");
     } catch {
       if (!cancelledRef.current) setError("network_error");

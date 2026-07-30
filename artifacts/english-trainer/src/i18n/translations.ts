@@ -268,6 +268,9 @@ type TranslationKeys = {
   tomorrowsChallenge: string;
   tryThisNext: string;
   backToHome: string;
+  pronunciationTitle: string;
+  pronunciationListening: string;
+  pronunciationUnavailable: string;
   // FeedbackView — next-challenge descriptions (keyed by current scenario)
   ncJobInterview: string;
   ncSmallTalk: string;
@@ -337,6 +340,9 @@ type TranslationKeys = {
 
 const translations: Record<Language, TranslationKeys> = {
   English: {
+    pronunciationTitle: "Pronunciation",
+    pronunciationListening: "Listening to your delivery…",
+    pronunciationUnavailable: "Pronunciation feedback isn't available for this session.",
     replaySlowly: "Replay slowly",
     ncJobInterview: "Pitch your ideas and hold your own in a corporate discussion.",
     ncSmallTalk: "Build professional connections at an industry event.",
@@ -605,6 +611,9 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Level up with this next challenge",
   },
   French: {
+    pronunciationTitle: "Prononciation",
+    pronunciationListening: "Analyse de votre élocution…",
+    pronunciationUnavailable: "Le retour sur la prononciation n'est pas disponible pour cette session.",
     replaySlowly: "Réécouter lentement",
     ncJobInterview: "Défendez vos idées et tenez tête dans une discussion d'entreprise.",
     ncSmallTalk: "Créez des contacts professionnels lors d'un événement du secteur.",
@@ -873,6 +882,9 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Relevez ce prochain défi pour progresser",
   },
   Spanish: {
+    pronunciationTitle: "Pronunciación",
+    pronunciationListening: "Analizando tu pronunciación…",
+    pronunciationUnavailable: "El análisis de pronunciación no está disponible para esta sesión.",
     replaySlowly: "Reproducir lentamente",
     ncJobInterview: "Defiende tus ideas y hazte valer en una discusión corporativa.",
     ncSmallTalk: "Crea contactos profesionales en un evento del sector.",
@@ -1141,6 +1153,9 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Supera este próximo desafío para mejorar",
   },
   German: {
+    pronunciationTitle: "Aussprache",
+    pronunciationListening: "Deine Aussprache wird analysiert…",
+    pronunciationUnavailable: "Für diese Sitzung ist keine Aussprache-Rückmeldung verfügbar.",
     replaySlowly: "Langsam wiedergeben",
     ncJobInterview: "Bring deine Ideen ein und behaupte dich in einer Firmendiskussion.",
     ncSmallTalk: "Knüpfe berufliche Kontakte auf einem Branchenevent.",
@@ -1409,6 +1424,9 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Meistere diese nächste Herausforderung",
   },
   Italian: {
+    pronunciationTitle: "Pronuncia",
+    pronunciationListening: "Sto analizzando la tua pronuncia…",
+    pronunciationUnavailable: "Il feedback sulla pronuncia non è disponibile per questa sessione.",
     replaySlowly: "Riascolta lentamente",
     ncJobInterview: "Presenta le tue idee e tieni testa in una discussione aziendale.",
     ncSmallTalk: "Crea contatti professionali a un evento di settore.",
@@ -1677,6 +1695,9 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Affronta questa sfida per migliorare",
   },
   Portuguese: {
+    pronunciationTitle: "Pronúncia",
+    pronunciationListening: "A analisar a sua pronúncia…",
+    pronunciationUnavailable: "A análise de pronúncia não está disponível para esta sessão.",
     replaySlowly: "Reproduzir lentamente",
     ncJobInterview: "Defenda as suas ideias e afirme-se numa discussão empresarial.",
     ncSmallTalk: "Crie contactos profissionais num evento do setor.",
@@ -1945,6 +1966,9 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Supere este próximo desafio para evoluir",
   },
   Russian: {
+    pronunciationTitle: "Произношение",
+    pronunciationListening: "Анализируем вашу речь…",
+    pronunciationUnavailable: "Обратная связь по произношению недоступна для этой сессии.",
     replaySlowly: "Воспроизвести медленно",
     ncJobInterview: "Отстаивайте свои идеи и уверенно держитесь в деловой дискуссии.",
     ncSmallTalk: "Заводите профессиональные знакомства на отраслевом мероприятии.",
@@ -2213,6 +2237,9 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Пройди это следующее испытание и расти",
   },
   Arabic: {
+    pronunciationTitle: "النطق",
+    pronunciationListening: "يتم تحليل نطقك…",
+    pronunciationUnavailable: "تعذّر تقديم ملاحظات النطق لهذه الجلسة.",
     replaySlowly: "إعادة التشغيل ببطء",
     ncJobInterview: "اعرض أفكارك وأثبت وجودك في نقاش داخل الشركة.",
     ncSmallTalk: "كوّن علاقات مهنية في فعالية متخصصة.",
@@ -2481,6 +2508,9 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "تقدّم مع هذا التحدي القادم",
   },
   Chinese: {
+    pronunciationTitle: "发音",
+    pronunciationListening: "正在分析你的发音…",
+    pronunciationUnavailable: "本次会话暂无发音反馈。",
     replaySlowly: "慢速重播",
     ncJobInterview: "在公司讨论中表达观点并据理力争。",
     ncSmallTalk: "在行业活动中建立职业人脉。",
@@ -2749,6 +2779,9 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "挑战下一个场景，提升你的水平",
   },
   Japanese: {
+    pronunciationTitle: "発音",
+    pronunciationListening: "話し方を分析しています…",
+    pronunciationUnavailable: "このセッションでは発音のフィードバックを利用できません。",
     replaySlowly: "ゆっくり再生",
     ncJobInterview: "社内の議論で自分の意見を主張し、堂々と渡り合いましょう。",
     ncSmallTalk: "業界イベントで仕事のつながりを築きましょう。",
@@ -3017,6 +3050,9 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "次のチャレンジでレベルアップしよう",
   },
   Polish: {
+    pronunciationTitle: "Wymowa",
+    pronunciationListening: "Analizuję Twoją wymowę…",
+    pronunciationUnavailable: "Informacja o wymowie jest niedostępna dla tej sesji.",
     replaySlowly: "Odtwórz wolno",
     ncJobInterview: "Przedstaw swoje pomysły i obroń swoje zdanie w firmowej dyskusji.",
     ncSmallTalk: "Nawiązuj kontakty zawodowe na wydarzeniu branżowym.",
@@ -3285,6 +3321,9 @@ const translations: Record<Language, TranslationKeys> = {
     nextChallengeDesc: "Zmierz się z tym wyzwaniem i rozwijaj się",
   },
   Ukrainian: {
+    pronunciationTitle: "Вимова",
+    pronunciationListening: "Аналізуємо вашу вимову…",
+    pronunciationUnavailable: "Відгук про вимову недоступний для цієї сесії.",
     replaySlowly: "Відтворити повільно",
     ncJobInterview: "Відстоюйте свої ідеї та впевнено тримайтеся в діловій дискусії.",
     ncSmallTalk: "Установлюйте професійні контакти на галузевому заході.",

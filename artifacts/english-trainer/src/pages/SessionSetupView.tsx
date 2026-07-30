@@ -4,6 +4,7 @@ import { useApp, type Mode, type Scenario, type Level } from "@/lib/AppContext";
 import { LANGUAGES, LANGUAGE_NATIVE_NAMES, type Language, t } from "@/i18n/translations";
 import { getLearnerProfile } from "@/lib/learnerMemory";
 import { trackEvent } from "@/lib/analytics";
+import { clearVoiceClip } from "@/lib/voiceClip";
 
 // ─── Useful-phrases study panel (dynamic, cached per scenario+level+language) ──
 type Phrase = { en: string; gloss: string };
@@ -157,12 +158,14 @@ export function SessionSetupView() {
 
   const handleBegin = () => {
     trackEvent("session_start", { scenario, mode, level, from: "setup" });
+    clearVoiceClip();
     if (messages.length > 0) resetSession();
     setCurrentView("conversation");
   };
 
   const handleQuickStart = () => {
     trackEvent("session_start", { scenario: "small_talk", mode: "practice", level: "auto", from: "quick" });
+    clearVoiceClip();
     setMode("practice");
     setLevel("auto");
     setScenario("small_talk");

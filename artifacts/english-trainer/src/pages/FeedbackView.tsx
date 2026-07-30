@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { useApp, type Scenario } from "@/lib/AppContext";
 import { t, type Language } from "@/i18n/translations";
 import { trackEvent } from "@/lib/analytics";
+import { takeVoiceClip } from "@/lib/voiceClip";
+import { blobToWavBase64 } from "@/lib/audio";
 
 type TranslationKey = Parameters<typeof t>[1];
 
@@ -109,13 +111,39 @@ function getCefrExplanationKey(level: string): TranslationKey {
 
 export function FeedbackView() {
   const {
-    interfaceLanguage, feedback, scenario, mode,
+    interfaceLanguage, feedbackLanguage, feedback, scenario, mode,
     resetSession, setCurrentView, setScenario,
   } = useApp();
 
   useEffect(() => {
     if (feedback) trackEvent("session_complete", { level: feedback.estimatedLevel, scenario, mode });
   }, [feedback, scenario, mode]);
+
+  // Pronunciation feedback from the learner's best spoken clip this session.
+  const [pron, setPron] = useState<{ loading: boolean; data?: { overall: string; tips: string[]; strength: string }; error?: boolean } | null>(null);
+  const pronDoneRef = useRef(false);
+  useEffect(() => {
+    if (!feedback || pronDoneRef.current) return;
+    const clip = takeVoiceClip();
+    if (!clip) return;
+    pronDoneRef.current = true;
+    setPron({ loading: true });
+    (async () => {
+      try {
+        const wav = await blobToWavBase64(clip);
+        const res = await fetch("/api/pronunciation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ audio: wav, format: "wav", feedbackLanguage }),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        const d = (await res.json()) as { overall?: string; tips?: unknown; strength?: string };
+        setPron({ loading: false, data: { overall: d.overall ?? "", tips: Array.isArray(d.tips) ? (d.tips as string[]) : [], strength: d.strength ?? "" } });
+      } catch {
+        setPron({ loading: false, error: true });
+      }
+    })();
+  }, [feedback, feedbackLanguage]);
 
   const handleNewSession = () => {
     resetSession();
@@ -296,6 +324,32 @@ export function FeedbackView() {
                 {feedback.fluencyComment}
               </p>
             </div>
+          </Card>
+        )}
+
+        {pron && (
+          <Card delay={0.46} className="bg-coral/10 border border-coral/25">
+            <CardLabel color="text-coral">{t(interfaceLanguage, "pronunciationTitle")}</CardLabel>
+            {pron.loading ? (
+              <div className="flex items-center gap-2 text-clay text-sm">
+                <span className="w-3.5 h-3.5 border-2 border-line border-t-coral rounded-full animate-spin flex-shrink-0" />
+                {t(interfaceLanguage, "pronunciationListening")}
+              </div>
+            ) : pron.error || !pron.data ? (
+              <p className="text-clay text-sm">{t(interfaceLanguage, "pronunciationUnavailable")}</p>
+            ) : (
+              <div className="space-y-2.5 text-sm">
+                {pron.data.overall && <p className="text-ink leading-relaxed">{pron.data.overall}</p>}
+                {pron.data.strength && <p className="text-forest leading-relaxed">✓ {pron.data.strength}</p>}
+                {pron.data.tips.length > 0 && (
+                  <ul className="space-y-1.5 text-ink-soft">
+                    {pron.data.tips.map((tip, i) => (
+                      <li key={i} className="flex gap-2"><span className="text-coral flex-shrink-0">•</span><span>{tip}</span></li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            )}
           </Card>
         )}
 
