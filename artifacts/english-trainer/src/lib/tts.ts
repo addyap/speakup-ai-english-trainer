@@ -195,40 +195,6 @@ export function getTopVoices(accent: AccentPref = "auto", count = 5): EnglishVoi
   return result;
 }
 
-// ─── Debug helper ─────────────────────────────────────────────────────────────
-/**
- * Logs all available voices with name, lang, localService, default, score and
- * blocked flag to the browser console.  Waits for 'voiceschanged' on Chrome.
- */
-export function debugLogVoices(): void {
-  if (!("speechSynthesis" in window)) {
-    console.warn("[TTS] speechSynthesis not available in this browser");
-    return;
-  }
-  const log = () => {
-    const voices = window.speechSynthesis.getVoices();
-    console.group(`[TTS] ${voices.length} voices available`);
-    console.table(
-      voices.map((v) => ({
-        name: v.name,
-        lang: v.lang,
-        localService: v.localService,
-        default: v.default,
-        score: scoreVoice(v, "auto"),
-        blocked: isRoboticVoice(v),
-      })),
-    );
-    const best = selectBestVoice("auto", voices);
-    console.info("[TTS] Best voice (auto):", best?.name ?? "none");
-    console.groupEnd();
-  };
-  const voices = window.speechSynthesis.getVoices();
-  if (voices.length > 0) { log(); return; }
-  // Chrome: voices load async, must wait for voiceschanged
-  window.speechSynthesis.addEventListener("voiceschanged", log, { once: true });
-  setTimeout(log, 1200); // fallback for browsers that never fire voiceschanged
-}
-
 // ─── Text cleaning + pronunciation normalisation ──────────────────────────────
 // ─── Ordinal / currency expansion ────────────────────────────────────────────
 const ORDINAL_WORDS = [

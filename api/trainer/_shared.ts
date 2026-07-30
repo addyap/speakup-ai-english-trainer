@@ -53,54 +53,63 @@ function applyRateLimit(req: AppReq, res: AppRes): boolean {
 }
 
 // ─── Zod validation schemas (inline — no @workspace/* dependency) ─────────────
+// Size caps bound the OpenAI token cost per request: without them a caller can
+// post an arbitrarily large transcript and run up the bill (the endpoints have
+// no per-user auth). A real voice session stays well under these limits.
+const MAX_MSG_LEN = 4000;        // one turn of speech
+const MAX_MESSAGES = 60;         // a session is capped at 15 turns client-side
+const shortField = () => z.string().max(80);          // mode/scenario/level/language
+const langField = () => z.string().max(80).optional().default("English");
+
 const MessageSchema = z.object({
   role: z.enum(["user", "assistant", "system"]),
-  content: z.string(),
+  content: z.string().max(MAX_MSG_LEN),
 });
+const MessagesArray = z.array(MessageSchema).max(MAX_MESSAGES);
 
 export const SendConversationMessageBody = z.object({
-  messages: z.array(MessageSchema),
-  mode: z.string(),
-  scenario: z.string(),
-  level: z.string(),
-  interfaceLanguage: z.string(),
-  feedbackLanguage: z.string().optional().default("English"),
-  learnerContext: z.string().optional(),
+  messages: MessagesArray,
+  mode: shortField(),
+  scenario: shortField(),
+  level: shortField(),
+  interfaceLanguage: shortField(),
+  feedbackLanguage: langField(),
+  learnerContext: z.string().max(2000).optional(),
   stream: z.boolean().optional(),
 });
 
 export const GenerateFeedbackBody = z.object({
-  messages: z.array(MessageSchema),
-  mode: z.string(),
-  feedbackLanguage: z.string().optional().default("English"),
+  messages: MessagesArray,
+  mode: shortField(),
+  feedbackLanguage: langField(),
 });
 
 export const GetConversationHintBody = z.object({
-  messages: z.array(MessageSchema),
-  scenario: z.string(),
-  level: z.string(),
-  feedbackLanguage: z.string().optional().default("English"),
-  interfaceLanguage: z.string(),
-  learnerContext: z.string().optional(),
+  messages: MessagesArray,
+  scenario: shortField(),
+  level: shortField(),
+  feedbackLanguage: langField(),
+  interfaceLanguage: shortField(),
+  learnerContext: z.string().max(2000).optional(),
 });
 
 export const ImproveMessageBody = z.object({
-  text: z.string(),
-  scenario: z.string(),
-  feedbackLanguage: z.string().optional().default("English"),
+  text: z.string().max(MAX_MSG_LEN),
+  scenario: shortField(),
+  feedbackLanguage: langField(),
 });
 
 export const GetScenarioPhrasesBody = z.object({
-  scenario: z.string(),
-  level: z.string(),
-  feedbackLanguage: z.string().optional().default("English"),
+  scenario: shortField(),
+  level: shortField(),
+  feedbackLanguage: langField(),
 });
 
 export const GetGrammarLessonBody = z.object({
-  id: z.string(),
-  title: z.string(),
-  level: z.string(),
-  feedbackLanguage: z.string().optional().default("English"),
+  id: shortField(),
+  title: z.string().max(160),
+  level: shortField(),
+  feedbackLanguage: langField(),
 });
 
 // ─── OpenAI error classifier ──────────────────────────────────────────────────

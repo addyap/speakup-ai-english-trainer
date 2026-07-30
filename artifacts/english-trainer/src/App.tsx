@@ -217,9 +217,27 @@ class AppErrorBoundary extends Component<{ children: ReactNode }, { hasError: bo
     return { hasError: true };
   }
 
+  componentDidCatch(error: Error, info: { componentStack: string }) {
+    console.error("[AppErrorBoundary]", error, info.componentStack);
+  }
+
   render() {
     if (this.state.hasError) {
-      return <div className="min-h-screen flex flex-col items-center justify-center gap-3 px-6 text-center text-white"><p>Something went wrong.</p><button onClick={() => window.location.reload()} className="px-4 py-2 rounded-xl bg-white/10 border border-white/15">Reload</button></div>;
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center bg-ivory text-ink">
+          <span className="text-4xl" role="img" aria-label="Oops">😕</span>
+          <div className="space-y-1">
+            <p className="font-semibold text-ink">Something went wrong.</p>
+            <p className="text-sm text-clay">Une erreur est survenue. Veuillez recharger la page.</p>
+          </div>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-5 py-2.5 min-h-[44px] rounded-xl bg-coral text-white font-semibold hover:bg-coral-dark transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/60"
+          >
+            Reload · Recharger
+          </button>
+        </div>
+      );
     }
     return this.props.children;
   }

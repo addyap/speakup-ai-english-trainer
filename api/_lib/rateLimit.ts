@@ -23,11 +23,19 @@ export function checkRateLimit(
     }
   }
 
-  const xff = headers["x-forwarded-for"];
-  const ip =
-    (typeof xff === "string" ? xff.split(",")[0].trim() : undefined) ??
-    remoteAddress ??
-    "anon";
+  // Prefer platform-set headers that the client cannot forge. Vercel sets
+  // `x-real-ip` to the true edge client IP; the client-supplied
+  // `x-forwarded-for` is spoofable (a fresh leftmost IP per request would
+  // otherwise dodge the limiter entirely), so only fall back to its RIGHTMOST
+  // entry — the one Vercel appended — when x-real-ip is absent.
+  const first = (h: string | string[] | undefined): string | undefined =>
+    typeof h === "string" ? h : Array.isArray(h) ? h[0] : undefined;
+  const realIp = first(headers["x-real-ip"]);
+  const xffRaw = first(headers["x-forwarded-for"]);
+  const xffTrusted = xffRaw
+    ? xffRaw.split(",").map((s) => s.trim()).filter(Boolean).pop()
+    : undefined;
+  const ip = realIp || xffTrusted || remoteAddress || "anon";
 
   const w = _rateWindows.get(ip);
   if (!w || now > w.resetAt) {

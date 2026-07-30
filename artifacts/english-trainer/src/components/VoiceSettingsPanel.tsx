@@ -128,7 +128,7 @@ export function VoiceSettingsPanel({ settings, onUpdate, onClose }: Props) {
           </div>
           <button
             onClick={onClose}
-            aria-label="Close voice settings"
+            aria-label={t(interfaceLanguage, "close")}
             className="w-11 h-11 flex items-center justify-center rounded-full text-clay hover:text-ink hover:bg-line transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-line"
           >
             ✕

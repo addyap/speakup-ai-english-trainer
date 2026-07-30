@@ -9,7 +9,6 @@ import { offerVoiceClip } from "@/lib/voiceClip";
 import { SCENARIO_META } from "@/lib/scenarios";
 import { VoiceSettingsPanel } from "@/components/VoiceSettingsPanel";
 import {
-  useSendConversationMessage,
   useTranslateMessage,
   useImproveMessage,
 } from "@workspace/api-client-react";
@@ -245,7 +244,6 @@ export function ConversationView() {
   speakingMsgIdxRef.current = speakingMsgIdx;
   micStateRef.current = micState;
 
-  const conversationMutation = useSendConversationMessage();
   const translateMutation = useTranslateMessage();
   const improveMutation = useImproveMessage();
 
@@ -713,7 +711,7 @@ export function ConversationView() {
         </div>
       </header>
 
-      <div className="mx-auto w-full max-w-3xl flex-1 overflow-y-auto px-4 py-3 space-y-3" role="log" aria-live="polite" aria-label="Conversation">
+      <div className="mx-auto w-full max-w-3xl flex-1 overflow-y-auto px-4 py-3 space-y-3" role="log" aria-live="polite" aria-label={t(interfaceLanguage, "srConversation")}>
         {messages.length === 0 && (
           <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="flex flex-col items-center justify-center h-full min-h-[240px] text-center px-6">
             <div className="text-5xl mb-4">{scenarioEmoji}</div>
@@ -821,7 +819,7 @@ export function ConversationView() {
               {interimTranscript
                 ? `${interimTranscript}…`
                 : (
-                  <span className="flex gap-1.5 items-center" aria-label="Listening">
+                  <span className="flex gap-1.5 items-center" aria-label={t(interfaceLanguage, "srListening")}>
                     <span className="w-1.5 h-1.5 rounded-full bg-clay animate-bounce" style={{ animationDelay: "0ms" }} />
                     <span className="w-1.5 h-1.5 rounded-full bg-clay animate-bounce" style={{ animationDelay: "150ms" }} />
                     <span className="w-1.5 h-1.5 rounded-full bg-clay animate-bounce" style={{ animationDelay: "300ms" }} />
@@ -832,7 +830,7 @@ export function ConversationView() {
         )}
 
         {errorMsg && (
-          <motion.div initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-sm px-4 py-2.5 rounded-2xl bg-red-50 border border-red-200 text-red-600 text-xs text-center">
+          <motion.div role="alert" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-sm px-4 py-2.5 rounded-2xl bg-red-50 border border-red-200 text-red-600 text-xs text-center">
             {errorMsg}
           </motion.div>
         )}
@@ -852,7 +850,7 @@ export function ConversationView() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <p className="text-coral text-xs font-semibold uppercase tracking-widest">{t(interfaceLanguage, "helpMeAnswer")}</p>
-                  <button onClick={() => setHintOpen(false)} className="w-11 h-11 flex items-center justify-center rounded-full text-clay hover:text-ink-soft hover:bg-line transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50">✕</button>
+                  <button onClick={() => setHintOpen(false)} aria-label={t(interfaceLanguage, "close")} className="w-11 h-11 flex items-center justify-center rounded-full text-clay hover:text-ink-soft hover:bg-line transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50">✕</button>
                 </div>
                 {hintData.simpleReplies.map((r, i) => (
                   <button
@@ -900,7 +898,7 @@ export function ConversationView() {
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
                   <p className="text-forest text-xs font-semibold uppercase tracking-widest">{t(interfaceLanguage, "improveMyMessage")}</p>
-                  <button onClick={() => setImproveOpen(false)} className="w-11 h-11 flex items-center justify-center rounded-full text-clay hover:text-ink-soft hover:bg-line transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest/50">✕</button>
+                  <button onClick={() => setImproveOpen(false)} aria-label={t(interfaceLanguage, "close")} className="w-11 h-11 flex items-center justify-center rounded-full text-clay hover:text-ink-soft hover:bg-line transition-colors text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-forest/50">✕</button>
                 </div>
                 {improveData.corrected && improveData.corrected !== textInput && (
                   <button
@@ -1002,7 +1000,7 @@ export function ConversationView() {
               <button
                 onClick={handleTextSend}
                 disabled={isBlocked}
-                aria-label="Send message"
+                aria-label={t(interfaceLanguage, "srSendMessage")}
                 className="absolute right-1.5 top-1/2 -translate-y-1/2 w-11 h-11 rounded-xl bg-coral flex items-center justify-center text-cream hover:bg-coral-dark transition-colors disabled:opacity-40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral"
               >
                 <svg width={13} height={13} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5}>
