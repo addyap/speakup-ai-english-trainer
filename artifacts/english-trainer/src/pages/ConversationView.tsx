@@ -212,6 +212,7 @@ export function ConversationView() {
   const { settings: voiceSettings, updateSettings: updateVoiceSettings } = useVoiceSettings();
 
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
+  const [retryHistory, setRetryHistory] = useState<Message[] | null>(null);
   const [streamingText, setStreamingText] = useState<string | null>(null);
   const [textInput, setTextInput] = useState("");
   const [feedbackLoading, setFeedbackLoading] = useState(false);
@@ -406,24 +407,19 @@ export function ConversationView() {
     speakTimerRef.current = setTimeout(onSpeechEnd, 120000);
   }, [addMessage, setLastAiMessage, setMicState, voiceSettings]);
 
-  const sendMessage = useCallback(async (userText: string) => {
-    if (!userText.trim() || isProcessingRef.current) return;
+  // Runs (or re-runs) the AI request for a given conversation history. Kept
+  // separate from sendMessage so a failed send can be retried without
+  // re-appending the user's message or double-counting their turn.
+  const runConversation = useCallback(async (history: Message[]) => {
     isProcessingRef.current = true;
     setErrorMsg(null);
-    setHintOpen(false);
-    setImproveOpen(false);
-    if (messages.length === 0) trackEvent("first_message", { scenario, mode });
-
-    addMessage({ role: "user", content: userText.trim() });
-    incrementTurn();
+    setRetryHistory(null);
     setMicState("processing");
-
     try {
-      const allMessages: Message[] = [...messages, { role: "user", content: userText.trim() }];
       setStreamingText("");
       const finalText = await fetchConversationStream(
         {
-          messages: allMessages,
+          messages: history,
           mode,
           scenario,
           level,
@@ -441,9 +437,26 @@ export function ConversationView() {
       setStreamingText(null);
       setMicState("idle");
       isProcessingRef.current = false;
+      setRetryHistory(history); // enable the Retry affordance
       setErrorMsg(t(interfaceLanguage, "aiUnavailable"));
     }
-  }, [messages, mode, scenario, level, interfaceLanguage, feedbackLanguage, addMessage, incrementTurn, setMicState, handleAiResponse]);
+  }, [mode, scenario, level, interfaceLanguage, feedbackLanguage, setMicState, handleAiResponse]);
+
+  const sendMessage = useCallback(async (userText: string) => {
+    if (!userText.trim() || isProcessingRef.current) return;
+    setHintOpen(false);
+    setImproveOpen(false);
+    if (messages.length === 0) trackEvent("first_message", { scenario, mode });
+
+    const trimmed = userText.trim();
+    addMessage({ role: "user", content: trimmed });
+    incrementTurn();
+    await runConversation([...messages, { role: "user", content: trimmed }]);
+  }, [messages, mode, scenario, addMessage, incrementTurn, runConversation]);
+
+  const handleRetry = useCallback(() => {
+    if (retryHistory && !isProcessingRef.current) void runConversation(retryHistory);
+  }, [retryHistory, runConversation]);
 
   const handleSpeechResult = useCallback((transcript: string, audio?: Blob) => {
     if (!transcript.trim()) return;
@@ -830,8 +843,16 @@ export function ConversationView() {
         )}
 
         {errorMsg && (
-          <motion.div role="alert" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-sm px-4 py-2.5 rounded-2xl bg-red-50 border border-red-200 text-red-600 text-xs text-center">
-            {errorMsg}
+          <motion.div role="alert" initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} className="mx-auto max-w-sm px-4 py-2.5 rounded-2xl bg-red-50 border border-red-200 text-red-600 text-xs text-center flex flex-col items-center gap-2">
+            <span>{errorMsg}</span>
+            {retryHistory && (
+              <button
+                onClick={handleRetry}
+                className="px-3 py-1.5 min-h-[36px] rounded-lg bg-red-100 border border-red-300 text-red-700 font-semibold hover:bg-red-200 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+              >
+                {t(interfaceLanguage, "retry")}
+              </button>
+            )}
           </motion.div>
         )}
 

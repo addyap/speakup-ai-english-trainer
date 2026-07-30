@@ -5,6 +5,7 @@ import { LANGUAGES, LANGUAGE_NATIVE_NAMES, type Language, t } from "@/i18n/trans
 import { getLearnerProfile } from "@/lib/learnerMemory";
 import { trackEvent } from "@/lib/analytics";
 import { clearVoiceClip } from "@/lib/voiceClip";
+import { ALL_SCENARIOS, FEATURED_SCENARIOS, SCENARIO_META } from "@/lib/scenarios";
 
 // ─── Useful-phrases study panel (dynamic, cached per scenario+level+language) ──
 type Phrase = { en: string; gloss: string };
@@ -21,73 +22,8 @@ async function fetchPhrases(scenario: string, level: string, feedbackLanguage: s
   return Array.isArray(data.phrases) ? data.phrases : [];
 }
 
-// ─── Featured 8 scenarios ─────────────────────────────────────────────────────
-const FEATURED: { value: Scenario; emoji: string; labelKey: string; descKey: string }[] = [
-  { value: "small_talk",           emoji: "☕", labelKey: "smallTalk",           descKey: "smallTalkDesc" },
-  { value: "job_interview",        emoji: "💼", labelKey: "jobInterview",        descKey: "jobInterviewDesc" },
-  { value: "travel",               emoji: "✈️", labelKey: "travel",              descKey: "travelDesc" },
-  { value: "luxury_boutique",      emoji: "💎", labelKey: "luxuryBoutique",      descKey: "luxuryBoutiqueDesc" },
-  { value: "journalist_interview", emoji: "🎙️", labelKey: "journalistInterview", descKey: "journalistInterviewDesc" },
-  { value: "networking",           emoji: "🤝", labelKey: "networking",          descKey: "networkingDesc" },
-  { value: "executive_assistant",  emoji: "🗂️", labelKey: "executiveAssistant",  descKey: "executiveAssistantDesc" },
-  { value: "medical_secretary",    emoji: "🩺", labelKey: "medicalSecretary",    descKey: "medicalSecretaryDesc" },
-];
-
-// ─── All remaining scenarios (30 total minus featured 8) ─────────────────────
-const MORE_SCENARIOS: { value: Scenario; emoji: string; labelKey: string }[] = [
-  { value: "business_meeting",  emoji: "📊", labelKey: "businessMeeting" },
-  { value: "phone_call",        emoji: "📞", labelKey: "phoneCall" },
-  { value: "trade_fair",        emoji: "🏛️", labelKey: "tradeFair" },
-  { value: "legal",             emoji: "⚖️", labelKey: "legal" },
-  { value: "banking",           emoji: "🏦", labelKey: "banking" },
-  { value: "academic",          emoji: "🎓", labelKey: "academic" },
-  { value: "customer_service",  emoji: "🎯", labelKey: "customerService" },
-  { value: "tech_support",      emoji: "💻", labelKey: "techSupport" },
-  { value: "news_debate",       emoji: "📰", labelKey: "newsDebate" },
-  { value: "sports",            emoji: "🏋️", labelKey: "sports" },
-  { value: "entertainment",     emoji: "🎬", labelKey: "entertainment" },
-  { value: "dating",            emoji: "💬", labelKey: "dating" },
-  { value: "airport",           emoji: "🛫", labelKey: "airport" },
-  { value: "hotel",             emoji: "🏨", labelKey: "hotel" },
-  { value: "real_estate",       emoji: "🏡", labelKey: "realEstate" },
-  { value: "apartment",         emoji: "🏠", labelKey: "apartment" },
-  { value: "restaurant",        emoji: "🍽️", labelKey: "restaurant" },
-  { value: "shopping",          emoji: "🛍️", labelKey: "shopping" },
-  { value: "medical",           emoji: "🏥", labelKey: "medical" },
-  { value: "daily_life",        emoji: "🏙️", labelKey: "dailyLife" },
-  { value: "emergency",         emoji: "🚨", labelKey: "emergency" },
-  { value: "cooking",           emoji: "👨‍🍳", labelKey: "cooking" },
-  { value: "salary_negotiation", emoji: "💰", labelKey: "salaryNegotiation" },
-  { value: "performance_review", emoji: "📈", labelKey: "performanceReview" },
-  { value: "presentation",       emoji: "🎤", labelKey: "presentation" },
-  { value: "client_pitch",       emoji: "📣", labelKey: "clientPitch" },
-  { value: "border_control",     emoji: "🛂", labelKey: "borderControl" },
-  { value: "pharmacy",           emoji: "💊", labelKey: "pharmacy" },
-  { value: "admin_office",       emoji: "📋", labelKey: "adminOffice" },
-  { value: "formal_complaint",   emoji: "🗣️", labelKey: "formalComplaint" },
-];
-
-// ─── Unified, categorised scenario catalogue ─────────────────────────────────
-const ALL_SCENARIOS: { value: Scenario; emoji: string; labelKey: string }[] = [
-  ...FEATURED.map(({ value, emoji, labelKey }) => ({ value, emoji, labelKey })),
-  ...MORE_SCENARIOS,
-];
-
-const POPULAR: Scenario[] = FEATURED.map((s) => s.value);
-
-type Category = "work" | "travel" | "everyday" | "services" | "academic";
-const CATEGORY_OF: Record<Scenario, Category> = {
-  job_interview: "work", business_meeting: "work", networking: "work", salary_negotiation: "work",
-  performance_review: "work", presentation: "work", client_pitch: "work", trade_fair: "work",
-  executive_assistant: "work", phone_call: "work",
-  travel: "travel", airport: "travel", hotel: "travel", border_control: "travel",
-  small_talk: "everyday", daily_life: "everyday", restaurant: "everyday", shopping: "everyday",
-  cooking: "everyday", dating: "everyday", sports: "everyday", entertainment: "everyday", luxury_boutique: "everyday",
-  banking: "services", legal: "services", medical: "services", medical_secretary: "services",
-  pharmacy: "services", admin_office: "services", customer_service: "services", tech_support: "services",
-  real_estate: "services", apartment: "services", formal_complaint: "services", emergency: "services",
-  academic: "academic", news_debate: "academic", journalist_interview: "academic",
-};
+// Scenario catalogue (emoji, labels, categories, ordering) is derived from the
+// single source of truth in lib/scenarios.ts — see ALL_SCENARIOS / SCENARIO_META.
 
 const CATEGORIES: { key: string; labelKey: string }[] = [
   { key: "popular",  labelKey: "catPopular" },
@@ -179,7 +115,7 @@ export function SessionSetupView() {
   const q = query.trim().toLowerCase();
   const visibleScenarios = q
     ? ALL_SCENARIOS.filter((s) => tr(s.labelKey).toLowerCase().includes(q) || s.value.replace(/_/g, " ").includes(q))
-    : ALL_SCENARIOS.filter((s) => (category === "popular" ? POPULAR.includes(s.value) : CATEGORY_OF[s.value] === category));
+    : ALL_SCENARIOS.filter((s) => (category === "popular" ? FEATURED_SCENARIOS.includes(s.value) : SCENARIO_META[s.value].category === category));
 
   return (
     <div className="flex min-h-[100dvh] flex-col overflow-x-hidden bg-ivory text-ink">

@@ -59,6 +59,26 @@ export const SCENARIO_META: Record<Scenario, ScenarioMeta> = {
   formal_complaint:     { emoji: "🗣️",  labelKey: "formalComplaint",     category: "services" },
 };
 
+// Which 8 scenarios head the picker and fill the "Popular" chip (display order).
+export const FEATURED_SCENARIOS: Scenario[] = [
+  "small_talk", "job_interview", "travel", "luxury_boutique",
+  "journalist_interview", "networking", "executive_assistant", "medical_secretary",
+];
+
+// The picker's full catalogue, DERIVED from SCENARIO_META so it can never drift:
+// featured 8 first, then every remaining scenario in SCENARIO_META order. Adding
+// a scenario to the Scenario union forces a SCENARIO_META entry (typed Record),
+// which automatically makes it selectable here — no separate list to update.
+export const ALL_SCENARIOS: { value: Scenario; emoji: string; labelKey: TranslationKey }[] = (() => {
+  const featured = new Set(FEATURED_SCENARIOS);
+  const rest = (Object.keys(SCENARIO_META) as Scenario[]).filter((s) => !featured.has(s));
+  return [...FEATURED_SCENARIOS, ...rest].map((value) => ({
+    value,
+    emoji: SCENARIO_META[value].emoji,
+    labelKey: SCENARIO_META[value].labelKey,
+  }));
+})();
+
 export function scenarioEmoji(scenario: Scenario): string {
   return SCENARIO_META[scenario].emoji;
 }

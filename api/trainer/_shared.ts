@@ -1187,7 +1187,7 @@ export async function translateHandler(req: AppReq, res: AppRes): Promise<void> 
   }
 
   const safeText = body.text.trim().slice(0, 2000);
-  const targetLanguage = body.targetLanguage;
+  const targetLanguage = body.targetLanguage.trim().slice(0, 40);
 
   if (targetLanguage === "English") {
     res.json({ translation: safeText });
