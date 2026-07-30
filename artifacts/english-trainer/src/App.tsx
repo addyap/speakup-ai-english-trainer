@@ -16,6 +16,7 @@ import { FREE_ACCESS_ENABLED } from "@/lib/freeAccess";
 import { AuditDashboard } from "@/pages/AuditDashboard";
 import { Analytics } from "@vercel/analytics/react";
 import { trackEvent } from "@/lib/analytics";
+import { Sentry } from "@/lib/sentry";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -254,6 +255,9 @@ class AppErrorBoundary extends Component<{ children: ReactNode }, { hasError: bo
 
   componentDidCatch(error: Error, info: { componentStack: string }) {
     console.error("[AppErrorBoundary]", error, info.componentStack);
+    // Report React render crashes (the boundary swallows them, so Sentry's
+    // global handlers wouldn't otherwise see them).
+    Sentry.captureException(error, { extra: { componentStack: info.componentStack } });
   }
 
   render() {

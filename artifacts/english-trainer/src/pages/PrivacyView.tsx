@@ -95,6 +95,7 @@ export function PrivacyView() {
             <li><strong className="text-ink">OpenAI, L.L.C.</strong> (États-Unis) — traitement du langage, de la parole et de la transcription par IA.</li>
             <li><strong className="text-ink">Vercel Inc.</strong> (États-Unis) — hébergement, diffusion et mesure d'audience anonyme (sans cookie).</li>
             <li><strong className="text-ink">Clerk</strong> — infrastructure d'authentification (utilisée uniquement si la connexion est activée).</li>
+            <li><strong className="text-ink">Sentry</strong> (Functional Software, Inc. — serveurs dans l'Union européenne) — signalement technique des erreurs de l'application, uniquement en cas de plantage, sans adresse IP ni donnée d'identification.</li>
           </ul>
           <p>
             Les transferts en dehors de l'Union européenne sont encadrés par des garanties appropriées au

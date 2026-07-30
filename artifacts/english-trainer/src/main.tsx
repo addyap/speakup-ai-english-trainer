@@ -3,6 +3,9 @@ import App from "./App";
 import "./index.css";
 import { ensureLanguage, type Language } from "./i18n/translations";
 import { getLearnerProfile } from "./lib/learnerMemory";
+import { initSentry } from "./lib/sentry";
+
+initSentry();
 
 // Preload the saved interface language's chunk BEFORE first paint, so a
 // returning non-English user doesn't see a flash of English. The static
