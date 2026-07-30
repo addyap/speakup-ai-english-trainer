@@ -1,53 +1,40 @@
 #!/usr/bin/env node
 // Pure-Node i18n completeness check — no esbuild/vite, so it runs anywhere
 // (locally on macOS and in CI). The TypeScript `TranslationKeys` type already
-// forces every language to declare every key at build time; this adds the two
-// guarantees types can't express: key PARITY across all 12 languages and that
-// no value was left EMPTY (a "" would type-check but ship a blank string).
+// forces every language chunk to declare every key at build time; this adds the
+// two guarantees types can't express: key PARITY across all 12 languages and
+// that no value was left EMPTY (a "" would type-check but ship a blank string).
 import { readFile } from "node:fs/promises";
 
-const FILE = new URL("../src/i18n/translations.ts", import.meta.url);
+const LOCALES = new URL("../src/i18n/locales/", import.meta.url);
 const LANGS = [
   "English", "French", "Spanish", "German", "Italian", "Portuguese",
   "Russian", "Arabic", "Chinese", "Japanese", "Polish", "Ukrainian",
 ];
 
-const src = await readFile(FILE, "utf8");
-const lines = src.split("\n");
-
-// Locate each language block opener: `  <Language>: {`
-const openers = {};
-lines.forEach((line, i) => {
-  const m = line.match(/^ {2}([A-Z][a-zA-Z]+): \{$/);
-  if (m && LANGS.includes(m[1])) openers[m[1]] = i;
-});
-
-const missingBlocks = LANGS.filter((l) => openers[l] === undefined);
-if (missingBlocks.length) {
-  console.error(`✗ missing language block(s): ${missingBlocks.join(", ")}`);
-  process.exit(1);
-}
-
-// Collect key→isEmpty for each block (from its opener to the next block / end).
-const sorted = LANGS.slice().sort((a, b) => openers[a] - openers[b]);
 const keysByLang = {};
 const emptyByLang = {};
-sorted.forEach((lang, idx) => {
-  const start = openers[lang] + 1;
-  const end = idx + 1 < sorted.length ? openers[sorted[idx + 1]] : lines.length;
+
+for (const lang of LANGS) {
+  let src;
+  try {
+    src = await readFile(new URL(`${lang}.ts`, LOCALES), "utf8");
+  } catch {
+    console.error(`✗ missing locale file: ${lang}.ts`);
+    process.exit(1);
+  }
   const keys = new Set();
   const empties = [];
-  for (let i = start; i < end; i++) {
-    const km = lines[i].match(/^ {4}(\w+):\s*"(.*)",?\s*$/);
-    if (!km) continue;
-    keys.add(km[1]);
-    if (km[2].trim() === "") empties.push(km[1]);
+  for (const line of src.split("\n")) {
+    const m = line.match(/^ {4}(\w+):\s*"(.*)",?\s*$/);
+    if (!m) continue;
+    keys.add(m[1]);
+    if (m[2].trim() === "") empties.push(m[1]);
   }
   keysByLang[lang] = keys;
   emptyByLang[lang] = empties;
-});
+}
 
-// English is the reference key set.
 const ref = keysByLang.English;
 let failed = false;
 

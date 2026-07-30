@@ -1,5 +1,6 @@
-import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, useCallback, useEffect, useSyncExternalStore, type ReactNode } from "react";
 import type { Language } from "@/i18n/translations";
+import { ensureLanguage, subscribeI18n, getI18nVersion } from "@/i18n/translations";
 import { getLearnerProfile, updateLearnerLanguages } from "@/lib/learnerMemory";
 
 export type Mode = "practice" | "challenge" | "exam" | "debate" | "storytelling";
@@ -86,6 +87,19 @@ export function AppProvider({ children }: { children: ReactNode }) {
       feedbackLanguage: (profile.preferredFeedbackLanguage as Language) || "English",
     };
   });
+
+  // Re-render the whole app whenever a lazily-loaded language chunk arrives, so
+  // t() picks up the newly-cached localized strings (see i18n/translations.ts).
+  useSyncExternalStore(subscribeI18n, getI18nVersion, getI18nVersion);
+
+  // Fetch the chunk for whichever languages are active (covers initial mount and
+  // any later switch). Until it resolves, t() falls back to English.
+  useEffect(() => {
+    void ensureLanguage(state.interfaceLanguage);
+  }, [state.interfaceLanguage]);
+  useEffect(() => {
+    void ensureLanguage(state.feedbackLanguage);
+  }, [state.feedbackLanguage]);
 
   useEffect(() => {
     updateLearnerLanguages(state.feedbackLanguage, state.interfaceLanguage);

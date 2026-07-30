@@ -210,6 +210,41 @@ function ClerkProviderWithRoutes() {
 
 const AUDIT_ENABLED = import.meta.env.DEV;
 
+// Self-contained crash-screen strings for all 12 interface languages. Kept
+// independent of the main translations module on purpose: the error boundary
+// must render even if that module (or React context) is part of what failed.
+const CRASH_MESSAGES: Record<string, { title: string; reload: string }> = {
+  English:    { title: "Something went wrong.",        reload: "Reload" },
+  French:     { title: "Une erreur est survenue.",     reload: "Recharger" },
+  Spanish:    { title: "Algo salió mal.",              reload: "Recargar" },
+  German:     { title: "Etwas ist schiefgelaufen.",    reload: "Neu laden" },
+  Italian:    { title: "Qualcosa è andato storto.",    reload: "Ricarica" },
+  Portuguese: { title: "Algo correu mal.",             reload: "Recarregar" },
+  Russian:    { title: "Что-то пошло не так.",          reload: "Обновить" },
+  Arabic:     { title: "حدث خطأ ما.",                  reload: "إعادة التحميل" },
+  Chinese:    { title: "出了点问题。",                   reload: "重新加载" },
+  Japanese:   { title: "問題が発生しました。",            reload: "再読み込み" },
+  Polish:     { title: "Coś poszło nie tak.",          reload: "Odśwież" },
+  Ukrainian:  { title: "Щось пішло не так.",            reload: "Оновити" },
+};
+
+// Read the persisted interface language directly from storage — safe because it
+// doesn't depend on the (possibly corrupted) React tree that just crashed.
+function crashLanguage(): string {
+  try {
+    const raw = localStorage.getItem("speakup_learner_profile");
+    if (raw) {
+      const p = JSON.parse(raw) as { preferredInterfaceLanguage?: unknown };
+      if (typeof p.preferredInterfaceLanguage === "string" && CRASH_MESSAGES[p.preferredInterfaceLanguage]) {
+        return p.preferredInterfaceLanguage;
+      }
+    }
+  } catch {
+    /* storage unavailable or corrupt → fall back to English */
+  }
+  return "English";
+}
+
 class AppErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   state = { hasError: false };
 
@@ -223,18 +258,21 @@ class AppErrorBoundary extends Component<{ children: ReactNode }, { hasError: bo
 
   render() {
     if (this.state.hasError) {
+      const lang = crashLanguage();
+      const msg = CRASH_MESSAGES[lang];
+      const isRtl = lang === "Arabic";
       return (
-        <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center bg-ivory text-ink">
-          <span className="text-4xl" role="img" aria-label="Oops">😕</span>
+        <div dir={isRtl ? "rtl" : "ltr"} className="min-h-screen flex flex-col items-center justify-center gap-4 px-6 text-center bg-ivory text-ink">
+          <span className="text-4xl" role="img" aria-label={msg.title}>😕</span>
           <div className="space-y-1">
-            <p className="font-semibold text-ink">Something went wrong.</p>
-            <p className="text-sm text-clay">Une erreur est survenue. Veuillez recharger la page.</p>
+            <p className="font-semibold text-ink">{msg.title}</p>
+            {lang !== "English" && <p className="text-sm text-clay">{CRASH_MESSAGES.English.title}</p>}
           </div>
           <button
             onClick={() => window.location.reload()}
             className="px-5 py-2.5 min-h-[44px] rounded-xl bg-coral text-white font-semibold hover:bg-coral-dark transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/60"
           >
-            Reload · Recharger
+            {msg.reload}{lang !== "English" ? " · Reload" : ""}
           </button>
         </div>
       );
