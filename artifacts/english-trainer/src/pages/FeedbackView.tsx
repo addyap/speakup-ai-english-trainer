@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { useApp, type Scenario } from "@/lib/AppContext";
 import { t, type Language } from "@/i18n/translations";
+import { trackEvent } from "@/lib/analytics";
 
 type TranslationKey = Parameters<typeof t>[1];
 
@@ -107,9 +109,13 @@ function getCefrExplanationKey(level: string): TranslationKey {
 
 export function FeedbackView() {
   const {
-    interfaceLanguage, feedback, scenario,
+    interfaceLanguage, feedback, scenario, mode,
     resetSession, setCurrentView, setScenario,
   } = useApp();
+
+  useEffect(() => {
+    if (feedback) trackEvent("session_complete", { level: feedback.estimatedLevel, scenario, mode });
+  }, [feedback, scenario, mode]);
 
   const handleNewSession = () => {
     resetSession();

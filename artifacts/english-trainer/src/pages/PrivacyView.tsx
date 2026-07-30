@@ -80,10 +80,12 @@ export function PrivacyView() {
           </p>
         </Section>
 
-        <Section title="Cookies & traceurs">
+        <Section title="Cookies & mesure d'audience">
           <p>
-            SpeakUp AI n'utilise aucun cookie publicitaire ni outil de mesure d'audience ou de suivi tiers.
-            Seul le stockage technique strictement nécessaire au fonctionnement de l'application est utilisé.
+            SpeakUp AI n'utilise aucun cookie publicitaire ni traceur intersites. Pour mesurer l'audience de
+            manière anonyme et agrégée — sans cookie et sans vous identifier — nous utilisons Vercel Web
+            Analytics. Aucun profil publicitaire n'est constitué ; seul le stockage technique strictement
+            nécessaire au fonctionnement de l'application est utilisé.
           </p>
         </Section>
 
@@ -91,7 +93,7 @@ export function PrivacyView() {
           <p>Les données ne sont partagées qu'avec des prestataires techniques agissant pour notre compte :</p>
           <ul className="ml-4 list-disc space-y-1">
             <li><strong className="text-ink">OpenAI, L.L.C.</strong> (États-Unis) — traitement du langage, de la parole et de la transcription par IA.</li>
-            <li><strong className="text-ink">Vercel Inc.</strong> (États-Unis) — hébergement et diffusion du site.</li>
+            <li><strong className="text-ink">Vercel Inc.</strong> (États-Unis) — hébergement, diffusion et mesure d'audience anonyme (sans cookie).</li>
             <li><strong className="text-ink">Clerk</strong> — infrastructure d'authentification (utilisée uniquement si la connexion est activée).</li>
           </ul>
           <p>

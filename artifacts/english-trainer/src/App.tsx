@@ -14,6 +14,8 @@ import { PrivacyView } from "@/pages/PrivacyView";
 import { GrammarView } from "@/pages/GrammarView";
 import { FREE_ACCESS_ENABLED } from "@/lib/freeAccess";
 import { AuditDashboard } from "@/pages/AuditDashboard";
+import { Analytics } from "@vercel/analytics/react";
+import { trackEvent } from "@/lib/analytics";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -91,6 +93,7 @@ const clerkAppearance = {
 
 function ViewRouter() {
   const { currentView } = useApp();
+  useEffect(() => { trackEvent("view", { view: currentView }); }, [currentView]);
   switch (currentView) {
     case "home": return <HomeView />;
     case "language": return <LanguageSelectionView />;
@@ -241,6 +244,8 @@ function App() {
           <ClerkProviderWithRoutes />
         </WouterRouter>
       </AppErrorBoundary>
+      <Analytics />
+
       {AUDIT_ENABLED && !showAudit && (
         <button
           onClick={() => setShowAudit(true)}

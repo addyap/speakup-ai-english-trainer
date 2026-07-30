@@ -4,6 +4,7 @@ import { useApp, type Message, type Scenario } from "@/lib/AppContext";
 import { useVoiceInput } from "@/hooks/useVoiceInput";
 import { useVoiceSettings } from "@/hooks/useVoiceSettings";
 import { speak, stopSpeech, warmUpTts, unlockTtsOnGesture, getVoiceAvailability, autoSelectVoiceURI, type VoiceAvailability } from "@/lib/tts";
+import { trackEvent } from "@/lib/analytics";
 import { VoiceSettingsPanel } from "@/components/VoiceSettingsPanel";
 import {
   useSendConversationMessage,
@@ -438,6 +439,7 @@ export function ConversationView() {
     setErrorMsg(null);
     setHintOpen(false);
     setImproveOpen(false);
+    if (messages.length === 0) trackEvent("first_message", { scenario, mode });
 
     addMessage({ role: "user", content: userText.trim() });
     incrementTurn();
