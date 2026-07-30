@@ -6,6 +6,7 @@ import { useVoiceSettings } from "@/hooks/useVoiceSettings";
 import { speak, stopSpeech, warmUpTts, unlockTtsOnGesture, getVoiceAvailability, autoSelectVoiceURI, type VoiceAvailability } from "@/lib/tts";
 import { trackEvent } from "@/lib/analytics";
 import { offerVoiceClip } from "@/lib/voiceClip";
+import { SCENARIO_META } from "@/lib/scenarios";
 import { VoiceSettingsPanel } from "@/components/VoiceSettingsPanel";
 import {
   useSendConversationMessage,
@@ -25,33 +26,6 @@ type TranslationEntry = {
   loading: boolean;
   error: boolean;
   visible: boolean;
-};
-
-const SCENARIO_EMOJIS: Record<Scenario, string> = {
-  job_interview: "💼", small_talk: "☕", business_meeting: "📊",
-  travel: "✈️", daily_life: "🏙️", restaurant: "🍽️",
-  shopping: "🛍️", medical: "🏥", academic: "🎓",
-  phone_call: "📞", airport: "🛫", hotel: "🏨",
-  banking: "🏦", apartment: "🏠", dating: "💬",
-  sports: "🏋️", news_debate: "📰", customer_service: "🎯",
-  tech_support: "💻", real_estate: "🏡", legal: "⚖️",
-  emergency: "🚨", cooking: "👨‍🍳", entertainment: "🎬",
-  networking: "🤝", luxury_boutique: "💎", trade_fair: "🏛️",
-  executive_assistant: "🗂️", medical_secretary: "🩺", journalist_interview: "🎙️",
-};
-
-const SCENARIO_LABEL_KEYS: Record<Scenario, TranslationKey> = {
-  job_interview: "jobInterview", small_talk: "smallTalk", business_meeting: "businessMeeting",
-  travel: "travel", daily_life: "dailyLife", restaurant: "restaurant",
-  shopping: "shopping", medical: "medical", academic: "academic",
-  phone_call: "phoneCall", airport: "airport", hotel: "hotel",
-  banking: "banking", apartment: "apartment", dating: "dating",
-  sports: "sports", news_debate: "newsDebate", customer_service: "customerService",
-  tech_support: "techSupport", real_estate: "realEstate", legal: "legal",
-  emergency: "emergency", cooking: "cooking", entertainment: "entertainment",
-  networking: "networking", luxury_boutique: "luxuryBoutique", trade_fair: "tradeFair",
-  executive_assistant: "executiveAssistant", medical_secretary: "medicalSecretary",
-  journalist_interview: "journalistInterview",
 };
 
 const LEVEL_CEFR: Record<string, string> = {
@@ -696,8 +670,8 @@ export function ConversationView() {
   const turnPct = Math.min((turnCount / MAX_TURNS) * 100, 100);
   const turnsLeft = MAX_TURNS - turnCount;
 
-  const scenarioEmoji = SCENARIO_EMOJIS[scenario];
-  const scenarioLabel = t(interfaceLanguage, SCENARIO_LABEL_KEYS[scenario]);
+  const scenarioEmoji = SCENARIO_META[scenario].emoji;
+  const scenarioLabel = t(interfaceLanguage, SCENARIO_META[scenario].labelKey);
   const levelLabel = LEVEL_CEFR[level] ?? level;
 
   return (

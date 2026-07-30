@@ -1,7 +1,7 @@
 {
   "framework": null,
   "installCommand": "pnpm install",
-  "buildCommand": "pnpm -w run typecheck:libs && pnpm --filter @workspace/english-trainer run build",
+  "buildCommand": "pnpm -w run typecheck:libs && pnpm --filter @workspace/english-trainer run typecheck && pnpm --filter @workspace/english-trainer run build",
   "outputDirectory": "artifacts/english-trainer/dist/public",
   "rewrites": [
     {

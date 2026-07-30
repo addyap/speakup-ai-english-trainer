@@ -5,35 +5,9 @@ import { t, type Language } from "@/i18n/translations";
 import { trackEvent } from "@/lib/analytics";
 import { takeVoiceClip } from "@/lib/voiceClip";
 import { blobToWavBase64 } from "@/lib/audio";
+import { SCENARIO_META } from "@/lib/scenarios";
 
 type TranslationKey = Parameters<typeof t>[1];
-
-const SCENARIO_LABEL_KEYS: Record<Scenario, TranslationKey> = {
-  job_interview: "jobInterview", small_talk: "smallTalk", business_meeting: "businessMeeting",
-  travel: "travel", daily_life: "dailyLife", restaurant: "restaurant",
-  shopping: "shopping", medical: "medical", academic: "academic",
-  phone_call: "phoneCall", airport: "airport", hotel: "hotel",
-  banking: "banking", apartment: "apartment", dating: "dating",
-  sports: "sports", news_debate: "newsDebate", customer_service: "customerService",
-  tech_support: "techSupport", real_estate: "realEstate", legal: "legal",
-  emergency: "emergency", cooking: "cooking", entertainment: "entertainment",
-  networking: "networking", luxury_boutique: "luxuryBoutique", trade_fair: "tradeFair",
-  executive_assistant: "executiveAssistant", medical_secretary: "medicalSecretary",
-  journalist_interview: "journalistInterview",
-};
-
-const SCENARIO_EMOJIS: Record<Scenario, string> = {
-  job_interview: "💼", small_talk: "☕", business_meeting: "📊",
-  travel: "✈️", daily_life: "🏙️", restaurant: "🍽️",
-  shopping: "🛍️", medical: "🏥", academic: "🎓",
-  phone_call: "📞", airport: "🛫", hotel: "🏨",
-  banking: "🏦", apartment: "🏠", dating: "💬",
-  sports: "🏋️", news_debate: "📰", customer_service: "🎯",
-  tech_support: "💻", real_estate: "🏡", legal: "⚖️",
-  emergency: "🚨", cooking: "👨‍🍳", entertainment: "🎬",
-  networking: "🤝", luxury_boutique: "💎", trade_fair: "🏛️",
-  executive_assistant: "🗂️", medical_secretary: "🩺", journalist_interview: "🎙️",
-};
 
 const NEXT_CHALLENGE: Record<Scenario, { value: Scenario; descKey: TranslationKey }> = {
   job_interview:        { value: "business_meeting",     descKey: "ncJobInterview" },
@@ -66,6 +40,14 @@ const NEXT_CHALLENGE: Record<Scenario, { value: Scenario; descKey: TranslationKe
   executive_assistant:  { value: "phone_call",           descKey: "ncExecutiveAssistant" },
   medical_secretary:    { value: "medical",              descKey: "ncMedicalSecretary" },
   journalist_interview: { value: "news_debate",          descKey: "ncJournalistInterview" },
+  salary_negotiation:   { value: "performance_review",   descKey: "ncSalaryNegotiation" },
+  performance_review:   { value: "client_pitch",         descKey: "ncPerformanceReview" },
+  presentation:         { value: "client_pitch",         descKey: "ncPresentation" },
+  client_pitch:         { value: "business_meeting",     descKey: "ncClientPitch" },
+  border_control:       { value: "airport",              descKey: "ncBorderControl" },
+  pharmacy:             { value: "medical",              descKey: "ncPharmacy" },
+  admin_office:         { value: "banking",              descKey: "ncAdminOffice" },
+  formal_complaint:     { value: "customer_service",     descKey: "ncFormalComplaint" },
 };
 
 function Card({
@@ -175,8 +157,8 @@ export function FeedbackView() {
   const isFallback = feedback.isFallback;
 
   const nextChallenge = NEXT_CHALLENGE[scenario];
-  const emoji = SCENARIO_EMOJIS[scenario];
-  const scenarioLabel = t(interfaceLanguage, SCENARIO_LABEL_KEYS[scenario]);
+  const emoji = SCENARIO_META[scenario].emoji;
+  const scenarioLabel = t(interfaceLanguage, SCENARIO_META[scenario].labelKey);
 
   return (
     <div className="min-h-[100dvh] bg-ivory px-4 py-8 overflow-y-auto">
@@ -380,10 +362,10 @@ export function FeedbackView() {
               🔥 {t(interfaceLanguage, "tomorrowsChallenge")}
             </p>
             <div className="flex items-start gap-3 mb-4">
-              <span className="text-2xl flex-shrink-0 mt-0.5">{SCENARIO_EMOJIS[nextChallenge.value]}</span>
+              <span className="text-2xl flex-shrink-0 mt-0.5">{SCENARIO_META[nextChallenge.value].emoji}</span>
               <div>
                 <p className="text-ink font-semibold text-sm leading-tight mb-1">
-                  {t(interfaceLanguage, SCENARIO_LABEL_KEYS[nextChallenge.value])}
+                  {t(interfaceLanguage, SCENARIO_META[nextChallenge.value].labelKey)}
                 </p>
                 <p className="text-clay text-xs leading-relaxed">{t(interfaceLanguage, nextChallenge.descKey)}</p>
               </div>
