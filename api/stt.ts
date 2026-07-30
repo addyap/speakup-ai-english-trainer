@@ -42,9 +42,9 @@ Return ONLY this JSON (no markdown):
 Rules: max 2 tips, each naming a concrete sound or word where helpful (keep example words in English). If the audio is unclear or too short to judge, say so kindly in "overall" and return empty tips.`;
   try {
     const response = await openai.chat.completions.create({
-      // Requires an audio-input model on the OpenAI account (org verification).
-      // If unavailable the client silently hides the pronunciation card.
-      model: "gpt-4o-audio-preview",
+      // Audio-input chat model (successor to the retired gpt-4o-audio-preview).
+      // Requires org verification; if unavailable the client hides the card.
+      model: "gpt-audio",
       modalities: ["text"],
       max_completion_tokens: 300,
       messages: [
