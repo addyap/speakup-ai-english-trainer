@@ -79,6 +79,17 @@ Rules: max 2 tips, each naming a concrete sound or word where helpful (keep exam
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
+  // TEMP diagnostic: list the account's audio-capable models to find the right id.
+  if (req.query.diag === "models") {
+    try {
+      const list = await openai.models.list();
+      const ids = list.data.map((m) => m.id).filter((id) => /audio|realtime|transcribe/.test(id)).sort();
+      res.status(200).json({ audioModels: ids });
+    } catch (e) {
+      res.status(500).json({ error: e instanceof Error ? e.message : String(e) });
+    }
+    return;
+  }
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
     return;
