@@ -6,7 +6,6 @@ import { Switch, Route, useLocation, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import { AppProvider, useApp } from "@/lib/AppContext";
 import { HomeView } from "@/pages/HomeView";
-import { LanguageSelectionView } from "@/pages/LanguageSelectionView";
 import { SessionSetupView } from "@/pages/SessionSetupView";
 import { ConversationView } from "@/pages/ConversationView";
 import { FeedbackView } from "@/pages/FeedbackView";
@@ -39,7 +38,10 @@ function stripBase(path: string): string {
     : path;
 }
 
-if (!clerkPubKey) {
+// Clerk isn't used at all while FREE_ACCESS_ENABLED (see below — ClerkProvider
+// is never mounted in that mode), so don't hard-crash the whole app over a
+// missing key that free access doesn't need.
+if (!FREE_ACCESS_ENABLED && !clerkPubKey) {
   throw new Error("Missing VITE_CLERK_PUBLISHABLE_KEY");
 }
 
@@ -97,7 +99,6 @@ function ViewRouter() {
   useEffect(() => { trackEvent("view", { view: currentView }); }, [currentView]);
   switch (currentView) {
     case "home": return <HomeView />;
-    case "language": return <LanguageSelectionView />;
     case "setup": return <SessionSetupView />;
     case "conversation": return <ConversationView />;
     case "feedback": return <FeedbackView />;
@@ -142,17 +143,10 @@ function ClerkQueryClientCacheInvalidator() {
   return null;
 }
 
+// Only ever rendered inside ClerkProviderWithRoutes, which itself is only
+// mounted when !FREE_ACCESS_ENABLED (see FreeAccessRoutes above) — so this is
+// always the monetized, auth-required flow.
 function AppRoutes() {
-  // FREE_ACCESS_ENABLED: bypass auth gate — all users go directly to the app
-  if (FREE_ACCESS_ENABLED) {
-    return (
-      <AppProvider>
-        <ViewRouter />
-      </AppProvider>
-    );
-  }
-
-  // Normal monetized flow: auth required
   return (
     <AppProvider>
       <Show when="signed-in">
@@ -206,6 +200,21 @@ function ClerkProviderWithRoutes() {
         </Switch>
       </QueryClientProvider>
     </ClerkProvider>
+  );
+}
+
+// While FREE_ACCESS_ENABLED, skip ClerkProvider entirely — not just the auth
+// gate. Mounting ClerkProvider boots clerk-js and calls Clerk's Frontend API on
+// every visit regardless of the gate, which is both an unnecessary third-party
+// network call and inconsistent with the privacy policy's "Clerk is only used
+// if login is enabled." This makes that claim actually true.
+function FreeAccessRoutes() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppProvider>
+        <ViewRouter />
+      </AppProvider>
+    </QueryClientProvider>
   );
 }
 
@@ -300,9 +309,13 @@ function App() {
   return (
     <>
       <AppErrorBoundary>
-        <WouterRouter base={basePath}>
-          <ClerkProviderWithRoutes />
-        </WouterRouter>
+        {FREE_ACCESS_ENABLED ? (
+          <FreeAccessRoutes />
+        ) : (
+          <WouterRouter base={basePath}>
+            <ClerkProviderWithRoutes />
+          </WouterRouter>
+        )}
       </AppErrorBoundary>
       <Analytics />
 

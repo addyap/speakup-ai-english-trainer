@@ -17,7 +17,7 @@ export type Scenario =
   | "pharmacy" | "admin_office" | "formal_complaint";
 export type Level = "auto" | "beginner" | "intermediate" | "advanced";
 export type MicState = "idle" | "listening" | "processing" | "speaking";
-export type View = "home" | "language" | "setup" | "conversation" | "feedback" | "privacy" | "grammar";
+export type View = "home" | "setup" | "conversation" | "feedback" | "privacy" | "grammar";
 
 export interface Message {
   role: "user" | "assistant";

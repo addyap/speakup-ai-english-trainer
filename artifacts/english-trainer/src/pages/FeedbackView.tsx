@@ -173,7 +173,7 @@ export function FeedbackView() {
         >
           {isFallback && (
             <p className="mb-2 inline-flex rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-amber-700">
-              Limited feedback
+              {t(interfaceLanguage, "limitedFeedback")}
             </p>
           )}
           <h1 className="text-2xl font-bold text-ink mb-1">

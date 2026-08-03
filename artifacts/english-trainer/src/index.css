@@ -1,6 +1,7 @@
 @layer theme, base, clerk, components, utilities;
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "./fonts.css";
 @plugin "@tailwindcss/typography";
 
 @custom-variant dark (&:is(.dark *));

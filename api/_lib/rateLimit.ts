@@ -18,8 +18,11 @@ export function checkRateLimit(
   const now = Date.now();
 
   if (_rateWindows.size > 500) {
+    // Sweep ALL expired entries, not just the first — with only one removed
+    // per call, a burst of distinct IPs (e.g. spoofed X-Forwarded-For values)
+    // can grow the map faster than a single-entry prune ever shrinks it.
     for (const [k, w] of _rateWindows) {
-      if (now > w.resetAt) { _rateWindows.delete(k); break; }
+      if (now > w.resetAt) _rateWindows.delete(k);
     }
   }
 

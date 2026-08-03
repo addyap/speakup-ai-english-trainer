@@ -964,13 +964,13 @@ export function ConversationView() {
         )}
 
         {voiceAvailable === "unavailable" && (
-          <p className="text-center text-amber-600 text-[10px]">
+          <p role="status" className="text-center text-amber-600 text-[10px]">
             {t(interfaceLanguage, "voiceUnavailableMsg")}
           </p>
         )}
 
         {!isSupported && (
-          <p className="text-center text-amber-600 text-[10px]">
+          <p role="status" className="text-center text-amber-600 text-[10px]">
             🎤 {t(interfaceLanguage, "browserUnsupported")}
           </p>
         )}
@@ -1063,11 +1063,11 @@ export function ConversationView() {
 
         <div className="flex items-center gap-2 pt-1">
           {feedbackFailed && (
-            <p className="text-red-600 text-xs flex-1">{t(interfaceLanguage, "aiUnavailable")}</p>
+            <p role="alert" className="text-red-600 text-xs flex-1">{t(interfaceLanguage, "aiUnavailable")}</p>
           )}
 
           {turnsLeft <= 3 && turnsLeft > 0 && (
-            <p className="text-amber-600 text-xs flex-1">{t(interfaceLanguage, "turnOf").replace("{current}", String(turnCount)).replace("{total}", String(MAX_TURNS))}</p>
+            <p role="status" className="text-amber-600 text-xs flex-1">{t(interfaceLanguage, "turnOf").replace("{current}", String(turnCount)).replace("{total}", String(MAX_TURNS))}</p>
           )}
 
           <button

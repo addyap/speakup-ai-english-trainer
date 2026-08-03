@@ -473,7 +473,7 @@ export async function conversationHandler(req: AppReq, res: AppRes): Promise<voi
 
   const parseResult = SendConversationMessageBody.safeParse(req.body);
   if (!parseResult.success) {
-    res.status(400).json({ error: "Invalid request body", details: parseResult.error.message });
+    res.status(400).json({ error: "Invalid request body" });
     return;
   }
 
@@ -650,7 +650,7 @@ export async function feedbackHandler(req: AppReq, res: AppRes): Promise<void> {
 
   const parseResult = GenerateFeedbackBody.safeParse(req.body);
   if (!parseResult.success) {
-    res.status(400).json({ error: "Invalid request body", details: parseResult.error.message });
+    res.status(400).json({ error: "Invalid request body" });
     return;
   }
 
@@ -714,7 +714,7 @@ export async function feedbackStreamHandler(req: AppReq, res: AppRes): Promise<v
 
   const parseResult = GenerateFeedbackBody.safeParse(req.body);
   if (!parseResult.success) {
-    res.status(400).json({ error: "Invalid request body", details: parseResult.error.message });
+    res.status(400).json({ error: "Invalid request body" });
     return;
   }
 
@@ -789,7 +789,7 @@ export async function hintHandler(req: AppReq, res: AppRes): Promise<void> {
 
   const parseResult = GetConversationHintBody.safeParse(req.body);
   if (!parseResult.success) {
-    res.status(400).json({ error: "Invalid request body", details: parseResult.error.message });
+    res.status(400).json({ error: "Invalid request body" });
     return;
   }
 
@@ -863,7 +863,7 @@ export async function hintStreamHandler(req: AppReq, res: AppRes): Promise<void>
 
   const parseResult = GetConversationHintBody.safeParse(req.body);
   if (!parseResult.success) {
-    res.status(400).json({ error: "Invalid request body", details: parseResult.error.message });
+    res.status(400).json({ error: "Invalid request body" });
     return;
   }
 
@@ -960,7 +960,7 @@ export async function improveHandler(req: AppReq, res: AppRes): Promise<void> {
 
   const parseResult = ImproveMessageBody.safeParse(req.body);
   if (!parseResult.success) {
-    res.status(400).json({ error: "Invalid request body", details: parseResult.error.message });
+    res.status(400).json({ error: "Invalid request body" });
     return;
   }
 
@@ -1029,7 +1029,7 @@ export async function phrasesHandler(req: AppReq, res: AppRes): Promise<void> {
 
   const parseResult = GetScenarioPhrasesBody.safeParse(req.body);
   if (!parseResult.success) {
-    res.status(400).json({ error: "Invalid request body", details: parseResult.error.message });
+    res.status(400).json({ error: "Invalid request body" });
     return;
   }
 
@@ -1093,7 +1093,7 @@ export async function grammarHandler(req: AppReq, res: AppRes): Promise<void> {
 
   const parseResult = GetGrammarLessonBody.safeParse(req.body);
   if (!parseResult.success) {
-    res.status(400).json({ error: "Invalid request body", details: parseResult.error.message });
+    res.status(400).json({ error: "Invalid request body" });
     return;
   }
 
