@@ -1,6 +1,8 @@
 import { createContext, useContext, useState, useCallback, useEffect, useSyncExternalStore, type ReactNode } from "react";
 import type { Language } from "@/i18n/translations";
-import { ensureLanguage, subscribeI18n, getI18nVersion } from "@/i18n/translations";
+import { ensureLanguage, subscribeI18n, getI18nVersion, LANGUAGE_CODES } from "@/i18n/translations";
+
+const RTL_LANGUAGES: ReadonlySet<Language> = new Set(["Arabic"]);
 import { getLearnerProfile, updateLearnerLanguages } from "@/lib/learnerMemory";
 
 export type Mode = "practice" | "challenge" | "exam" | "debate" | "storytelling";
@@ -104,6 +106,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     updateLearnerLanguages(state.feedbackLanguage, state.interfaceLanguage);
   }, [state.feedbackLanguage, state.interfaceLanguage]);
+
+  // Keep <html lang>/<html dir> in sync with the interface language — screen
+  // readers use lang for pronunciation, and Arabic needs a real dir="rtl" (not
+  // just RTL-shaped text inside an LTR layout) for the whole page to mirror.
+  useEffect(() => {
+    document.documentElement.lang = LANGUAGE_CODES[state.interfaceLanguage] ?? "en-US";
+    document.documentElement.dir = RTL_LANGUAGES.has(state.interfaceLanguage) ? "rtl" : "ltr";
+  }, [state.interfaceLanguage]);
 
   const setCurrentView = useCallback((view: View) => {
     setState((s) => ({ ...s, currentView: view }));
