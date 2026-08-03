@@ -1163,10 +1163,11 @@ RULES:
     });
   } catch (err) {
     const status = openAIStatus(err);
-    if (status === 429) { res.status(429).json({ error: "Rate limit reached. Please wait a moment and try again." }); return; }
-    if (status === 529) { res.status(503).json({ error: "The AI service is overloaded. Please try again in a few seconds." }); return; }
+    const detail = err instanceof Error ? err.message : String(err); // TEMP diagnostic
+    if (status === 429) { res.status(429).json({ error: "Rate limit reached. Please wait a moment and try again.", detail }); return; }
+    if (status === 529) { res.status(503).json({ error: "The AI service is overloaded. Please try again in a few seconds.", detail }); return; }
     logger.error({ err }, "OpenAI grammar error");
-    res.status(500).json({ error: "Could not load the lesson. Please try again." });
+    res.status(500).json({ error: "Could not load the lesson. Please try again.", detail });
   }
 }
 
