@@ -258,6 +258,17 @@ export function HomeView() {
           </div>
         </div>
       </section>
+
+      <footer className="border-t border-line py-8 text-center text-sm text-ink-soft">
+        Part of{" "}
+        <a
+          href="https://www.antonyaddy.com/ressources-en-ligne"
+          className="font-medium text-ink underline underline-offset-2 hover:no-underline"
+        >
+          Fluentory by Antony Addy
+        </a>{" "}
+        — free tools for grammar, listening, speaking and exam prep, built by a certified trainer.
+      </footer>
     </div>
   );
 }
