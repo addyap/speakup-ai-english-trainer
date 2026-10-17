@@ -166,6 +166,9 @@ export type TranslationKeys = {
   limitedFeedback: string;
   // HomeView
   heroHeadline: string;
+  trainerCtaTitle: string;
+  trainerCtaBody: string;
+  trainerCtaButton: string;
   heroSubtitle: string;
   noCardRequired: string;
   premiumComingLater: string;

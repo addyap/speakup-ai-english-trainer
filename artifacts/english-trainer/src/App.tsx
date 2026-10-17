@@ -1,4 +1,4 @@
-import { Component, useEffect, useRef, useState, type ReactNode } from "react";
+import { Component, Suspense, lazy, useEffect, useRef, useState, type ReactNode } from "react";
 import { ClerkProvider, SignIn, SignUp, Show, useClerk } from "@clerk/react";
 import { publishableKeyFromHost } from "@clerk/react/internal";
 import { dark } from "@clerk/themes";
@@ -6,18 +6,21 @@ import { Switch, Route, useLocation, Router as WouterRouter } from "wouter";
 import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
 import { AppProvider, useApp } from "@/lib/AppContext";
 import { HomeView } from "@/pages/HomeView";
-import { LanguageSelectionView } from "@/pages/LanguageSelectionView";
-import { SessionSetupView } from "@/pages/SessionSetupView";
-import { ConversationView } from "@/pages/ConversationView";
-import { FeedbackView } from "@/pages/FeedbackView";
-import { PrivacyView } from "@/pages/PrivacyView";
-import { GrammarView } from "@/pages/GrammarView";
 import { FREE_ACCESS_ENABLED } from "@/lib/freeAccess";
-import { AuditDashboard } from "@/pages/AuditDashboard";
 import { Analytics } from "@vercel/analytics/react";
 import { trackEvent } from "@/lib/analytics";
 import AntonyAddyBar from "@/components/AntonyAddyBar";
 import { Sentry } from "@/lib/sentry";
+
+// Only the home view ships in the entry bundle; every other view loads when
+// the visitor first opens it, which keeps the landing page light on mobile.
+const LanguageSelectionView = lazy(() => import("@/pages/LanguageSelectionView").then((m) => ({ default: m.LanguageSelectionView })));
+const SessionSetupView = lazy(() => import("@/pages/SessionSetupView").then((m) => ({ default: m.SessionSetupView })));
+const ConversationView = lazy(() => import("@/pages/ConversationView").then((m) => ({ default: m.ConversationView })));
+const FeedbackView = lazy(() => import("@/pages/FeedbackView").then((m) => ({ default: m.FeedbackView })));
+const PrivacyView = lazy(() => import("@/pages/PrivacyView").then((m) => ({ default: m.PrivacyView })));
+const GrammarView = lazy(() => import("@/pages/GrammarView").then((m) => ({ default: m.GrammarView })));
+const AuditDashboard = lazy(() => import("@/pages/AuditDashboard").then((m) => ({ default: m.AuditDashboard })));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -114,7 +117,9 @@ function ViewRouter() {
   return (
     <>
       {currentView !== "conversation" && <AntonyAddyBar />}
-      {currentViewElement(currentView)}
+      <Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
+        {currentViewElement(currentView)}
+      </Suspense>
     </>
   );
 }
@@ -287,7 +292,7 @@ class AppErrorBoundary extends Component<{ children: ReactNode }, { hasError: bo
           </div>
           <button
             onClick={() => window.location.reload()}
-            className="px-5 py-2.5 min-h-[44px] rounded-xl bg-coral text-white font-semibold hover:bg-coral-dark transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/60"
+            className="px-5 py-2.5 min-h-[44px] rounded-xl bg-coral-dark text-white font-semibold hover:bg-coral-deep transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/60"
           >
             {msg.reload}{lang !== "English" ? " · Reload" : ""}
           </button>
@@ -329,7 +334,11 @@ function App() {
           QA
         </button>
       )}
-      {showAudit && <AuditDashboard onClose={() => setShowAudit(false)} />}
+      {showAudit && (
+        <Suspense fallback={null}>
+          <AuditDashboard onClose={() => setShowAudit(false)} />
+        </Suspense>
+      )}
     </>
   );
 }

@@ -50,11 +50,12 @@
   --color-cream: #fffdf8;      /* cards */
   --color-ink: #1b1a17;        /* headings / primary text */
   --color-ink-soft: #47433c;   /* secondary text */
-  --color-clay: #736c60;       /* muted text */
+  --color-clay: #5f584d;       /* muted text (5.6:1 on the coral-soft chips) */
   --color-line: #e6ddce;       /* hairline borders */
   --color-line-strong: #d8cdb8;
   --color-coral: #df5a3d;       /* primary accent */
-  --color-coral-dark: #c34a2f;
+  --color-coral-dark: #c34a2f;  /* filled buttons: 4.8:1 under cream text */
+  --color-coral-deep: #a93e26;  /* hover for filled buttons */
   --color-coral-soft: #fbe7df;
   --color-forest: #0f5c46;      /* secondary accent — growth/language */
   --color-forest-soft: #e7f0ea;
