@@ -295,19 +295,14 @@ select {
 .aa-bar-mark {
   display: block;
   flex: none;
-  width: 18px;
-  height: 14px;
+  width: auto;
+  height: 20px;
 }
 .aa-bar-home {
   display: inline-flex;
   min-width: 0;
   align-items: center;
-  gap: 10px;
-}
-.aa-bar-home strong {
-  flex: none;
-  color: #fff;
-  font-weight: 650;
+  gap: 12px;
 }
 .aa-bar-sub {
   overflow: hidden;
