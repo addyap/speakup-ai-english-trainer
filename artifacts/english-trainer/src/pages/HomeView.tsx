@@ -81,14 +81,13 @@ export function HomeView() {
             </motion.div>
           )}
 
-          <motion.h1
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.05 }}
+          {/* No entrance animation: the headline is the largest paint, and
+              starting it at opacity 0 held LCP back by several seconds. */}
+          <h1
             className="mt-5 font-serif text-[2.6rem] font-semibold leading-[1.02] tracking-[-0.015em] text-ink text-balance sm:text-6xl"
           >
             {tr("heroHeadline")}
-          </motion.h1>
+          </h1>
 
           <motion.p
             initial={{ opacity: 0, y: 12 }}
@@ -107,7 +106,7 @@ export function HomeView() {
           >
             <button
               onClick={() => setCurrentView("setup")}
-              className="group inline-flex min-h-[56px] w-full items-center justify-center gap-2.5 rounded-2xl bg-coral px-7 text-lg font-semibold text-cream shadow-lg shadow-coral/25 transition-all hover:bg-coral-dark hover:shadow-coral/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory active:scale-[0.98] sm:w-auto"
+              className="group inline-flex min-h-[56px] w-full items-center justify-center gap-2.5 rounded-2xl bg-coral-dark px-7 text-lg font-semibold text-cream shadow-lg shadow-coral/25 transition-all hover:bg-coral-deep hover:shadow-coral/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-coral/50 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory active:scale-[0.98] sm:w-auto"
             >
               {tr("startTrainingFree")}
               <svg className="h-5 w-5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
@@ -256,6 +255,23 @@ export function HomeView() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* A human trainer, for learners who want more than practice */}
+      <section className="relative z-10 mx-auto max-w-6xl px-5 pb-16 sm:px-8">
+        <div className="flex flex-col gap-4 rounded-3xl border border-line bg-sand px-6 py-6 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+          <div className="max-w-2xl">
+            <h2 className="font-serif text-2xl font-semibold text-ink">{tr("trainerCtaTitle")}</h2>
+            <p className="mt-2 text-[15px] leading-relaxed text-ink-soft">{tr("trainerCtaBody")}</p>
+          </div>
+          <a
+            href="https://www.antonyaddy.com/contact?sujet=anglais"
+            className="inline-flex min-h-[48px] flex-shrink-0 items-center justify-center gap-2 rounded-2xl bg-ink px-6 font-semibold text-cream transition-colors hover:bg-ink-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink/40 focus-visible:ring-offset-2 focus-visible:ring-offset-ivory"
+          >
+            {tr("trainerCtaButton")}
+            <span aria-hidden="true">→</span>
+          </a>
         </div>
       </section>
 
