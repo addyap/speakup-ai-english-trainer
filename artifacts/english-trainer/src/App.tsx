@@ -16,6 +16,7 @@ import { FREE_ACCESS_ENABLED } from "@/lib/freeAccess";
 import { AuditDashboard } from "@/pages/AuditDashboard";
 import { Analytics } from "@vercel/analytics/react";
 import { trackEvent } from "@/lib/analytics";
+import AntonyAddyBar from "@/components/AntonyAddyBar";
 import { Sentry } from "@/lib/sentry";
 
 const queryClient = new QueryClient({
@@ -92,10 +93,8 @@ const clerkAppearance = {
   },
 };
 
-function ViewRouter() {
-  const { currentView } = useApp();
-  useEffect(() => { trackEvent("view", { view: currentView }); }, [currentView]);
-  switch (currentView) {
+function currentViewElement(view: string) {
+  switch (view) {
     case "home": return <HomeView />;
     case "language": return <LanguageSelectionView />;
     case "setup": return <SessionSetupView />;
@@ -105,6 +104,19 @@ function ViewRouter() {
     case "grammar": return <GrammarView />;
     default: return <HomeView />;
   }
+}
+
+function ViewRouter() {
+  const { currentView } = useApp();
+  useEffect(() => { trackEvent("view", { view: currentView }); }, [currentView]);
+  // The conversation fills exactly one screen with the mic at the bottom, so
+  // the Antony Addy bar steps aside while a session is running.
+  return (
+    <>
+      {currentView !== "conversation" && <AntonyAddyBar />}
+      {currentViewElement(currentView)}
+    </>
+  );
 }
 
 function SignInPage() {
@@ -159,6 +171,7 @@ function AppRoutes() {
         <ViewRouter />
       </Show>
       <Show when="signed-out">
+        <AntonyAddyBar />
         <Switch>
           <Route path="/sign-in/*?" component={SignInPage} />
           <Route path="/sign-up/*?" component={SignUpPage} />
