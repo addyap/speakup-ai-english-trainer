@@ -13,9 +13,14 @@ const AntonyAddyBar = () => (
         width={39}
         height={20}
       />
-      <span className="aa-bar-sub" lang="fr">Anglais · IA · Sites web · antonyaddy.com</span>
+      <span className="aa-bar-sub" lang="fr">
+        Anglais · IA · Sites web · antonyaddy.com
+      </span>
     </a>
-    <a className="aa-bar-contact" href="https://www.antonyaddy.com/contact?sujet=anglais">
+    <a
+      className="aa-bar-contact"
+      href="https://www.antonyaddy.com/contact?sujet=anglais"
+    >
       Contact
     </a>
   </nav>
