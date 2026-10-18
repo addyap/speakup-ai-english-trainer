@@ -15,20 +15,20 @@ const AntonyAddyBar = () => (
         height={24}
       />
     </a>
-    <ul className="aa-bar-services" lang="fr">
+    <ul className="aa-bar-services" lang="en">
       <li>
         <a
           href="https://www.antonyaddy.com/offres-de-formation"
           aria-current="true"
         >
-          Anglais
+          English
         </a>
       </li>
       <li>
-        <a href="https://www.antonyaddy.com/ia">IA</a>
+        <a href="https://www.antonyaddy.com/ia/en">AI</a>
       </li>
       <li>
-        <a href="https://www.antonyaddy.com/sites-web">Sites web</a>
+        <a href="https://www.antonyaddy.com/sites-web/en">Websites</a>
       </li>
     </ul>
     <a className="aa-bar-back" href="https://www.antonyaddy.com/">
