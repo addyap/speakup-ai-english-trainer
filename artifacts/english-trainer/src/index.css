@@ -272,16 +272,24 @@ select {
 .aa-bar {
   position: relative;
   z-index: 60;
+  box-sizing: border-box;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  height: 36px;
-  padding: 0 16px;
-  background: #111731;
-  color: #e9e9f2;
+  gap: 14px;
+  height: 47px;
+  padding: 0 16px 3px;
+  background:
+    linear-gradient(
+        90deg,
+        #ba3a2f 0 33.33%,
+        #5b3b9c 33.33% 66.66%,
+        #f6a463 66.66%
+      )
+      left bottom/100% 3px no-repeat,
+    #111731;
+  color: #fff;
   font:
-    500 12.5px/1 system-ui,
+    500 13px/1 system-ui,
     -apple-system,
     "Segoe UI",
     Roboto,
@@ -293,41 +301,90 @@ select {
   color: inherit;
   text-decoration: none;
 }
-.aa-bar-mark {
-  display: block;
-  flex: none;
-  width: auto;
-  height: 20px;
-}
 .aa-bar-home {
   display: inline-flex;
-  min-width: 0;
-  align-items: center;
-  gap: 12px;
-}
-.aa-bar-sub {
-  overflow: hidden;
-  color: #9aa2c0;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-.aa-bar-contact {
   flex: none;
-  padding: 5px 12px;
-  border: 1px solid rgba(255, 255, 255, 0.22);
-  border-radius: 999px;
+  align-items: center;
+  height: 24px;
+  padding-inline-end: 14px;
+  border-inline-end: 1px solid rgba(255, 255, 255, 0.2);
 }
-.aa-bar-contact:hover {
-  background: rgba(255, 255, 255, 0.1);
+.aa-bar-mark {
+  display: block;
+  width: auto;
+  height: 24px;
+}
+.aa-bar-services {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow: hidden;
+}
+.aa-bar-services a {
+  display: block;
+  padding: 7px 11px;
+  border-radius: 999px;
+  color: #c9cde0;
+  white-space: nowrap;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+.aa-bar-services a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.08);
+}
+.aa-bar-services a[aria-current] {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.15);
+}
+.aa-bar-back {
+  flex: none;
+  color: #c9cde0;
+  white-space: nowrap;
+}
+.aa-bar-back:hover {
+  color: #fff;
+}
+.aa-bar-arrow {
+  display: inline-block;
+}
+[dir="rtl"] .aa-bar-arrow {
+  transform: scaleX(-1);
+}
+.aa-bar .aa-bar-contact {
+  flex: none;
+  padding: 8px 15px;
+  border-radius: 999px;
+  background: #ba3a2f;
+  color: #fff;
+  font-weight: 600;
+  transition: background-color 0.15s;
+}
+.aa-bar .aa-bar-contact:hover {
+  background: #a3322a;
 }
 .aa-bar a:focus-visible {
   outline: 2px solid #f6a463;
   outline-offset: 2px;
-  border-radius: 4px;
 }
-@media (max-width: 560px) {
-  .aa-bar-sub {
+@media (max-width: 720px) {
+  .aa-bar-back {
     display: none;
+  }
+}
+@media (max-width: 520px) {
+  .aa-bar-services li:not(:has([aria-current])) {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .aa-bar a {
+    transition: none;
   }
 }
 @media print {
