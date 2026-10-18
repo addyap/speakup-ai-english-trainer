@@ -1,26 +1,15 @@
-import { Component, Suspense, lazy, useEffect, useRef, useState, type ReactNode } from "react";
-import { ClerkProvider, SignIn, SignUp, Show, useClerk } from "@clerk/react";
-import { publishableKeyFromHost } from "@clerk/react/internal";
-import { dark } from "@clerk/themes";
-import { Switch, Route, useLocation, Router as WouterRouter } from "wouter";
-import { QueryClient, QueryClientProvider, useQueryClient } from "@tanstack/react-query";
-import { AppProvider, useApp } from "@/lib/AppContext";
-import { HomeView } from "@/pages/HomeView";
+import { Component, Suspense, lazy, useEffect, useState, type ReactNode } from "react";
+import { useLocation, Router as WouterRouter } from "wouter";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { AppProvider } from "@/lib/AppContext";
 import { FREE_ACCESS_ENABLED } from "@/lib/freeAccess";
 import { Analytics } from "@vercel/analytics/react";
-import { trackEvent } from "@/lib/analytics";
-import AntonyAddyBar from "@/components/AntonyAddyBar";
 import { Sentry } from "@/lib/sentry";
+import { ViewRouter } from "@/ViewRouter";
 
-// Only the home view ships in the entry bundle; every other view loads when
-// the visitor first opens it, which keeps the landing page light on mobile.
-const LanguageSelectionView = lazy(() => import("@/pages/LanguageSelectionView").then((m) => ({ default: m.LanguageSelectionView })));
-const SessionSetupView = lazy(() => import("@/pages/SessionSetupView").then((m) => ({ default: m.SessionSetupView })));
-const ConversationView = lazy(() => import("@/pages/ConversationView").then((m) => ({ default: m.ConversationView })));
-const FeedbackView = lazy(() => import("@/pages/FeedbackView").then((m) => ({ default: m.FeedbackView })));
-const PrivacyView = lazy(() => import("@/pages/PrivacyView").then((m) => ({ default: m.PrivacyView })));
-const GrammarView = lazy(() => import("@/pages/GrammarView").then((m) => ({ default: m.GrammarView })));
 const AuditDashboard = lazy(() => import("@/pages/AuditDashboard").then((m) => ({ default: m.AuditDashboard })));
+// Clerk (provider, sign-in/up pages, the paid-mode gate) loads only when needed.
+const ClerkApp = lazy(() => import("@/ClerkApp"));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -29,201 +18,24 @@ const queryClient = new QueryClient({
   },
 });
 
-const clerkPubKey = publishableKeyFromHost(
-  window.location.hostname,
-  import.meta.env.VITE_CLERK_PUBLISHABLE_KEY,
-);
-
-const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL;
 const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
 
-function stripBase(path: string): string {
-  return basePath && path.startsWith(basePath)
-    ? path.slice(basePath.length) || "/"
-    : path;
-}
-
-if (!clerkPubKey) {
-  throw new Error("Missing VITE_CLERK_PUBLISHABLE_KEY");
-}
-
-const clerkAppearance = {
-  baseTheme: dark,
-  cssLayerName: "clerk",
-  options: {
-    logoPlacement: "inside" as const,
-    logoLinkUrl: basePath || "/",
-    logoImageUrl: `${window.location.origin}${basePath}/logo.svg`,
-  },
-  variables: {
-    colorPrimary: "#6366f1",
-    colorForeground: "#f8fafc",
-    colorMutedForeground: "#94a3b8",
-    colorDanger: "#ef4444",
-    colorBackground: "#0d1021",
-    colorInput: "#1a1f3d",
-    colorInputForeground: "#f8fafc",
-    colorNeutral: "#2d3561",
-    fontFamily: "Inter, system-ui, -apple-system, sans-serif",
-    borderRadius: "0.75rem",
-  },
-  elements: {
-    rootBox: "w-full flex justify-center",
-    cardBox: "bg-[#0d1021] border border-[#2d3561] rounded-2xl w-[440px] max-w-full overflow-hidden shadow-2xl",
-    card: "!shadow-none !border-0 !bg-transparent !rounded-none",
-    footer: "!shadow-none !border-0 !bg-transparent !rounded-none",
-    headerTitle: "text-white font-bold",
-    headerSubtitle: "text-slate-400",
-    socialButtonsBlockButtonText: "text-white",
-    formFieldLabel: "text-slate-300",
-    footerActionLink: "text-indigo-400 hover:text-indigo-300",
-    footerActionText: "text-slate-400",
-    dividerText: "text-slate-500",
-    identityPreviewEditButton: "text-indigo-400",
-    formFieldSuccessText: "text-teal-400",
-    alertText: "text-slate-200",
-    logoBox: "flex justify-center",
-    logoImage: "w-10 h-10",
-    socialButtonsBlockButton: "border-[#2d3561] hover:border-indigo-500 bg-[#1a1f3d] text-white",
-    formButtonPrimary: "bg-indigo-600 hover:bg-indigo-500 text-white font-semibold",
-    formFieldInput: "bg-[#1a1f3d] border-[#2d3561] text-white",
-    footerAction: "border-t border-[#2d3561]",
-    dividerLine: "bg-[#2d3561]",
-    alert: "border-[#2d3561] bg-[#1a1f3d]",
-    otpCodeFieldInput: "bg-[#1a1f3d] border-[#2d3561] text-white",
-    formFieldRow: "",
-    main: "",
-  },
-};
-
-function currentViewElement(view: string) {
-  switch (view) {
-    case "home": return <HomeView />;
-    case "language": return <LanguageSelectionView />;
-    case "setup": return <SessionSetupView />;
-    case "conversation": return <ConversationView />;
-    case "feedback": return <FeedbackView />;
-    case "privacy": return <PrivacyView />;
-    case "grammar": return <GrammarView />;
-    default: return <HomeView />;
-  }
-}
-
-function ViewRouter() {
-  const { currentView } = useApp();
-  useEffect(() => { trackEvent("view", { view: currentView }); }, [currentView]);
-  // The conversation fills exactly one screen with the mic at the bottom, so
-  // the Antony Addy bar steps aside while a session is running.
-  return (
-    <>
-      {currentView !== "conversation" && <AntonyAddyBar />}
-      <Suspense fallback={<div className="min-h-[60vh]" aria-busy="true" />}>
-        {currentViewElement(currentView)}
-      </Suspense>
-    </>
-  );
-}
-
-function SignInPage() {
-  return (
-    <div className="flex min-h-screen items-center justify-center px-4" style={{ background: "linear-gradient(135deg, #0a0c1a 0%, #1a0d2e 50%, #0a1a1a 100%)" }}>
-      <SignIn routing="path" path={`${basePath}/sign-in`} signUpUrl={`${basePath}/sign-up`} />
-    </div>
-  );
-}
-
-function SignUpPage() {
-  return (
-    <div className="flex min-h-screen items-center justify-center px-4" style={{ background: "linear-gradient(135deg, #0a0c1a 0%, #1a0d2e 50%, #0a1a1a 100%)" }}>
-      <SignUp routing="path" path={`${basePath}/sign-up`} signInUrl={`${basePath}/sign-in`} />
-    </div>
-  );
-}
-
-function ClerkQueryClientCacheInvalidator() {
-  const { addListener } = useClerk();
-  const qc = useQueryClient();
-  const prevUserIdRef = useRef<string | null | undefined>(undefined);
-
-  useEffect(() => {
-    const unsubscribe = addListener(({ user }) => {
-      const userId = user?.id ?? null;
-      if (prevUserIdRef.current !== undefined && prevUserIdRef.current !== userId) {
-        qc.clear();
-      }
-      prevUserIdRef.current = userId;
-    });
-    return unsubscribe;
-  }, [addListener, qc]);
-
-  return null;
-}
-
-function AppRoutes() {
-  // FREE_ACCESS_ENABLED: bypass auth gate — all users go directly to the app
-  if (FREE_ACCESS_ENABLED) {
+// In free-access mode the app needs no Clerk session, so Clerk mounts only on
+// its own pages; with free access off, it wraps every page as before.
+function AppRoot() {
+  const [location] = useLocation();
+  const onAuthPage = /^\/sign-(in|up)(\/|$)/.test(location);
+  if (!FREE_ACCESS_ENABLED || onAuthPage) {
     return (
-      <AppProvider>
-        <ViewRouter />
-      </AppProvider>
+      <Suspense fallback={<div className="min-h-screen" aria-busy="true" />}>
+        <ClerkApp />
+      </Suspense>
     );
   }
-
-  // Normal monetized flow: auth required
   return (
     <AppProvider>
-      <Show when="signed-in">
-        <ViewRouter />
-      </Show>
-      <Show when="signed-out">
-        <AntonyAddyBar />
-        <Switch>
-          <Route path="/sign-in/*?" component={SignInPage} />
-          <Route path="/sign-up/*?" component={SignUpPage} />
-          <Route component={HomeView} />
-        </Switch>
-      </Show>
+      <ViewRouter />
     </AppProvider>
-  );
-}
-
-function ClerkProviderWithRoutes() {
-  const [, setLocation] = useLocation();
-
-  return (
-    <ClerkProvider
-      publishableKey={clerkPubKey}
-      proxyUrl={clerkProxyUrl}
-      appearance={clerkAppearance}
-      signInUrl={`${basePath}/sign-in`}
-      signUpUrl={`${basePath}/sign-up`}
-      afterSignOutUrl={basePath || "/"}
-      localization={{
-        signIn: {
-          start: {
-            title: "Welcome back",
-            subtitle: "Sign in to SpeakUp AI",
-          },
-        },
-        signUp: {
-          start: {
-            title: "Create your account",
-            subtitle: "Start practising English with AI",
-          },
-        },
-      }}
-      routerPush={(to) => setLocation(stripBase(to))}
-      routerReplace={(to) => setLocation(stripBase(to), { replace: true })}
-    >
-      <QueryClientProvider client={queryClient}>
-        <ClerkQueryClientCacheInvalidator />
-        <Switch>
-          <Route path="/sign-in/*?" component={SignInPage} />
-          <Route path="/sign-up/*?" component={SignUpPage} />
-          <Route component={AppRoutes} />
-        </Switch>
-      </QueryClientProvider>
-    </ClerkProvider>
   );
 }
 
@@ -318,9 +130,11 @@ function App() {
   return (
     <>
       <AppErrorBoundary>
-        <WouterRouter base={basePath}>
-          <ClerkProviderWithRoutes />
-        </WouterRouter>
+        <QueryClientProvider client={queryClient}>
+          <WouterRouter base={basePath}>
+            <AppRoot />
+          </WouterRouter>
+        </QueryClientProvider>
       </AppErrorBoundary>
       <Analytics />
 
