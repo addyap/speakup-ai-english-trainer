@@ -150,7 +150,6 @@ export type TranslationKeys = {
   welcomeBackName: string;
   freeLaunchBadge: string;
   freeLaunchNote: string;
-  freeLaunchSub: string;
   startTrainingFree: string;
   luxuryBoutique: string;
   tradeFair: string;
