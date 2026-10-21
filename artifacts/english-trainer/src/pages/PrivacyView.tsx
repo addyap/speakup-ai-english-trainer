@@ -135,7 +135,7 @@ export function PrivacyView() {
             135 rue Henri Vadon, Résidence des Arènes, 83600 Fréjus, France.<br />
             SIRET 48317889300028 · Déclaration d'activité n° 93830738883 enregistrée auprès de la DREETS
             Provence-Alpes-Côte d'Azur (cet enregistrement ne vaut pas agrément de l'État).<br />
-            Contact : <a href={`mailto:${CONTACT}`} className="font-medium text-coral underline decoration-line underline-offset-2">{CONTACT}</a> · +33 6 49 82 98 26.<br />
+            Contact : <a href={`mailto:${CONTACT}`} className="font-medium text-coral underline decoration-line underline-offset-2">{CONTACT}</a>.<br />
             Directeur de la publication : Antony Addy.
           </p>
         </Section>
