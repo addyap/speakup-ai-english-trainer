@@ -1,8 +1,9 @@
 /**
- * Bar linking back to www.antonyaddy.com. The same bar (markup, CSS in the
- * global stylesheet under .aa-bar) sits at the top of every section and app
- * served under the main domain, so visitors can always find the hub and the
- * other services. The current service is marked with aria-current.
+ * The shared top bar: the one global navigation on every section and app
+ * served under www.antonyaddy.com (markup and .aa-bar CSS are copied, not
+ * imported, so keep them identical across projects). The logo goes to the
+ * hub; the three activities always appear in the hub's order (English,
+ * websites, AI) with the current one marked. No contact button here.
  */
 const AntonyAddyBar = () => (
   <nav className="aa-bar" aria-label="Antony Addy">
@@ -25,24 +26,12 @@ const AntonyAddyBar = () => (
         </a>
       </li>
       <li>
-        <a href="https://www.antonyaddy.com/ia/en">AI</a>
-      </li>
-      <li>
         <a href="https://www.antonyaddy.com/sites-web/en">Websites</a>
       </li>
+      <li>
+        <a href="https://www.antonyaddy.com/ia/en">AI</a>
+      </li>
     </ul>
-    <a className="aa-bar-back" href="https://www.antonyaddy.com/">
-      <span className="aa-bar-arrow" aria-hidden="true">
-        ←
-      </span>{" "}
-      antonyaddy.com
-    </a>
-    <a
-      className="aa-bar-contact"
-      href="https://www.antonyaddy.com/contact?sujet=anglais"
-    >
-      Contact
-    </a>
   </nav>
 );
 
