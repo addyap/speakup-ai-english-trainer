@@ -825,13 +825,14 @@ AI said: "${lastAiMessage}"
 Return ONLY this JSON (no markdown):
 {"simpleReplies":["short reply 1","short reply 2"],"naturalReply":"fluent C1 reply","vocabularyHelp":"1-2 key phrases","explanation":"1 tip in ${feedbackLanguage}"}
 
-Rules: simpleReplies=2 short correct replies; naturalReply=idiomatic fluent; all reply to the AI message above.`;
+Rules: simpleReplies=2 short correct replies, max 12 words each; naturalReply=idiomatic fluent, max 35 words; vocabularyHelp max 15 words; explanation max 20 words; all reply to the AI message above.`;
 
   try {
     const response = await openai.chat.completions.create({
-      model: "gpt-5.2",
-      temperature: 0.7,
-      max_completion_tokens: 160,
+      // Headroom matters: a reply cut off at the token cap is invalid JSON and the hint fails.
+      model: "gpt-5-mini",
+      reasoning_effort: "minimal",
+      max_completion_tokens: 500,
       response_format: { type: "json_object" },
       messages: [{ role: "system", content: systemPrompt }],
     });
@@ -906,13 +907,15 @@ AI said: "${lastAiMessage}"
 Return ONLY this JSON (no markdown):
 {"simpleReplies":["short reply 1","short reply 2"],"naturalReply":"fluent C1 reply","vocabularyHelp":"1-2 key phrases","explanation":"1 tip in ${feedbackLanguage}"}
 
-Rules: simpleReplies=2 short correct replies; naturalReply=idiomatic fluent; all reply to the AI message above.`;
+Rules: simpleReplies=2 short correct replies, max 12 words each; naturalReply=idiomatic fluent, max 35 words; vocabularyHelp max 15 words; explanation max 20 words; all reply to the AI message above.`;
 
   try {
     const stream = await openai.chat.completions.create({
-      model: "gpt-5.2",
-      temperature: 0.7,
-      max_completion_tokens: 140,
+      // Headroom matters: a reply cut off at the token cap is invalid JSON and the hint fails.
+      model: "gpt-5-mini",
+      reasoning_effort: "minimal",
+      max_completion_tokens: 500,
+      response_format: { type: "json_object" },
       messages: [{ role: "system", content: systemPrompt }],
       stream: true,
     });
