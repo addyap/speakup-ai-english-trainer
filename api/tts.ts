@@ -2,14 +2,11 @@ import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { z } from "zod";
 import { openai } from "./_lib/openai.js";
 import { checkRateLimit } from "./_lib/rateLimit.js";
+import { voiceForScenario, type TtsVoice } from "./_lib/personaVoices.js";
 
 // OpenAI text-to-speech — natural coaching voice, replaces the browser's
 // robotic Web Speech synthesis. The client (lib/tts.ts) calls this and falls
 // back to Web Speech automatically if it is unavailable.
-
-type TtsVoice =
-  | "alloy" | "ash" | "ballad" | "coral" | "echo" | "fable"
-  | "nova" | "onyx" | "sage" | "shimmer" | "verse";
 
 const ALLOWED_VOICES: readonly TtsVoice[] = [
   "alloy", "ash", "ballad", "coral", "echo", "fable",
@@ -22,6 +19,8 @@ const BodySchema = z.object({
   accent: z.enum(["auto", "british", "american"]).optional(),
   slow: z.boolean().optional(),
   voice: z.string().optional(),
+  // The conversation scenario; picks the voice that matches its persona.
+  scenario: z.string().max(64).optional(),
 });
 
 function instructionFor(accent: string | undefined, slow: boolean | undefined): string {
@@ -55,11 +54,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     res.status(400).json({ error: "Invalid request" });
     return;
   }
-  const { text, accent, slow, voice } = parsed.data;
+  const { text, accent, slow, voice, scenario } = parsed.data;
   const chosen: TtsVoice =
     voice && (ALLOWED_VOICES as readonly string[]).includes(voice)
       ? (voice as TtsVoice)
-      : DEFAULT_VOICE;
+      : voiceForScenario(scenario) ?? DEFAULT_VOICE;
 
   try {
     const speech = await openai.audio.speech.create({

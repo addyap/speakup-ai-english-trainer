@@ -376,11 +376,12 @@ export function ConversationView() {
       accent: voiceSettings.accentPreference,
       rate: rateOverride ?? voiceSettings.speakRate,
       voiceURI: voiceSettings.voiceURI || undefined,
+      scenario,
       onEnd: () => {
         if (speakingMsgIdxRef.current === idx) setSpeakingMsgIdx(null);
       },
     });
-  }, [micState, setMicState, voiceSettings]);
+  }, [micState, setMicState, voiceSettings, scenario]);
 
   const handleAiResponse = useCallback((aiText: string) => {
     addMessage({ role: "assistant", content: aiText });
@@ -403,9 +404,9 @@ export function ConversationView() {
       setMicState("idle");
       isProcessingRef.current = false;
     };
-    speak(aiText, { accent: voiceSettings.accentPreference, rate: voiceSettings.speakRate, voiceURI: voiceSettings.voiceURI || undefined, onEnd: onSpeechEnd });
+    speak(aiText, { accent: voiceSettings.accentPreference, rate: voiceSettings.speakRate, voiceURI: voiceSettings.voiceURI || undefined, scenario, onEnd: onSpeechEnd });
     speakTimerRef.current = setTimeout(onSpeechEnd, 120000);
-  }, [addMessage, setLastAiMessage, setMicState, voiceSettings]);
+  }, [addMessage, setLastAiMessage, setMicState, voiceSettings, scenario]);
 
   // Runs (or re-runs) the AI request for a given conversation history. Kept
   // separate from sendMessage so a failed send can be retried without
