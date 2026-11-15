@@ -4,6 +4,8 @@ export interface SpeakOptions {
   accent?: AccentPref;
   rate?: number;
   voiceURI?: string;
+  /** Conversation scenario, so the server voice matches its persona. */
+  scenario?: string;
   onEnd?: () => void;
 }
 
@@ -509,14 +511,14 @@ function stopPremiumAudio(): void {
   }
 }
 
-async function fetchPremiumAudio(text: string, accent: AccentPref, slow: boolean): Promise<string> {
-  const key = `${accent}|${slow ? "s" : "n"}|${text}`;
+async function fetchPremiumAudio(text: string, accent: AccentPref, slow: boolean, scenario?: string): Promise<string> {
+  const key = `${scenario ?? ""}|${accent}|${slow ? "s" : "n"}|${text}`;
   const cached = _premiumCache.get(key);
   if (cached) return cached;
   const res = await fetch("/api/tts", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ text, accent, slow }),
+    body: JSON.stringify({ text, accent, slow, scenario }),
   });
   if (!res.ok) throw new Error(`tts ${res.status}`);
   const url = URL.createObjectURL(await res.blob());
@@ -535,7 +537,7 @@ async function speakPremium(text: string, options: SpeakOptions): Promise<void> 
   if (!cleaned) { options.onEnd?.(); return; }
   const accent = options.accent ?? "auto";
   const slow = (options.rate ?? 0.95) <= 0.8;
-  const url = await fetchPremiumAudio(cleaned, accent, slow); // pre-playback throw → fallback
+  const url = await fetchPremiumAudio(cleaned, accent, slow, options.scenario); // pre-playback throw → fallback
 
   if ("speechSynthesis" in window) window.speechSynthesis.cancel();
   stopPremiumAudio();
